@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testimonial - Beetle Diffuser</title>
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        :root {
+            --bg-beige: #F3F1E4;
+            --text-dark: #333;
+            --border-color: #e0e0e0;
+            --btn-yellow: #ECD037;
+            --btn-hover: #dcc028;
+            --star-color: #FFA500;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            color: var(--text-dark);
+            background-color: #444;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            min-width: 400px;
+            gap: 40px;
+            padding: 60px;
+
+            padding-top: 100px;
+        }
+
+        /* --- Left Column: Testimonials Display --- */
+        .left-col {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            margin-top: 0;
+            margin-left: 20px;
+            color: black;
+        }
+
+        .reviews-container {
+            background-color: var(--bg-beige);
+            padding: 30px;
+            border-radius: 4px;
+        }
+
+        .review-card {
+            margin-bottom: 40px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding-bottom: 20px;
+        }
+
+        .review-card:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .review-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin: 0 0 5px 0;
+            color: #444;
+        }
+
+        .review-date {
+            font-size: 0.85rem;
+            color: #777;
+            margin-bottom: 5px;
+        }
+
+        .review-stars {
+            color: var(--star-color);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .review-body {
+            position: relative;
+            padding-left: 15px;
+            margin-bottom: 15px;
+            line-height: 1.6;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        /* The grey bar visual on the left of text */
+        .review-body::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: #ccc;
+        }
+
+        .review-author {
+            text-align: right;
+            font-style: italic;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        /* --- Right Column: Form --- */
+        .right-col {
+            margin-top: 80px;
+            flex: 1;
+            min-width: 300px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: beige;
+            color: black;
+            padding: 10px;
+        }
+
+
+
+        .form-row {
+            display: flex;
+            /* border-bottom: 1px solid var(--border-color); */
+        }
+
+        .form-row:last-child {
+            border-bottom: none;
+        }
+
+        .form-label {
+            width: 120px;
+            padding: 15px;
+            background-color: beige;
+            color: #666;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            /* border-right: 1px solid var(--border-color); */
+            flex-shrink: 0;
+            /* Prevent label from shrinking */
+        }
+
+        .form-input {
+            flex-grow: 1;
+            padding: 15px;
+            background-color: beige;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            border: 1px solid #ddd;
+            padding: 8px;
+            box-sizing: border-box;
+            font-family: inherit;
+            outline: none;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #aaa;
+        }
+
+        textarea {
+            resize: vertical;
+            height: 120px;
+        }
+
+        /* Star Rating Interaction */
+        .star-rating-input {
+            display: flex;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .star-rating-input span {
+            font-size: 1.5rem;
+            color: #ddd;
+            transition: color 0.2s;
+        }
+
+        .star-rating-input span.active {
+            color: var(--star-color);
+        }
+
+        /* Submit Button Area */
+        .submit-row {
+            padding: 15px;
+            display: flex;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Adjust layout to match image where button is aligned with input column */
+        .submit-wrapper {
+            display: flex;
+            width: 100%;
+        }
+
+        .submit-spacer {
+            width: 120px;
+            /* Matches label width */
+            /* border-right: 1px solid var(--border-color); */
+            margin-right: 15px;
+            /* Hide border on mobile if needed, but keeping for exact replica */
+        }
+
+        button.submit-btn {
+            background-color: greenyellow;
+            border: none;
+            padding: 10px 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            color: #000;
+            font-weight: 500;
+            margin-left: 15px;
+            /* Offset to match padding of inputs */
+        }
+
+        button.submit-btn:hover {
+            background-color: red;
+        }
+
+        /* --- Responsive Media Query (Mobile & Tablet) --- */
+        @media (max-width: 768px) {
+
+
+            .container {
+                flex-direction: column;
+                gap: 30px;
+                padding: 30px;
+                padding-top: 90px;
+            }
+
+            .right-col {
+                margin-top: 10px;
+            }
+
+            /* 2. Adjust Form Layout: Stack Labels on top of Inputs */
+            .form-row {
+                flex-direction: column;
+            }
+
+            .form-label {
+                width: 100%;
+                /* Full width */
+                justify-content: flex-start;
+                text-align: left;
+                /* Align text to left */
+                border-right: none;
+                /* Remove the divider line */
+                border-bottom: 1px solid #eee;
+                /* Add subtle separator */
+                padding: 10px 15px;
+                /* Reduce padding slightly */
+                background-color: beige;
+                /* Slight background distinction */
+                font-weight: 600;
+            }
+
+            .form-input {
+                width: 100%;
+                padding: 10px 15px;
+            }
+
+            /* 3. Fix the Submit Button area */
+            .submit-wrapper {
+                flex-direction: column;
+            }
+
+            /* Hide the spacer div we used for desktop alignment */
+            .submit-wrapper .form-label {
+                display: none;
+            }
+
+            button.submit-btn {
+                margin-left: 0;
+                /* Remove desktop offset */
+                width: 100%;
+                /* Full width button for easier tapping */
+                padding: 15px;
+                /* Larger touch target */
+            }
+
+            /* 4. Text Area height adjustment for mobile */
+            textarea {
+                height: 100px;
+                resize: none;
+            }
+        }
+    </style>
+</head>
+
+
+
+
+
+
+
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo" onclick="showPage('home'); return false;">BEETLE DIFFUSER</a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="./index.html" class="nav-link" onclick="showPage('home'); return false;">Home</a></li>
+                <li><a href="./index.html" class="nav-link" onclick="scrollToProducts(); return false;">Shop All</a></li>
+                <li><a href="./assembly-videos.html" class="nav-link active">Assembly videos</a></li>
+                <li><a href="./faq.html" class="nav-link">FAQs</a></li>
+                <li><a href="" class="nav-link active">Testimonial</a></li>
+                <li><a href="./about-us.html" class="nav-link">About Us</a></li>
+                <li><a href="contact-us.html" class="nav-link">Contact Us</a></li>
+                <li><a href="./gallery.html" class="nav-link">Gallery</a></li>
+            </ul>
+            <div class="nav-right">
+                <div class="cart-icon" onclick="showPage('cart')">
+                    <span style="font-size: 1.5rem;">🛒</span>
+                    <span class="cart-badge" id="cartBadge">0</span>
+                </div>
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <div class="left-col">
+            <h2>Testimonials</h2>
+            <div class="reviews-container" id="reviewsContainer">
+
+                <div class="review-card">
+                    <div class="review-title">Great Diffuser</div>
+                    <div class="review-date">Tuesday, November 18, 2025</div>
+                    <div class="review-stars">★★★★★</div>
+                    <div class="review-body">
+                        The **AK Diffuser** truly changed the way I approach macro photography. Before, lighting felt
+                        inconsistent and sometimes distracting, but with this diffuser everything became smoother, more
+                        natural, and beautifully balanced.
+                    </div>
+                    <div class="review-author">- Jose Vega</div>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-title">World record holder</div>
+                    <div class="review-date">Thursday, October 16, 2025</div>
+                    <div class="review-stars">★★★★★</div>
+                    <div class="review-body">
+                        The terms "trustworthy" and "customer-oriented" must have been invented especially for these AK
+                        guys. Less than 48 hours (!!!) between ordering (in Florida/USA!) and delivery.
+                    </div>
+                    <div class="review-author">- Example User</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="right-col">
+            <form id="reviewForm">
+                <div class="form-row">
+                    <label class="form-label">Name *</label>
+                    <div class="form-input">
+                        <input type="text" id="name" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <label class="form-label">Email *</label>
+                    <div class="form-input">
+                        <input type="email" id="email" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <label class="form-label">Review Title *</label>
+                    <div class="form-input">
+                        <input type="text" id="title" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <label class="form-label">Rating *</label>
+                    <div class="form-input" style="display:flex; align-items:center;">
+                        <div class="star-rating-input" id="starContainer">
+                            <span data-value="1">★</span>
+                            <span data-value="2">★</span>
+                            <span data-value="3">★</span>
+                            <span data-value="4">★</span>
+                            <span data-value="5">★</span>
+                        </div>
+                        <input type="hidden" id="ratingValue" value="5">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <label class="form-label">Review Content *</label>
+                    <div class="form-input">
+                        <textarea id="content" required></textarea>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="submit-wrapper">
+                        <div class="form-label" style="background:transparent; "></div>
+                        <div class="form-input">
+                            <button type="submit" class="submit-btn">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
+
+    </div>
+
+    <footer class="footer" style="min-width:400px ;">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Beetle Diffuser</h3>
+                <p style="color: rgba(255, 255, 255, 0.7);">Professional macro photography equipment for demanding
+                    photographers worldwide.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Shop</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">FAQs</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Support</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Shipping Info</a></li>
+                    <li><a href="#">Returns</a></li>
+                    <li><a href="#">Warranty</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Account</h3>
+                <ul class="footer-links">
+                    <li><a href="#">My Orders</a></li>
+                    <li><a href="#">Wishlist</a></li>
+                    <li><a href="#">Account Settings</a></li>
+                    <li><a href="#">Terms &amp; Conditions</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Beetle Diffuser. All rights reserved. Innovation in Macro Photography.</p>
+        </div>
+    </footer>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // updateCartBadge();
+            setupHamburgerMenu();
+        });
+
+        // Hamburger Menu
+        function setupHamburgerMenu() {
+            const hamburger = document.getElementById('hamburger');
+            const navMenu = document.getElementById('navMenu');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    hamburger.classList.remove('active');
+                    navMenu.classList.remove('active');
+                });
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
+                    hamburger.classList.remove('active');
+                    navMenu.classList.remove('active');
+                }
+            });
+
+        }
+
+        // 1. Handle Star Rating Visuals
+        const stars = document.querySelectorAll('#starContainer span');
+        const ratingInput = document.getElementById('ratingValue');
+
+        // Initialize stars to 5
+        updateStars(5);
+
+        stars.forEach(star => {
+            star.addEventListener('click', function () {
+                const val = parseInt(this.getAttribute('data-value'));
+                ratingInput.value = val;
+                updateStars(val);
+            });
+        });
+
+        function updateStars(value) {
+            stars.forEach(s => {
+                if (parseInt(s.getAttribute('data-value')) <= value) {
+                    s.classList.add('active');
+                } else {
+                    s.classList.remove('active');
+                }
+            });
+        }
+
+        // 2. Handle Form Submission
+        document.getElementById('reviewForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Get Values
+            const name = document.getElementById('name').value;
+            const title = document.getElementById('title').value;
+            const content = document.getElementById('content').value;
+            const rating = document.getElementById('ratingValue').value;
+
+            // Generate Date String (e.g., "Tuesday, November 18, 2025")
+            const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const today = new Date().toLocaleDateString('en-US', dateOptions);
+
+            // Create Star String
+            let starString = '';
+            for (let i = 0; i < 5; i++) {
+                starString += (i < rating) ? '★' : '☆';
+            }
+
+            // Build HTML for new review
+            const newReviewHTML = `
+            <div class="review-card">
+                <div class="review-title">${escapeHtml(title)}</div>
+                <div class="review-date">${today}</div>
+                <div class="review-stars">${starString}</div>
+                <div class="review-body">
+                    ${escapeHtml(content)}
+                </div>
+                <div class="review-author">- ${escapeHtml(name)}</div>
+            </div>
+        `;
+
+            // Prepend to the list (Add to top)
+            const container = document.getElementById('reviewsContainer');
+            container.insertAdjacentHTML('afterbegin', newReviewHTML);
+
+            // Reset Form
+            document.getElementById('reviewForm').reset();
+            updateStars(5); // Reset stars visuals
+            document.getElementById('ratingValue').value = 5;
+        });
+
+        // Security: Basic HTML escaping to prevent XSS injection
+        function escapeHtml(text) {
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+
+</html>

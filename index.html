@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beetle Diffuser - Professional Macro Photography Equipment</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* --- HERO CAROUSEL STYLES --- */
+    .hero-carousel {
+      position: relative;
+      width: 100vw;
+      /* Full viewport width */
+      height: 90vh;
+      /* Full viewport height - Adjust as needed */
+      overflow: hidden;
+      margin-top: 80px;
+      /* Space between carousel and FAQ content */
+    }
+
+    .carousel-slides {
+      display: flex;
+      width: 300%;
+      /* 3 images, each 100% of container width */
+      height: 100%;
+      transition: transform 0.7s ease-in-out;
+      /* Smooth slide transition */
+    }
+
+    .carousel-slide {
+      width: 100vw;
+      /* Each slide takes full viewport width */
+      height: 100%;
+      background-size: contain;
+      /* Cover the entire slide area */
+      background-position: center;
+      /* Center the image */
+      flex-shrink: 0;
+      /* Prevent slides from shrinking */
+      display: flex;
+      /* For centering content if any */
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 3rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    }
+
+    /* Optional: Overlay for better text readability */
+    .carousel-slide::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      /* Semi-transparent overlay */
+      z-index: 1;
+      /* Below text, above image */
+    }
+
+    .slide-content {
+      position: relative;
+      z-index: 2;
+      /* Ensure content is above overlay */
+      text-align: center;
+      padding: 20px;
+    }
+
+    .slide-content h2 {
+      font-size: 3em;
+      margin-bottom: 10px;
+      color: var(--accent-red);
+    }
+
+    .slide-content p {
+      font-size: 1.2em;
+    }
+
+    /* Navigation Dots */
+    .carousel-dots {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      z-index: 10;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      background-color: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      border: 1px solid rgba(0, 0, 0, 0.3);
+    }
+
+    .dot.active {
+      background-color: var(--accent-red);
+      border-color: var(--accent-red);
+    }
+    @media(max-width:600px){
+      .slide-content h2 {font-size: 2.4rem;}
+      .slide-content p {font-size: 1.5rem;}
+    }
+  </style>
+
+ 
+</head>
+
+<body>
+  <!-- Success Message -->
+  <div class="success-message" id="successMessage"></div>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="#" class="logo" onclick="showPage('home'); return false;">BEETLE DIFFUSER</a>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="" class="nav-link active" onclick="showPage('home'); return false;">Home</a></li>
+        <li><a href="" class="nav-link" onclick="scrollToProducts(); return false;">Shop All</a></li>
+        <li><a href="./assembly-videos.html" class="nav-link">Assembly videos</a></li>
+        <li><a href="./faq.html" class="nav-link">FAQs</a></li>
+        <li><a href="./testimonial.html" class="nav-link">Testimonial</a></li>
+        <li><a href="./about-us.html" class="nav-link">About Us</a></li>
+        <li><a href="contact-us.html" class="nav-link">Contact Us</a></li>
+        <li><a href="./gallery.html" class="nav-link">Gallery</a></li>
+      </ul>
+      <div class="nav-right">
+        <div class="cart-icon" onclick="showPage('cart')">
+          <span style="font-size: 1.5rem;">🛒</span>
+          <span class="cart-badge" id="cartBadge">0</span>
+        </div>
+        <div class="hamburger" id="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div id="carouselPage">
+  <div class="hero-carousel active" id="hero-carousel">
+    <div class="carousel-slides" id="carouselSlides">
+      <div class="carousel-slide"
+        style="background-image: url('./images/Pro\ White\ Background.jpg');">
+        <div class="slide-content">
+          <h2>Beetle Diffuser</h2>
+          <p>Unlock new levels of macro photography.</p>
+        </div>
+      </div>
+      <div class="carousel-slide"
+        style="background-image: url('./images/Twin\ Beetle\ Diffusers\ White\ Background.jpg');">
+        <div class="slide-content">
+          <h2>Pro & Lite Models</h2>
+          <p>Precision or Portability, you choose.</p>
+        </div>
+      </div>
+      <div class="carousel-slide"
+        style="background-image: url('./images/Pro\ White\ Background.jpg');">
+        <div class="slide-content">
+          <h2>Perfect Diffusion</h2>
+          <p>Designed for stunning, natural light.</p>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-dots" id="carouselDots">
+      <div class="dot active" data-slide="0"></div>
+      <div class="dot" data-slide="1"></div>
+      <div class="dot" data-slide="2"></div>
+    </div>
+  </div>
+</div>
+  <!-- HOME PAGE -->
+  <div id="homePage" class="page-section active">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-container">
+        <div class="hero-content">
+          <div class="hero-badge">🏆 Award-Winning Design</div>
+          <h1 class="hero-title">Innovation in Macro Photography</h1>
+          <p class="hero-subtitle">Professional-grade diffusers designed for perfection. Completely customized
+            for your equipment.</p>
+          <div class="hero-buttons">
+            <button class="btn btn-primary" onclick="scrollToProducts()">Shop Now</button>
+            <button class="btn btn-secondary" onclick="scrollToProducts()">View Products</button>
+          </div>
+        </div>
+        <div class="hero-image">
+          <div class="product-showcase">
+            <div class="product-icon"><img src="./images/beetle_logo.png" class="banner" alt=""></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="products-section" id="productsSection">
+      <div class="section-header">
+        <h2 class="section-title">Our Premium Collection</h2>
+        <p class="section-subtitle">Professional diffusers &amp; accessories for demanding photographers</p>
+      </div>
+      <div class="products-grid" id="productsGrid"></div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>Beetle Diffuser</h3>
+          <p style="color: rgba(255, 255, 255, 0.7);">Professional macro photography equipment for demanding
+            photographers worldwide.</p>
+        </div>
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul class="footer-links">
+            <li><a href="#">Shop</a></li>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">FAQs</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Support</h3>
+          <ul class="footer-links">
+            <li><a href="#">Shipping Info</a></li>
+            <li><a href="#">Returns</a></li>
+            <li><a href="#">Warranty</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Account</h3>
+          <ul class="footer-links">
+            <li><a href="#">My Orders</a></li>
+            <li><a href="#">Wishlist</a></li>
+            <li><a href="#">Account Settings</a></li>
+            <li><a href="#">Terms &amp; Conditions</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 Beetle Diffuser. All rights reserved. Innovation in Macro Photography.</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- PRODUCT DETAILS PAGE -->
+  <div id="productDetailsPage" class="page-section">
+    <div class="product-details" id="productDetailsContent"></div>
+  </div>
+
+  <!-- SPECIFICATIONS PAGE -->
+  <div id="specificationsPage" class="page-section">
+    <div class="product-details" id="specificationsContent"></div>
+  </div>
+
+  <!-- CART PAGE -->
+  <div id="cartPage" class="page-section">
+    <div class="cart-container" id="cartContent"></div>
+  </div>
+
+  <script>
+
+    const carouselSlides = document.getElementById('carouselSlides');
+    const carouselDots = document.getElementById('carouselDots');
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dots = document.querySelectorAll('.dot');
+    let currentSlide = 0;
+    const slideInterval = 3000; // 3 seconds
+
+    function showSlide(index) {
+      if (index >= slides.length) {
+        currentSlide = 0;
+      } else if (index < 0) {
+        currentSlide = slides.length - 1;
+      } else {
+        currentSlide = index;
+      }
+      carouselSlides.style.transform = `translateX(-${currentSlide * 100}vw)`;
+
+      dots.forEach((dot, i) => {
+        if (i === currentSlide) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
+    }
+
+    function nextSlide() {
+      showSlide(currentSlide + 1);
+    }
+
+    // Auto-slide
+    let autoSlide = setInterval(nextSlide, slideInterval);
+
+    // Dot navigation
+    carouselDots.addEventListener('click', (e) => {
+      if (e.target.classList.contains('dot')) {
+        const slideIndex = parseInt(e.target.dataset.slide);
+        showSlide(slideIndex);
+
+        // Reset auto-slide timer when user manually navigates
+        clearInterval(autoSlide);
+        autoSlide = setInterval(nextSlide, slideInterval);
+      }
+    });
+
+    // Optional: Pause on hover
+    carouselSlides.parentElement.addEventListener('mouseenter', () => {
+      clearInterval(autoSlide);
+    });
+
+    carouselSlides.parentElement.addEventListener('mouseleave', () => {
+      autoSlide = setInterval(nextSlide, slideInterval);
+    });
+
+    // Initialize first slide and dots
+    showSlide(0);
+
+
+    // Product Data
+    const products = [
+      {
+        id: 1,
+        name: "Beetle Diffuser",
+        subtitle: "Large - Medium - Mini",
+        description: "We will send you the diffuser that matches your equipment. Completely customized design for your equipment.",
+        icon: "Lite grey background.jpg",
+        price: 149.99,
+        rating: 5,
+        features: ["Light Diffusion", "Professional Quality", "Easy Setup", "Durable Design"],
+        specifications: [
+          "Available in 3 sizes: Large, Medium, Mini",
+          "Compatible with most camera setups",
+          "Precision-engineered diffusion",
+          "Lightweight aluminum construction",
+          "Includes carrying case",
+          "Made in USA"
+        ],
+        compatibility: ["Canon EOS Series", "Nikon D Series", "Sony Alpha", "Other DSLR systems"],
+        sizes: ["Large", "Medium", "Mini"]
+      },
+      {
+        id: 2,
+        name: "AK MP-E 65MM",
+        subtitle: "Take amazing macro shots",
+        description: "DIFFUSER FOR CANON MP-E 65MM (ONLY)",
+        icon: "Beetle Lite White Background.jpg",
+        price: 89.99,
+        rating: 5,
+        features: ["Perfect for 1:1 macro", "Compact design", "Quick attach", "Color accurate"],
+        specifications: [
+          "Designed specifically for Canon MP-E 65mm lens",
+          "Optimal 1:1 macro magnification",
+          "Minimizes lens creep",
+          "Reduces color cast",
+          "Quick release mount",
+          "Sealed optical elements"
+        ],
+        compatibility: ["Canon MP-E 65mm (ONLY)"],
+        sizes: null
+      },
+      {
+        id: 3,
+        name: "AK OM-90 PRO",
+        subtitle: "IN COLLABORATION WITH BEN SALB",
+        description: "FOR ZUIKO 90MM PRO (ONLY)",
+        icon: "Twin Grrey Background.jpg",
+        price: 99.99,
+        rating: 5,
+        features: ["Pro collaboration", "Premium materials", "Limited edition", "Expert tuned"],
+        specifications: [
+          "Exclusive collaboration with renowned macro photographer Ben Salb",
+          "Optimized for Zuiko 90mm lens",
+          "Premium optical coating",
+          "Precision-engineered diffusion pattern",
+          "Includes Ben Salb guide",
+          "Limited production series"
+        ],
+        compatibility: ["Zuiko 90mm Pro lens"],
+        sizes: null
+      },
+      {
+        id: 4,
+        name: "TWIN FLASH",
+        subtitle: "Diffuser for Dual Lighting",
+        description: "Advanced dual-flash diffusion system for professional macro photography",
+        icon: "Twin Beetle Diffusers White Background.jpg",
+        price: 129.99,
+        rating: 5,
+        features: ["Dual-flash support", "Even lighting", "No shadows", "Professional results"],
+        specifications: [
+          "Two independent diffusion domes",
+          "Synchronized lighting control",
+          "360-degree coverage",
+          "TTL compatible",
+          "Includes dual mount",
+          "Built-in cable management"
+        ],
+        compatibility: ["Most external flash units", "Compatible with wireless triggers"],
+        sizes: null
+      },
+      {
+        id: 5,
+        name: "Macro Background Cards & Flexible Dual Clip Holder",
+        subtitle: "Premium Accessories Pack",
+        description: "Complete macro background and clip holder system for professional setup",
+        icon: "Pro White Background.jpg",
+        price: 39.99,
+        rating: 5,
+        features: ["Multiple backgrounds", "Flexible clips", "Easy positioning", "Professional finish"],
+        specifications: [
+          "5 reversible background cards",
+          "Dual flexible clip holder",
+          "Ball joint for 360 adjustment",
+          "Removable/replaceable cards",
+          "Lightweight aluminum construction",
+          "Portable storage case included"
+        ],
+        compatibility: ["All macro setups", "Works with any tripod"],
+        sizes: null
+      }
+    ];
+
+    // Cart state (in-memory)
+    let cart = [];
+    let currentProduct = null;
+    let selectedSize = null;
+    let quantity = 1;
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function () {
+      renderProducts();
+      updateCartBadge();
+      setupHamburgerMenu();
+    });
+
+    // Hamburger Menu
+    function setupHamburgerMenu() {
+      const hamburger = document.getElementById('hamburger');
+      const navMenu = document.getElementById('navMenu');
+      const navLinks = document.querySelectorAll('.nav-link');
+      
+      
+
+      hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        navMenu.classList.toggle('active');
+      });
+
+      navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          hamburger.classList.remove('active');
+          navMenu.classList.remove('active');
+        });
+      });
+
+      // Close menu when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
+          hamburger.classList.remove('active');
+          navMenu.classList.remove('active');
+          carouselSlides.classList.remove('active');
+        }
+      });
+    }
+
+    // Render Products
+    function renderProducts() {
+      const grid = document.getElementById('productsGrid');
+      grid.innerHTML = products.map(product => `
+                
+                <div class="product-card" onclick="showProductDetails(${product.id})">
+                    <div class="product-image">
+                        
+
+                        <img src="./images/${product.icon}" alt="" />
+                    </div>
+                    <div class="product-body">
+                        <h3 class="product-title">${product.name}</h3>
+                        <p class="product-subtitle">${product.subtitle}</p>
+                        <p class="product-description">${product.description}</p>
+                        <div class="product-features">
+                            ${product.features.map(feature => `<span class="feature-tag">${feature}</span>`).join('')}
+                        </div>
+                        <div class="product-footer">
+                            <span class="product-price">$${product.price.toFixed(2)}</span>
+                            <span class="product-rating">${'★'.repeat(product.rating)}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+    }
+
+    // Show Product Details
+    function showProductDetails(productId) {
+      currentProduct = products.find(p => p.id === productId);
+      if (!currentProduct) return;
+
+      selectedSize = currentProduct.sizes ? currentProduct.sizes[0] : null;
+      quantity = 1;
+
+      const content = document.getElementById('productDetailsContent');
+      content.innerHTML = `
+                
+                <button class="btn btn-secondary" onclick="showPage('home')" style="margin-bottom: 2rem;">
+                    ← Back to Products
+                </button>
+                <div><p style="background-color:'red';color:'white'; width:'100%';">We collect your gear details during checkout to ensure we send the correct diffuser that fits your camera perfectly and is ideal for macro photography.</p></div>
+                <div class="product-details-grid">
+                    <div class="product-details-image">
+                      <img src='./images/${currentProduct.icon}'/>
+                        
+                    </div>
+                    <div class="product-details-info">
+                        <h1>${currentProduct.name}</h1>
+                        <p class="product-subtitle">${currentProduct.subtitle}</p>
+                        <span class="product-price">$${currentProduct.price.toFixed(2)}</span>
+                        <p class="product-description">${currentProduct.description}</p>
+                        
+                        ${currentProduct.sizes ? `
+                        <div class="product-options">
+                            <label>Select Size:</label>
+                            <select id="sizeSelect" onchange="selectedSize = this.value">
+                                ${currentProduct.sizes.map(size => `<option value="${size}">${size}</option>`).join('')}
+                            </select>
+                        </div>
+                        ` : ''}
+                        
+                        <div class="quantity-selector">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--accent-yellow);">Quantity:</label>
+                            <div class="quantity-controls">
+                                <button class="quantity-btn" onclick="updateQuantity(-1)">-</button>
+                                <span class="quantity-display" id="quantityDisplay">1</span>
+                                <button class="quantity-btn" onclick="updateQuantity(1)">+</button>
+                            </div>
+                        </div>
+                        
+                        <div class="product-actions">
+                            <button class="btn btn-primary" onclick="showSpecifications()">View Specifications</button>
+                            <button class="btn btn-secondary" onclick="showPage('home')">Continue Shopping</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="specifications-table">
+                    <h2>Features</h2>
+                    ${currentProduct.features.map(feature => `
+                        <div class="spec-row">
+                            <div class="spec-label">✓</div>
+                            <div class="spec-value">${feature}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+      showPage('productDetails');
+      window.scrollTo(0, 0);
+    }
+
+    // Show Specifications
+    function showSpecifications() {
+      if (!currentProduct) return;
+
+      const content = document.getElementById('specificationsContent');
+      content.innerHTML = `
+                <button class="btn btn-secondary" onclick="showProductDetails(${currentProduct.id})" style="margin-bottom: 2rem;">
+                    ← Back to Product
+                </button>
+                <div class="product-details-grid">
+                    <div class="product-details-image">
+                      <img src='./images/${currentProduct.icon}'/>
+                        
+                    </div>
+                    <div class="product-details-info">
+                        <h1>${currentProduct.name}</h1>
+                        <p class="product-subtitle">${currentProduct.subtitle}</p>
+                        <span class="product-price">$${currentProduct.price.toFixed(2)}</span>
+                        
+                        ${currentProduct.sizes ? `
+                        <div class="product-options" style="margin-top: 2rem;">
+                            <label>Select Size:</label>
+                            <select id="sizeSelect" onchange="selectedSize = this.value">
+                                ${currentProduct.sizes.map(size => `<option value="${size}" ${size === selectedSize ? 'selected' : ''}>${size}</option>`).join('')}
+                            </select>
+                        </div>
+                        ` : ''}
+                        
+                        <div class="quantity-selector">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--accent-yellow);">Quantity:</label>
+                            <div class="quantity-controls">
+                                <button class="quantity-btn" onclick="updateQuantity(-1)">-</button>
+                                <span class="quantity-display" id="quantityDisplay">${quantity}</span>
+                                <button class="quantity-btn" onclick="updateQuantity(1)">+</button>
+                            </div>
+                        </div>
+                        
+                        <div class="product-actions">
+                            <button class="btn btn-primary" onclick="addToCart()">Add to Cart</button>
+                            <button class="btn btn-secondary" onclick="showPage('home')">Continue Shopping</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="specifications-table">
+                    <h2>Technical Specifications</h2>
+                    ${currentProduct.specifications.map(spec => `
+                        <div class="spec-row">
+                            <div class="spec-label">•</div>
+                            <div class="spec-value">${spec}</div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="specifications-table">
+                    <h2>Compatibility</h2>
+                    ${currentProduct.compatibility.map(comp => `
+                        <div class="spec-row">
+                            <div class="spec-label">✓</div>
+                            <div class="spec-value">${comp}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+      showPage('specifications');
+      window.scrollTo(0, 0);
+    }
+
+    // Update Quantity
+    function updateQuantity(delta) {
+      quantity = Math.max(1, quantity + delta);
+      document.getElementById('quantityDisplay').textContent = quantity;
+    }
+
+    // Add to Cart
+    function addToCart() {
+      if (!currentProduct) return;
+
+      const cartItem = {
+        id: Date.now(),
+        productId: currentProduct.id,
+        name: currentProduct.name,
+        icon: currentProduct.icon,
+        price: currentProduct.price,
+        quantity: quantity,
+        size: selectedSize
+      };
+
+      cart.push(cartItem);
+      updateCartBadge();
+      showSuccessMessage('Product added to cart!');
+
+      // Reset quantity
+      quantity = 1;
+    }
+
+    // Update Cart Badge
+    function updateCartBadge() {
+      const badge = document.getElementById('cartBadge');
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+      badge.textContent = totalItems;
+    }
+
+    // Show Cart
+    function showCart() {
+      const content = document.getElementById('cartContent');
+
+      if (cart.length === 0) {
+        content.innerHTML = `
+                    <div class="cart-empty">
+                        <h2>Your cart is empty</h2>
+                        <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 2rem;">Start shopping to add items to your cart</p>
+                        <button class="btn btn-primary" onclick="showPage('home')">Continue Shopping</button>
+                    </div>
+                `;
+      } else {
+        const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        const tax = subtotal * 0.1;
+        const shipping = 10;
+        const total = subtotal + tax + shipping;
+
+        content.innerHTML = `
+                    <h1 style="font-size: 2.5rem; margin-bottom: 2rem; color: var(--accent-yellow);">Shopping Cart</h1>
+                    <div class="cart-items">
+                        ${cart.map(item => `
+                            <div class="cart-item">
+                                <div class="cart-item-image">${item.icon}</div>
+                                <div class="cart-item-info">
+                                    <h3>${item.name}</h3>
+                                    ${item.size ? `<p class="cart-item-details">Size: ${item.size}</p>` : ''}
+                                    <p class="cart-item-details">Quantity: ${item.quantity}</p>
+                                    <p class="cart-item-price">$${(item.price * item.quantity).toFixed(2)}</p>
+                                </div>
+                                <div class="cart-item-actions">
+                                    <button class="remove-btn" onclick="removeFromCart(${item.id})">Remove</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="cart-summary">
+                        <h2>Order Summary</h2>
+                        <div class="summary-row">
+                            <span class="summary-label">Subtotal:</span>
+                            <span class="summary-value">$${subtotal.toFixed(2)}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Tax (10%):</span>
+                            <span class="summary-value">$${tax.toFixed(2)}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Shipping:</span>
+                            <span class="summary-value">$${shipping.toFixed(2)}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Total:</span>
+                            <span class="summary-value">$${total.toFixed(2)}</span>
+                        </div>
+                        <div style="display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap;">
+                            <button class="btn btn-primary" onclick="checkout()" style="flex: 1;">Proceed to Checkout</button>
+                            <button class="btn btn-secondary" onclick="showPage('home')" style="flex: 1;">Continue Shopping</button>
+                        </div>
+                    </div>
+                `;
+      }
+    }
+
+    // Remove from Cart
+    function removeFromCart(itemId) {
+      cart = cart.filter(item => item.id !== itemId);
+      updateCartBadge();
+      showCart();
+      showSuccessMessage('Item removed from cart');
+    }
+
+    // Checkout
+    function checkout() {
+      showSuccessMessage('Checkout functionality coming soon!');
+    }
+
+    // Show Success Message
+    function showSuccessMessage(message) {
+      const msgEl = document.getElementById('successMessage');
+      msgEl.textContent = message;
+      msgEl.classList.add('show');
+      setTimeout(() => {
+        msgEl.classList.remove('show');
+      }, 3000);
+    }
+
+    // Page Navigation
+    function showPage(pageName) {
+      const pages = ['home', 'productDetails', 'specifications', 'cart', 'carousel'];
+      pages.forEach(page => {
+        const pageEl = document.getElementById(page + 'Page');
+        if (pageEl) {
+          pageEl.classList.remove('active');
+        }
+      });
+
+      const targetPage = document.getElementById(pageName + 'Page');
+      if (targetPage) {
+        targetPage.classList.add('active');
+      }
+
+      if (pageName === 'cart') {
+        showCart();
+      }
+
+      window.scrollTo(0, 0);
+    }
+
+    // Scroll to Products
+    function scrollToProducts() {
+      showPage('home');
+      setTimeout(() => {
+        const productsSection = document.getElementById('productsSection');
+        if (productsSection) {
+          productsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    }
+  </script>
+</body>
+
+</html>

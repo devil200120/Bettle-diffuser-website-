@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - Beetle Diffuser</title>
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        /* --- RESET & VARIABLES --- */
+        :root {
+            --bg-body: #1a1a1a;
+            /* Dark Gray Background */
+            --bg-card: #252525;
+            /* Slightly Lighter Gray */
+            --text-main: #f0f0f0;
+            /* Off-White text */
+            --text-muted: #b0b0b0;
+            /* Light Gray text */
+            --accent-red: #e63946;
+            /* Vibrant Red */
+            --border-color: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            /* font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; */
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            /* padding: 40px 20px; */
+        }
+
+        /* --- LAYOUT CONTAINER --- */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding-top: 100px;
+            min-width: 400px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            border-bottom: 2px solid var(--accent-red);
+            padding-bottom: 20px;
+            display: inline-block;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        h1 span {
+            color: var(--accent-red);
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* --- ACCORDION STYLES --- */
+        .faq-section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            color: var(--accent-red);
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--text-main);
+            padding-left: 10px;
+        }
+
+        .faq-item {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            margin-bottom: 10px;
+            border-radius: 4px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            border-color: white;
+        }
+
+        /* The clickable Question part */
+        summary {
+            list-style: none;
+            cursor: pointer;
+            padding: 20px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        summary::after {
+            content: '+';
+            font-size: 1.5rem;
+            color: white;
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+
+        details[open] summary::after {
+            transform: rotate(45deg);
+            /* Turns the + into an x */
+        }
+
+        details[open] summary {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* The Answer part */
+        .answer {
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Specific text formatting */
+        .answer ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .answer li {
+            margin-bottom: 5px;
+        }
+
+        .highlight {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .note {
+            background-color: #ffffff;
+            color: black;
+            border-left: 5px solid red;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        /* --- RESPONSIVE DESIGN --- */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            body {
+                padding: 20px 10px;
+            }
+
+            summary {
+                font-size: 1rem;
+                padding: 15px;
+            }
+
+            .answer {
+                padding: 15px;
+            }
+
+            .container {
+                padding: 10px;
+                padding-top: 80px;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo" onclick="showPage('home'); return false;">BEETLE DIFFUSER</a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="./index.html" class="nav-link active" onclick="showPage('home'); return false;">Home</a></li>
+                <li><a href="./index.html" class="nav-link" onclick="scrollToProducts(); return false;">Shop All</a></li>
+                <li><a href="./assembly-videos.html" class="nav-link">Assembly videos</a></li>
+                <li><a href="" class="nav-link active">FAQs</a></li>
+                <li><a href="./testimonial.html" class="nav-link">Testimonial</a></li>
+                <li><a href="./about-us.html" class="nav-link">About Us</a></li>
+                <li><a href="contact-us.html" class="nav-link">Contact Us</a></li>
+                <li><a href="./gallery.html" class="nav-link">Gallery</a></li>
+            </ul>
+            <div class="nav-right">
+                <div class="cart-icon" onclick="showPage('cart')">
+                    <span style="font-size: 1.5rem;">🛒</span>
+                    <span class="cart-badge" id="cartBadge">0</span>
+                </div>
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="container">
+        <header>
+            <h1>Beetle <span>Diffuser</span> FAQ</h1>
+            <div class="subtitle">Everything you need to know about gear, compatibility, and shipping.</div>
+        </header>
+
+        <div class="faq-section">
+            <div class="section-title">Models & Features</div>
+
+            <details class="faq-item">
+                <summary>What is the difference between Pro & Lite models?</summary>
+                <div class="answer">
+                    <p><span class="highlight">The Pro Model:</span> Designed for precision. It varies the lighting
+                        angle precisely using a unique latch strap mechanism. It features a more powerful LED for faster
+                        focus assistance and allows for shooting macro videos with diffused light.</p>
+                    <br>
+                    <p><span class="highlight">The Lite Model:</span> Simple and quick to set up. The diffusion quality
+                        is as good as the Pro. You can vary the lighting angle by adjusting the cord panel. It can
+                        utilize built-in focus assist LEDs found on flashes like the Godox 860v3, V1, and others.</p>
+                    <div class="note">There is an option to buy the Lite with a mini LED for focus assist if your flash
+                        doesn't have one.</div>
+                </div>
+            </details>
+
+            <details class="faq-item">
+                <summary>What does the Pro-Lite Combo include?</summary>
+                <div class="answer">
+                    You will receive the full <strong>Pro diffuser set</strong>, plus the <strong>Lite model body and
+                        bands</strong>.
+                    <p style="margin-top:10px;">The diffusion panel from the Pro can be swapped and used with the Beetle
+                        Lite body. This allows you to switch to the Lite variant when you need a lighter, faster setup.
+                    </p>
+                </div>
+            </details>
+
+            <details class="faq-item">
+                <summary>Is the Beetle Diffuser easy to setup and store?</summary>
+                <div class="answer">
+                    Yes. All our flash diffusers are designed to be quick to set up and <strong>fold completely
+                        flat</strong> for easy storage.
+                    <br><br>
+                    Each diffuser comes with an assembly video which you can refer to when you first receive the
+                    product.
+                </div>
+            </details>
+        </div>
+
+        <div class="faq-section">
+            <div class="section-title">Compatibility & Sizing</div>
+
+            <details class="faq-item">
+                <summary>What gear is compatible with the Beetle Diffuser?</summary>
+                <div class="answer">
+                    <p><strong>Lenses:</strong><br> Lenses shorter than 70mm or longer than 160mm in physical length
+                        (not focal length) are <em>not compatible</em>.</p>
+                    <br>
+                    <p><strong>Flashes:</strong><br> Only hot-shoe mount flashes are compatible. Supported models
+                        include:</p>
+                    <ul>
+                        <li>Standard flashes: Godox 860, Nikon SB-5000, Canon 600EX-RT (and similarly sized models).
+                        </li>
+                        <li>Round-head flashes: Godox V1.</li>
+                        <li>Compact models: Godox TT/V350.</li>
+                    </ul>
+                    <div class="note">
+                        <strong>Unsupported Flashes:</strong> Godox SU-1, Godox GN12, Olympus FL-LM3, Leica SF 60, and
+                        Nissin i60A.
+                    </div>
+                    <br>
+                    <em>Please ensure you enter your exact lens and flash model during checkout.</em>
+                </div>
+            </details>
+
+            <details class="faq-item">
+                <summary>What size diffuser will I receive?</summary>
+                <div class="answer">
+                    We collect your specific gear details (Lens and Flash model) during checkout. This ensures we send
+                    the correct diffuser size that fits your camera perfectly and is ideal for your macro photography
+                    setup.
+                </div>
+            </details>
+        </div>
+
+        <div class="faq-section">
+            <div class="section-title">What's in the Box</div>
+
+            <details class="faq-item">
+                <summary>What is included with the Pro Model?</summary>
+                <div class="answer">
+                    <ul>
+                        <li>Beetle Diffuser Pro</li>
+                        <li>LED Light with On/Off dimmer switch cable</li>
+                        <li>Zipper bag</li>
+                        <li>Raynox holder</li>
+                        <li>Angle adjuster (Latch-strap mechanism)</li>
+                        <li>Beetle Ring</li>
+                        <li>Power bank (Indian customers only)</li>
+                        <li>Velcro sticker for power bank (International customers)</li>
+                    </ul>
+                </div>
+            </details>
+
+            <details class="faq-item">
+                <summary>What is included with the Lite Model?</summary>
+                <div class="answer">
+                    <ul>
+                        <li>Beetle Lite Diffuser</li>
+                        <li>LED with on/off cable</li>
+                        <li>2 custom Bands</li>
+                        <li>Velcro strap</li>
+                        <li>Beetle Ring</li>
+                        <li>Zipper bag</li>
+                        <li>Mini power bank (Indian customers only)</li>
+                        <li>Velcro sticker for power bank (International customers)</li>
+                        <li><em>Optional: Raynox holder</em></li>
+                    </ul>
+                </div>
+            </details>
+
+            <details class="faq-item">
+                <summary>What is NOT included?</summary>
+                <div class="answer">
+                    Customs fees are not included and may apply depending on the destination country.
+                    <br><br>
+                    <strong>Power Banks:</strong> Due to shipping regulations, power banks are not included for
+                    international customers (outside India).
+                </div>
+            </details>
+        </div>
+
+        <div class="faq-section">
+            <div class="section-title">Power & Lighting</div>
+
+            <details class="faq-item">
+                <summary>What is the purpose of the LED light?</summary>
+                <div class="answer">
+                    The LED light assists with focusing in low-light conditions, ensuring your subject is sharp before
+                    the flash fires.
+                </div>
+            </details>
+
+            <details class="faq-item">
+                <summary>Do I need a power bank? Which one do you recommend?</summary>
+                <div class="answer">
+                    A power bank is used to power the focus-assist LED. If you don't shoot in low light, you may not
+                    need one.
+                    <br><br>
+                    <strong>Recommendations:</strong>
+                    <ul>
+                        <li><strong>Capacity:</strong> 5000mAh is recommended (perfect size/weight).</li>
+                        <li><strong>Specs (Pro Model):</strong> Minimum 2.4A output.</li>
+                        <li><strong>Specs (Lite Model):</strong> Any lightweight power bank with 2.4A output.</li>
+                    </ul>
+                </div>
+            </details>
+        </div>
+
+        <div class="faq-section">
+            <div class="section-title">Shipping & Policies</div>
+
+            <details class="faq-item">
+                <summary>Do you ship worldwide? What are the timelines?</summary>
+                <div class="answer">
+                    Yes, we ship worldwide. Orders are shipped within 3 to 4 days of confirmation.
+                    <br><br>
+                    <strong>Timelines:</strong>
+                    <ul>
+                        <li><strong>Domestic (India):</strong> 7 to 10 days.</li>
+                        <li><strong>International:</strong> Approx. 10 business days via FedEx Priority Shipping (safest
+                            and fastest service).</li>
+                    </ul>
+                </div>
+            </details>
+
+            <details class="faq-item">
+                <summary>Will I get a tracking number?</summary>
+                <div class="answer">
+                    Yes, every order includes a tracking number. It will be sent via email or will be accessible through
+                    your account on our website.
+                </div>
+            </details>
+
+            <details class="faq-item">
+                <summary>Are there discounts for buying multiple diffusers?</summary>
+                <div class="answer">
+                    <strong>International Customers:</strong> You can purchase up to two diffusers to be shipped to the
+                    same address and receive an automatic discount in your cart.
+                    <br><br>
+                    <strong>Bulk Orders:</strong> Please contact <a href="mailto:info@beetlediffuser.com"
+                        style="color:var(--accent-red);">info@beetlediffuser.com</a>.
+                </div>
+            </details>
+
+            <details class="faq-item">
+                <summary>What is the Refund Policy?</summary>
+                <div class="answer">
+                    Due to the customized nature of our products (tailored to your specific lens and flash), we are
+                    unable to accept returns or issue refunds.
+                </div>
+            </details>
+        </div>
+
+    </div>
+
+
+
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Beetle Diffuser</h3>
+                <p style="color: rgba(255, 255, 255, 0.7);">Professional macro photography equipment for demanding
+                    photographers worldwide.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Shop</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">FAQs</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Support</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Shipping Info</a></li>
+                    <li><a href="#">Returns</a></li>
+                    <li><a href="#">Warranty</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Account</h3>
+                <ul class="footer-links">
+                    <li><a href="#">My Orders</a></li>
+                    <li><a href="#">Wishlist</a></li>
+                    <li><a href="#">Account Settings</a></li>
+                    <li><a href="#">Terms &amp; Conditions</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Beetle Diffuser. All rights reserved. Innovation in Macro Photography.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // updateCartBadge();
+            setupHamburgerMenu();
+        });
+
+        // Hamburger Menu
+        function setupHamburgerMenu() {
+            const hamburger = document.getElementById('hamburger');
+            const navMenu = document.getElementById('navMenu');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    hamburger.classList.remove('active');
+                    navMenu.classList.remove('active');
+                });
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
+                    hamburger.classList.remove('active');
+                    navMenu.classList.remove('active');
+                }
+            });
+
+        }
+    </script>
+</body>
+
+</html>

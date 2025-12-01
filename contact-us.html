@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact us Beetle Diffuser</title>
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        body {
+            background: gray;
+        }
+
+        .container {
+            padding-top: 100px;
+            min-width: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            /* align-items: center; */
+        }
+        .content{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+            min-width: 380px;
+        }
+        .form-attribute{
+            min-width: 40%;
+            border: 2px solid rgb(247, 245, 245);
+            background: rgba(0, 0, 0, 0.453);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            border-radius: 10px;
+
+        }
+        input,label,textarea{
+            font-size: 1.03rem;
+            font-weight: 600;
+            display: block;
+            max-width: 600px;
+            min-width: 380px;
+            padding: 10px;
+            margin-bottom: 15px;
+            resize: none;  
+            overflow: hidden;
+        }
+        h1{
+            text-align: center;
+        }
+        button{
+            padding: 10px 35px;
+            background: rgba(21, 20, 20, 0.559);
+            color: white;
+            font-size:1.1rem;
+            font-weight: 600;
+            display: block;
+            margin: auto;
+            border-radius: 5px;
+            /* margin-top: 15px; */
+        }
+
+        
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo" onclick="showPage('home'); return false;">BEETLE DIFFUSER</a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="./index.html" class="nav-link" onclick="showPage('home'); return false;">Home</a></li>
+                <li><a href="./index.html" class="nav-link" onclick="scrollToProducts(); return false;">Shop All</a>
+                </li>
+                <li><a href="./assembly-videos.html" class="nav-link">Assembly videos</a></li>
+                <li><a href="./faq.html" class="nav-link">FAQs</a></li>
+                <li><a href="./testimonial.html" class="nav-link">Testimonial</a></li>
+                <li><a href="./about-us.html" class="nav-link">About Us</a></li>
+                <li><a href="" class="nav-link active">Contact Us</a></li>
+                <li><a href="./gallery.html" class="nav-link">Gallery</a></li>
+            </ul>
+            <div class="nav-right">
+                <div class="cart-icon" onclick="showPage('cart')">
+                    <span style="font-size: 1.5rem;">🛒</span>
+                    <span class="cart-badge" id="cartBadge">0</span>
+                </div>
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="content">
+            <div class="form-attribute">
+                <form action="">
+                    <h1>Contact Us</h1>
+                    <label for="name">Name</label>
+                    <input type="text" name="name" id="">
+                    <label for="">Mobile</label>
+                    <input type="text" name="name" id="">
+                    <label for="">Email</label>
+                    <input type="text" name="name" id="">
+                    <label for="msg">Description</label>
+                    <textarea name="msg" id=""></textarea>
+                    <!-- <input type="submit" name="" id=""> -->
+                    <button type="submit">Send</button>
+                </form>
+            </div>
+        </div>
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Beetle Diffuser</h3>
+                    <p style="color: rgba(255, 255, 255, 0.7);">Professional macro photography equipment for
+                    photographers worldwide.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Shop</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">FAQs</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Shipping Info</a></li>
+                        <li><a href="#">Returns</a></li>
+                        <li><a href="#">Warranty</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Account</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">My Orders</a></li>
+                        <li><a href="#">Wishlist</a></li>
+                        <li><a href="#">Account Settings</a></li>
+                        <li><a href="#">Terms &amp; Conditions</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Beetle Diffuser. All rights reserved. Innovation in Macro Photography.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // updateCartBadge();
+            setupHamburgerMenu();
+        });
+
+        // Hamburger Menu
+        function setupHamburgerMenu() {
+            const hamburger = document.getElementById('hamburger');
+            const navMenu = document.getElementById('navMenu');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    hamburger.classList.remove('active');
+                    navMenu.classList.remove('active');
+                });
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
+                    hamburger.classList.remove('active');
+                    navMenu.classList.remove('active');
+                }
+            });
+
+        }
+    </script>
+
+</body>
+
+</html>

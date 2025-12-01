@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assembly Videos Beetle Diffuser</title>
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        body {
+            background: gray;
+        }
+
+        .container {
+            padding-top: 100px;
+
+        }
+
+        .content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .footer {
+            top: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo" onclick="showPage('home'); return false;">BEETLE DIFFUSER</a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="./index.html" class="nav-link" onclick="showPage('home'); return false;">Home</a></li>
+                <li><a href="./index.html" class="nav-link" onclick="scrollToProducts(); return false;">Shop All</a></li>
+                <li><a href="" class="nav-link active">Assembly videos</a></li>
+                <li><a href="./faq.html" class="nav-link">FAQs</a></li>
+                <li><a href="./testimonial.html" class="nav-link">Testimonial</a></li>
+                <li><a href="./about-us.html" class="nav-link">About Us</a></li>
+                <li><a href="contact-us.html" class="nav-link">Contact Us</a></li>
+                <li><a href="./gallery.html" class="nav-link">Gallery</a></li>
+            </ul>
+            <div class="nav-right">
+                <div class="cart-icon" onclick="showPage('cart')">
+                    <span style="font-size: 1.5rem;">🛒</span>
+                    <span class="cart-badge" id="cartBadge">0</span>
+                </div>
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="content">
+            <p>No content Here</p>
+        </div>
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Beetle Diffuser</h3>
+                    <p style="color: rgba(255, 255, 255, 0.7);">Professional macro photography equipment for demanding
+                        photographers worldwide.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Shop</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">FAQs</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Shipping Info</a></li>
+                        <li><a href="#">Returns</a></li>
+                        <li><a href="#">Warranty</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Account</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">My Orders</a></li>
+                        <li><a href="#">Wishlist</a></li>
+                        <li><a href="#">Account Settings</a></li>
+                        <li><a href="#">Terms &amp; Conditions</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Beetle Diffuser. All rights reserved. Innovation in Macro Photography.</p>
+            </div>
+        </footer>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // updateCartBadge();
+            setupHamburgerMenu();
+        });
+
+        // Hamburger Menu
+        function setupHamburgerMenu() {
+            const hamburger = document.getElementById('hamburger');
+            const navMenu = document.getElementById('navMenu');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    hamburger.classList.remove('active');
+                    navMenu.classList.remove('active');
+                });
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
+                    hamburger.classList.remove('active');
+                    navMenu.classList.remove('active');
+                }
+            });
+
+        }
+    </script>
+
+</body>
+
+</html>
