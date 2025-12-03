@@ -417,8 +417,8 @@ body:not(:has(.admin-page)) {
 }
 
 .btn-secondary:hover {
-  border-color: var(--accent-yellow);
-  color: var(--accent-yellow);
+  border-color: var(--accent-red);
+  color: var(--accent-red);
 }
 
 .hero-image {
@@ -598,6 +598,7 @@ body:not(:has(.admin-page)) {
   max-width: 1400px;
   margin: 0 auto;
   padding: 100px 2rem 3rem;
+  background: black;
 }
 
 .product-details-grid {
@@ -612,7 +613,7 @@ body:not(:has(.admin-page)) {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: #444;
+  /* background: #444; */
   border-radius: 20px;
   gap: 2rem;
   font-size: 10rem;
@@ -709,9 +710,10 @@ body:not(:has(.admin-page)) {
 }
 
 .specifications-table h2 {
-  color: var(--accent-yellow);
+  color: red;
   margin-bottom: 1.5rem;
   font-size: 1.5rem;
+  font-weight: 600;
 }
 
 .spec-row {
@@ -788,7 +790,7 @@ body:not(:has(.admin-page)) {
 }
 
 .cart-item-price {
-  color: var(--accent-green);
+  color: var(--accent-red);
   font-weight: 600;
   font-size: 1.1rem;
 }
@@ -820,7 +822,9 @@ body:not(:has(.admin-page)) {
 }
 
 .cart-summary h2 {
-  color: var(--accent-yellow);
+  color: white;
+  font-weight: 700;
+  font-size: 1.05rem;
   margin-bottom: 1.5rem;
 }
 
@@ -1418,7 +1422,7 @@ body:not(:has(.admin-page)) {
   justify-content: flex-start;
   font-size: 1.25rem;
   font-weight: 600;
-  color: white;
+  color: red;
 }
 .form-field p {
   font-size: 0.95rem;

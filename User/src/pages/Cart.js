@@ -71,7 +71,7 @@ const Cart = () => {
   return (
     <div>
       <div className="cart-container">
-        <h1 style={{ fontSize: '2.5rem', marginBottom: '2rem', color: 'var(--accent-yellow)' }}>
+        <h1 style={{ fontSize: '2.5rem', marginBottom: '2rem', color: 'white' }}>
           Shopping Cart
         </h1>
         
@@ -108,17 +108,17 @@ const Cart = () => {
                   <p className="cart-item-details">Quantity: {item.quantity}</p>
                   {item.cameraModel && (
                     <p className="cart-item-details">
-                      <span style={{ color: 'var(--accent-yellow)' }}>Camera:</span> {item.cameraModel}
+                      <span style={{ color: 'white' }}>Camera:</span> {item.cameraModel}
                     </p>
                   )}
                   {item.lensModel && (
                     <p className="cart-item-details">
-                      <span style={{ color: 'var(--accent-yellow)' }}>Lens:</span> {item.lensModel}
+                      <span style={{ color: 'white' }}>Lens:</span> {item.lensModel}
                     </p>
                   )}
                   {item.flashModel && (
                     <p className="cart-item-details">
-                      <span style={{ color: 'var(--accent-yellow)' }}>Flash:</span> {item.flashModel}
+                      <span style={{ color: 'white' }}>Flash:</span> {item.flashModel}
                     </p>
                   )}
                   <p className="cart-item-price">{itemPriceInfo.formatted}</p>
@@ -158,7 +158,7 @@ const Cart = () => {
           </div>
           <div className="summary-row" style={{ borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '1rem', marginTop: '1rem' }}>
             <span className="summary-label" style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>Total:</span>
-            <span className="summary-value" style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--accent-yellow)' }}>
+            <span className="summary-value" style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'red' }}>
               {formatPrice(total)}
             </span>
           </div>
