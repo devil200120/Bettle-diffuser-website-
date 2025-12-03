@@ -1,23 +1,40 @@
 const express = require('express');
 const router = express.Router();
 
-// List of Indian IP ranges (simplified - in production use a proper geo-IP database)
-const INDIA_COUNTRY_CODES = ['IN'];
-
 // @route   GET /api/region/detect
 // @desc    Auto-detect user's region based on IP
 // @access  Public
 router.get('/detect', async (req, res) => {
   try {
-    // Get client IP
+    // Get client IP - Render and other cloud providers use x-forwarded-for
     let clientIP = req.headers['x-forwarded-for'] || 
                    req.headers['x-real-ip'] || 
-                   req.connection.remoteAddress ||
-                   req.socket.remoteAddress ||
-                   req.ip;
+                   req.headers['cf-connecting-ip'] || // Cloudflare
+                   req.ip ||
+                   req.connection?.remoteAddress ||
+                   req.socket?.remoteAddress;
     
-    // Clean up IP (handle IPv6 localhost)
-    if (clientIP === '::1' || clientIP === '127.0.0.1' || clientIP.includes('192.168.') || clientIP.includes('10.')) {
+    // If x-forwarded-for contains multiple IPs, get the first one (original client)
+    if (clientIP && clientIP.includes(',')) {
+      clientIP = clientIP.split(',')[0].trim();
+    }
+    
+    // Remove IPv6 prefix if present
+    if (clientIP && clientIP.startsWith('::ffff:')) {
+      clientIP = clientIP.replace('::ffff:', '');
+    }
+
+    console.log('Region detection - Client IP:', clientIP);
+    console.log('Region detection - Headers:', {
+      'x-forwarded-for': req.headers['x-forwarded-for'],
+      'x-real-ip': req.headers['x-real-ip'],
+      'cf-connecting-ip': req.headers['cf-connecting-ip']
+    });
+    
+    // Only treat as localhost if actually on localhost (not cloud internal IPs)
+    const isLocalhost = clientIP === '::1' || clientIP === '127.0.0.1';
+    
+    if (isLocalhost) {
       // Local development - default to India
       return res.json({
         success: true,
@@ -33,34 +50,35 @@ router.get('/detect', async (req, res) => {
       });
     }
 
-    // If x-forwarded-for contains multiple IPs, get the first one (original client)
-    if (clientIP && clientIP.includes(',')) {
-      clientIP = clientIP.split(',')[0].trim();
-    }
-
-    // Use free IP geolocation API
-    try {
-      const geoResponse = await fetch(`http://ip-api.com/json/${clientIP}?fields=status,country,countryCode,currency`);
-      const geoData = await geoResponse.json();
-      
-      if (geoData.status === 'success') {
-        const isIndia = geoData.countryCode === 'IN';
+    // Use free IP geolocation API for real IPs
+    if (clientIP) {
+      try {
+        const geoResponse = await fetch(`http://ip-api.com/json/${clientIP}?fields=status,country,countryCode,currency,message`);
+        const geoData = await geoResponse.json();
         
-        return res.json({
-          success: true,
-          data: {
-            region: geoData.countryCode,
-            country: geoData.country,
-            currency: isIndia ? 'INR' : 'USD',
-            currencySymbol: isIndia ? '₹' : '$',
-            isIndia: isIndia,
-            ip: clientIP,
-            detectionMethod: 'geo-ip'
-          }
-        });
+        console.log('Region detection - Geo API response:', geoData);
+        
+        if (geoData.status === 'success') {
+          const isIndia = geoData.countryCode === 'IN';
+          
+          return res.json({
+            success: true,
+            data: {
+              region: geoData.countryCode,
+              country: geoData.country,
+              currency: isIndia ? 'INR' : 'USD',
+              currencySymbol: isIndia ? '₹' : '$',
+              isIndia: isIndia,
+              ip: clientIP,
+              detectionMethod: 'geo-ip'
+            }
+          });
+        } else {
+          console.log('Geo API failed:', geoData.message);
+        }
+      } catch (geoError) {
+        console.error('Geo IP lookup failed:', geoError.message);
       }
-    } catch (geoError) {
-      console.error('Geo IP lookup failed:', geoError);
     }
 
     // Fallback: Check Accept-Language header for Indian languages
@@ -83,7 +101,7 @@ router.get('/detect', async (req, res) => {
       });
     }
 
-    // Default to international
+    // Default to INTERNATIONAL (not India) when detection fails on deployed server
     res.json({
       success: true,
       data: {
@@ -93,22 +111,22 @@ router.get('/detect', async (req, res) => {
         currencySymbol: '$',
         isIndia: false,
         ip: clientIP,
-        detectionMethod: 'default'
+        detectionMethod: 'default-international'
       }
     });
 
   } catch (error) {
     console.error('Region detection error:', error);
-    // Default to India on error
+    // Default to INTERNATIONAL on error (safer for deployed apps)
     res.json({
       success: true,
       data: {
-        region: 'IN',
-        country: 'India',
-        currency: 'INR',
-        currencySymbol: '₹',
-        isIndia: true,
-        detectionMethod: 'error-fallback'
+        region: 'INTL',
+        country: 'International',
+        currency: 'USD',
+        currencySymbol: '$',
+        isIndia: false,
+        detectionMethod: 'error-fallback-international'
       }
     });
   }

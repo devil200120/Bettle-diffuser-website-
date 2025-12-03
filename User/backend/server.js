@@ -25,6 +25,10 @@ const adminReviewRoutes = require('./routes/admin/reviews');
 
 const app = express();
 
+// Trust proxy - Required for Render, Heroku, and other cloud platforms
+// This allows Express to correctly read x-forwarded-for headers for client IP
+app.set('trust proxy', true);
+
 // Security middleware
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" }

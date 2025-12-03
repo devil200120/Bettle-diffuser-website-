@@ -82,7 +82,7 @@ const AdminLayout = () => {
   const mainPadding = sidebarCollapsed ? 'lg:pl-20' : 'lg:pl-72';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100">
+    <div className="admin-page min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100">
       {/* Mobile Sidebar Overlay */}
       <div 
         className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden transition-opacity duration-300 ${

@@ -39,9 +39,21 @@
 
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+}
+
+/* Dark theme for main user site (non-admin pages) */
+body:not(:has(.admin-page)) {
   background: #444;
   color: #fff;
-  line-height: 1.6;
+}
+
+/* Fallback for browsers without :has() support */
+@supports not selector(:has(*)) {
+  body {
+    background: #444;
+    color: #fff;
+  }
 }
 
 /* Navbar Styles */
@@ -1701,74 +1713,15 @@ body {
   font-weight: 500;
 }
 
-/* ================================
-   Admin Panel Styles
-   ================================ */
+/* Admin pages - reset inherited dark theme colors */
+@layer utilities {
+  .admin-page {
+    @apply text-gray-900 bg-gray-100;
+  }
 
-/* Reset text color for admin pages */
-[class*="admin"] input,
-[class*="admin"] textarea,
-[class*="admin"] select,
-.space-y-8 input,
-.space-y-8 textarea,
-.space-y-8 select,
-.space-y-6 input,
-.space-y-6 textarea,
-.space-y-6 select {
-  color: #1f2937 !important;
-  background-color: white !important;
-}
-
-.space-y-8 input::placeholder,
-.space-y-8 textarea::placeholder,
-.space-y-6 input::placeholder,
-.space-y-6 textarea::placeholder {
-  color: #9ca3af !important;
-}
-
-/* Admin form labels */
-.space-y-8 label,
-.space-y-6 label {
-  color: #374151 !important;
-}
-
-/* Admin page text */
-.text-gray-900 {
-  color: #111827 !important;
-}
-
-.text-gray-700 {
-  color: #374151 !important;
-}
-
-.text-gray-600 {
-  color: #4b5563 !important;
-}
-
-.text-gray-500 {
-  color: #6b7280 !important;
-}
-
-/* Admin card backgrounds */
-.bg-white {
-  background-color: white !important;
-}
-
-.bg-gray-50 {
-  background-color: #f9fafb !important;
-}
-
-/* Admin buttons text */
-.space-y-8 button,
-.space-y-6 button {
-  color: inherit;
-}
-
-/* Ensure borders are visible */
-.border-gray-300 {
-  border-color: #d1d5db !important;
-}
-
-.border-gray-100 {
-  border-color: #f3f4f6 !important;
+  .admin-page input,
+  .admin-page textarea,
+  .admin-page select {
+    @apply text-gray-900 bg-white placeholder-gray-400;
+  }
 }
