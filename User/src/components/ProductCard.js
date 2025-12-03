@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "./Toast";
 import { useRegion } from "../context/RegionContext";
 
 // Fallback placeholder images from local images folder
@@ -19,7 +18,6 @@ const getRandomFallback = () => {
 
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
-  const { showWarning } = useToast();
   const { getDisplayPrice, isIndia, loading: regionLoading } = useRegion();
   const [imgSrc, setImgSrc] = useState(
     product.icon ? `/images/${product.icon}` : getRandomFallback()
@@ -29,10 +27,6 @@ const ProductCard = ({ product }) => {
   // Get region-based price
   const priceInfo = getDisplayPrice(product);
 
-  const handleClick = () => {
-    navigate(`/product/${product.id}`);
-  };
-
   const handleImageError = () => {
     if (!hasError) {
       setHasError(true);
@@ -40,38 +34,12 @@ const ProductCard = ({ product }) => {
     }
   };
 
-  const isLoggedIn = () => {
-    return !!localStorage.getItem('token');
-  };
-
-  const handleAddToCart = (e) => {
-    e.stopPropagation(); // Prevent card click navigation
-    if (!isLoggedIn()) {
-      showWarning('Please login to add items to cart');
-      setTimeout(() => {
-        navigate('/login');
-      }, 1000);
-      return;
-    }
-    // Navigate to product details for full cart functionality
-    navigate(`/product/${product.id}`);
-  };
-
-  const handleBuyNow = (e) => {
-    e.stopPropagation(); // Prevent card click navigation
-    if (!isLoggedIn()) {
-      showWarning('Please login to purchase items');
-      setTimeout(() => {
-        navigate('/login');
-      }, 1000);
-      return;
-    }
-    // Navigate to product details for purchase
+  const handleOrderNow = () => {
     navigate(`/product/${product.id}`);
   };
 
   return (
-    <div className="product-card" onClick={handleClick}>
+    <div className="product-card">
       <div className="product-image">
         <img 
           src={imgSrc} 
@@ -102,8 +70,7 @@ const ProductCard = ({ product }) => {
           </p>
         )}
         <div className="product-buy">
-          <button className="bg-yellow-400" onClick={handleAddToCart}>Add to Cart</button>
-          <button className="bg-red-600" onClick={handleBuyNow}>Buy Now</button>
+          <button className="order-now-btn" onClick={handleOrderNow}>Order Now</button>
         </div>
         <p className="text-center pt-2 text-red-500 opacity-1">
           *{product.footer}

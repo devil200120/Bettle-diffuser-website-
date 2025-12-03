@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Footer from '../components/Footer';
 import { useCart } from '../context/CartContext';
 
-const API_URL = 'http://localhost:5001/api';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
 
 const Testimonial = () => {
   const { showSuccessMessage } = useCart();

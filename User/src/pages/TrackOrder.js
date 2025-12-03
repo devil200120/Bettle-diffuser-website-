@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import Footer from '../components/Footer';
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
+
 const TrackOrder = () => {
   const { orderNumber } = useParams();
   const navigate = useNavigate();
@@ -25,7 +27,7 @@ const TrackOrder = () => {
       const token = localStorage.getItem('token');
       const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
       
-      const response = await fetch(`http://localhost:5001/api/orders/track/${number}`, {
+      const response = await fetch(`${API_URL}/orders/track/${number}`, {
         headers
       });
 

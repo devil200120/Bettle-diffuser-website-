@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
+
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
@@ -14,7 +16,7 @@ const ForgotPassword = () => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5001/api/auth/forgot-password', {
+      const response = await fetch(`${API_URL}/auth/forgot-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

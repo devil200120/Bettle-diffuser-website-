@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
+
 const Orders = () => {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
@@ -44,7 +46,7 @@ const Orders = () => {
   const fetchOrders = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5001/api/orders/my-orders', {
+      const response = await fetch(`${API_URL}/orders/my-orders`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -284,7 +286,7 @@ const Orders = () => {
     
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5001/api/orders/${cancellingOrder._id}/cancel`, {
+      const response = await fetch(`${API_URL}/orders/${cancellingOrder._id}/cancel`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

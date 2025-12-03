@@ -5,7 +5,7 @@ import { useRegion } from '../context/RegionContext';
 import { useToast } from '../components/Toast';
 import Footer from '../components/Footer';
 
-const API_URL = 'http://localhost:5001/api';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
 
 const Checkout = () => {
   const navigate = useNavigate();

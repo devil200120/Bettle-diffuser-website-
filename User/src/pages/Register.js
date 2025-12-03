@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
-
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
 const GOOGLE_MAPS_API_KEY = 'AIzaSyBecpP3O2kfTa0z-lLIiShmsZE6e1kDmOk';
 
 const Register = () => {
@@ -167,7 +167,7 @@ const Register = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:5001/api/auth/register', {
+      const response = await fetch(`${API_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

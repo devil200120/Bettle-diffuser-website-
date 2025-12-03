@@ -54,6 +54,17 @@ const productSchema = new mongoose.Schema({
   compatibility: [String],
   sizes: [String],
   variant: [String],
+  // Variant-specific pricing (e.g., LED vs Non-LED)
+  variantPricing: {
+    type: Map,
+    of: {
+      price: { type: Number, min: 0 },
+      internationalPrice: {
+        single: { type: Number, default: 0, min: 0 },
+        double: { type: Number, default: 0, min: 0 }
+      }
+    }
+  },
   footer: String,
   loader: [String],
   info: [String],

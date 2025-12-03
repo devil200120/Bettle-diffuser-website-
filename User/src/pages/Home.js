@@ -4,7 +4,7 @@ import ProductCard from '../components/ProductCard';
 import Footer from '../components/Footer';
 import { products as staticProducts } from '../data/products';
 
-const API_URL = 'http://localhost:5001/api';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
 
 const Home = () => {
   const [products, setProducts] = useState([]);

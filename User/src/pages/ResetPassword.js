@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
+
 const ResetPassword = () => {
   const { token } = useParams();
   const navigate = useNavigate();
@@ -47,7 +49,7 @@ const ResetPassword = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:5001/api/auth/reset-password/${token}`, {
+      const response = await fetch(`${API_URL}/auth/reset-password/${token}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

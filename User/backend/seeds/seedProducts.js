@@ -67,6 +67,16 @@ const products = [
       "Durable Design"
     ],
     variant: ["LED", "Non-LED"],
+    variantPricing: {
+      "LED": {
+        price: 3250,
+        internationalPrice: { single: 110, double: 180 }
+      },
+      "Non-LED": {
+        price: 2500,
+        internationalPrice: { single: 100, double: 160 }
+      }
+    },
     specifications: [
       "Designed specifically for Canon MP-E 65mm lens",
       "Optimal 1:1 macro magnification",

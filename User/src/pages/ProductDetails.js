@@ -6,7 +6,7 @@ import { useRegion } from "../context/RegionContext";
 import { useToast } from "../components/Toast";
 // import ProductForm from "../components/ProductForm";
 
-const API_URL = 'http://localhost:5001/api';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
 
 // Fallback placeholder images from local images folder
 const fallbackImages = [
@@ -27,19 +27,24 @@ const ProductDetails = () => {
   const navigate = useNavigate();
   const { addToCart } = useCart();
   const { getCartPrice, isIndia, currencySymbol, loading: regionLoading } = useRegion();
-  const { showWarning, showSuccess } = useToast();
+  const { showWarning, showSuccess, showError } = useToast();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [cameraModel, setCameraModel] = useState(null);
-  const [lensModel, setLensModel] = useState(null);
-  const [flashModel, setFlashModel] = useState(null);
-  // const [product, setProduct] = useState(null);
+  const [cameraModel, setCameraModel] = useState('');
+  const [lensModel, setLensModel] = useState('');
+  const [flashModel, setFlashModel] = useState('');
+  const [selectedVariant, setSelectedVariant] = useState('');
 
   const [selectedSize, setSelectedSize] = useState(null);
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(0);
   const [showSpecs, setShowSpecs] = useState(false);
   const [imgSrc, setImgSrc] = useState('');
   const [imgError, setImgError] = useState(false);
+  const [showLightbox, setShowLightbox] = useState(false);
+  
+  // Form validation state
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
 
   const isLoggedIn = () => {
     return !!localStorage.getItem('token');
@@ -75,12 +80,18 @@ const ProductDetails = () => {
             compatibility: data.compatibility || [],
             sizes: data.sizes || [],
             variant: data.variant || [],
+            variantPricing: data.variantPricing || null,
             footer: data.footer || '',
             loader: data.loader || [],
             info: data.info || []
           };
           setProduct(transformedProduct);
-          setSelectedSize(transformedProduct.sizes ? transformedProduct.sizes[0] : null);
+          setSelectedSize(null); // Don't auto-select, let user choose
+          
+          // Set default variant if product has variants
+          if (transformedProduct.variant && transformedProduct.variant.length > 0) {
+            setSelectedVariant(transformedProduct.variant[0]);
+          }
           setImgSrc(transformedProduct.icon ? `/images/${transformedProduct.icon}` : getRandomFallback());
           setImgError(false);
         } else {
@@ -88,7 +99,11 @@ const ProductDetails = () => {
           const foundProduct = staticProducts.find((p) => p.id === parseInt(id));
           if (foundProduct) {
             setProduct(foundProduct);
-            setSelectedSize(foundProduct.sizes ? foundProduct.sizes[0] : null);
+            setSelectedSize(null); // Don't auto-select, let user choose
+            // Set default variant if product has variants
+            if (foundProduct.variant && foundProduct.variant.length > 0) {
+              setSelectedVariant(foundProduct.variant[0]);
+            }
             setImgSrc(foundProduct.icon ? `/images/${foundProduct.icon}` : getRandomFallback());
             setImgError(false);
           }
@@ -99,7 +114,11 @@ const ProductDetails = () => {
         const foundProduct = staticProducts.find((p) => p.id === parseInt(id));
         if (foundProduct) {
           setProduct(foundProduct);
-          setSelectedSize(foundProduct.sizes ? foundProduct.sizes[0] : null);
+          setSelectedSize(null); // Don't auto-select, let user choose
+          // Set default variant if product has variants
+          if (foundProduct.variant && foundProduct.variant.length > 0) {
+            setSelectedVariant(foundProduct.variant[0]);
+          }
           setImgSrc(foundProduct.icon ? `/images/${foundProduct.icon}` : getRandomFallback());
           setImgError(false);
         }
@@ -116,10 +135,114 @@ const ProductDetails = () => {
     setQuantity((prev) => Math.max(1, prev + delta));
   };
 
+  // Get variant-based pricing
+  const getVariantPrice = () => {
+    if (!product) return { price: 0, internationalPrice: { single: 0, double: 0 } };
+    
+    // Check if product has variant-specific pricing
+    if (product.variantPricing && selectedVariant) {
+      // Handle both object and Map formats
+      let variantData = null;
+      
+      if (product.variantPricing instanceof Map) {
+        variantData = product.variantPricing.get(selectedVariant);
+      } else if (typeof product.variantPricing === 'object') {
+        variantData = product.variantPricing[selectedVariant];
+      }
+      
+      if (variantData) {
+        return {
+          price: variantData.price || product.price,
+          internationalPrice: variantData.internationalPrice || product.internationalPrice || { single: 0, double: 0 }
+        };
+      }
+    }
+    
+    // Fallback to default product pricing
+    return {
+      price: product.price || 0,
+      internationalPrice: product.internationalPrice || { single: 0, double: 0 }
+    };
+  };
+
+  // Get display price based on region and variant
+  const getDisplayPrice = () => {
+    const variantPrice = getVariantPrice();
+    const qty = parseInt(quantity) || 1;
+    
+    if (isIndia) {
+      const total = variantPrice.price * qty;
+      return {
+        formatted: `₹${total.toLocaleString('en-IN')}`,
+        unitPrice: variantPrice.price,
+        total: total
+      };
+    } else {
+      const intlPrice = variantPrice.internationalPrice || { single: 0, double: 0 };
+      if (qty >= 2 && intlPrice.double > 0) {
+        return {
+          formatted: `$${intlPrice.double}`,
+          unitPrice: intlPrice.single,
+          total: intlPrice.double,
+          isBundle: true
+        };
+      }
+      const total = (intlPrice.single || 0) * qty;
+      return {
+        formatted: `$${total}`,
+        unitPrice: intlPrice.single || 0,
+        total: total
+      };
+    }
+  };
+
+  // Form validation function
+  const validateForm = () => {
+    const newErrors = {};
+    
+    // Camera model validation
+    if (!cameraModel || cameraModel.trim() === '') {
+      newErrors.cameraModel = 'Camera model is required';
+    }
+    
+    // Lens model validation
+    if (!lensModel || lensModel.trim() === '') {
+      newErrors.lensModel = 'Lens model is required';
+    }
+    
+    // Flash model validation
+    if (!flashModel || flashModel.trim() === '') {
+      newErrors.flashModel = 'Flash model is required';
+    }
+    
+    // Quantity validation
+    if (!quantity || quantity < 1) {
+      newErrors.quantity = 'Please select quantity (1 or 2)';
+    }
+    
+    // Size validation (if product has sizes)
+    if (product.sizes && product.sizes.length > 0 && !selectedSize) {
+      newErrors.size = 'Please select a filter thread size';
+    }
+    
+    // Variant validation (if product has variants)
+    if (product.variant && product.variant.length > 0 && !selectedVariant) {
+      newErrors.variant = 'Please select a variant';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // Handle field blur for showing errors
+  const handleBlur = (field) => {
+    setTouched(prev => ({ ...prev, [field]: true }));
+  };
+
   const handleAddToCart = (e) => {
     e.preventDefault();
     
-    // Check if user is logged in
+    // Check if user is logged in FIRST
     if (!isLoggedIn()) {
       showWarning('Please login to add items to cart');
       setTimeout(() => {
@@ -128,31 +251,51 @@ const ProductDetails = () => {
       return;
     }
     
+    // Mark all fields as touched to show errors
+    setTouched({
+      cameraModel: true,
+      lensModel: true,
+      flashModel: true,
+      quantity: true,
+      size: true,
+      variant: true
+    });
+    
+    // Validate form
+    if (!validateForm()) {
+      showError('Please fill all required fields before adding to cart');
+      return;
+    }
+    
     if (!product) return;
 
-    // Get region-based price
-    const priceInfo = getCartPrice(product, parseInt(quantity) || 1);
+    // Get variant-specific pricing
+    const variantPrice = getVariantPrice();
 
     addToCart({
       productId: product.id,
       name: product.name,
       icon: product.icon,
-      price: product.price,
-      internationalPrice: product.internationalPrice,
+      price: variantPrice.price,
+      internationalPrice: variantPrice.internationalPrice,
       quantity: parseInt(quantity) || 1,
       size: selectedSize,
+      variant: selectedVariant,
       cameraModel,
       lensModel,
       flashModel
     });
     showSuccess('Product added to cart!');
-    setQuantity(1);
+    // Redirect to cart page
+    setTimeout(() => {
+      navigate('/cart');
+    }, 500);
   };
 
   const handleBuyNow = (e) => {
     e.preventDefault();
     
-    // Check if user is logged in
+    // Check if user is logged in FIRST
     if (!isLoggedIn()) {
       showWarning('Please login to purchase items');
       setTimeout(() => {
@@ -161,16 +304,36 @@ const ProductDetails = () => {
       return;
     }
     
+    // Mark all fields as touched to show errors
+    setTouched({
+      cameraModel: true,
+      lensModel: true,
+      flashModel: true,
+      quantity: true,
+      size: true,
+      variant: true
+    });
+    
+    // Validate form
+    if (!validateForm()) {
+      showError('Please fill all required fields before purchasing');
+      return;
+    }
+    
     // Add to cart and navigate directly to checkout
     if (product) {
+      // Get variant-specific pricing
+      const variantPrice = getVariantPrice();
+      
       addToCart({
         productId: product.id,
         name: product.name,
         icon: product.icon,
-        price: product.price,
-        internationalPrice: product.internationalPrice,
+        price: variantPrice.price,
+        internationalPrice: variantPrice.internationalPrice,
         quantity: parseInt(quantity) || 1,
         size: selectedSize,
+        variant: selectedVariant,
         cameraModel,
         lensModel,
         flashModel
@@ -329,13 +492,20 @@ const ProductDetails = () => {
 
       <div className="product-details-grid">
         <div className="product-details-image">
-          <img src={imgSrc} alt={product.name} onError={handleImageError} />
-          <button
-            className="btn btn-primary"
-            onClick={() => setShowSpecs(true)}
+          <div 
+            className="relative cursor-pointer group"
+            onClick={() => setShowLightbox(true)}
           >
-            View Specifications
-          </button>
+            <img src={imgSrc} alt={product.name} onError={handleImageError} />
+            {/* Zoom overlay hint */}
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
+              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-[#E8C547] rounded-full p-3">
+                <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                </svg>
+              </div>
+            </div>
+          </div>
         </div>
         {/* --------------------------------------- */}
         <form >
@@ -343,21 +513,28 @@ const ProductDetails = () => {
             <div className="product-details-info">
               <h1>{product.name}</h1>
               <p className="product-subtitle">{product.subtitle}</p>
-              {/* Region-based pricing */}
+              {/* Region-based pricing with variant support */}
               {regionLoading ? (
                 <span className="product-price">Loading price...</span>
               ) : (
                 <>
                   <span className="product-price">
-                    Price: {getCartPrice(product, parseInt(quantity) || 1).formatted}
+                    Price: {getDisplayPrice().formatted}
                     {isIndia ? '' : ' USD'}
                   </span>
-                  {!isIndia && product.internationalPrice?.double > 0 && parseInt(quantity) < 2 && (
-                    <p className="text-sm text-green-500 mt-1">
-                      💡 Buy 2 for ${product.internationalPrice.double} (Save ${(product.internationalPrice.single * 2) - product.internationalPrice.double}!)
+                  {/* Show variant price info */}
+                  {product.variantPricing && selectedVariant && (
+                    <p className="text-sm text-gray-400 mt-1">
+                      {selectedVariant} variant selected
                     </p>
                   )}
-                  {!isIndia && parseInt(quantity) >= 2 && product.internationalPrice?.double > 0 && (
+                  {/* Bundle discount info for international customers */}
+                  {!isIndia && getVariantPrice().internationalPrice?.double > 0 && parseInt(quantity) < 2 && (
+                    <p className="text-sm text-green-500 mt-1">
+                      💡 Buy 2 for ${getVariantPrice().internationalPrice.double} (Save ${(getVariantPrice().internationalPrice.single * 2) - getVariantPrice().internationalPrice.double}!)
+                    </p>
+                  )}
+                  {!isIndia && parseInt(quantity) >= 2 && getVariantPrice().internationalPrice?.double > 0 && (
                     <p className="text-sm text-green-500 mt-1">
                       ✓ Bundle discount applied!
                     </p>
@@ -371,7 +548,7 @@ const ProductDetails = () => {
 
             <div className="form-field">
               <label htmlFor="cameraModel" className="form-label">
-                Provide your camera model <span className="required">*</span>
+                Provide your camera model <span className="text-red-500 font-bold">*</span>
               </label>
               <p className="form-helper">
                 Only provide information for one Camera model
@@ -383,28 +560,24 @@ const ProductDetails = () => {
                 inputMode="text"
                 autoComplete="off"
                 placeholder="Olympus OM-1, Canon EOS R5, Sony A7 IV, or Nikon Z7"
-                // className={`form-input ${touched.cameraModel && errors.cameraModel ? "has-error" : ""}`}
+                className={`form-input ${touched.cameraModel && errors.cameraModel ? "!border-red-500 !bg-red-500/10" : ""}`}
                 value={cameraModel}
                 onChange={(e) => setCameraModel(e.target.value)}
-                // onBlur={handleBlur}
-                // aria-invalid={Boolean(touched.cameraModel && errors.cameraModel)}
-                // aria-describedby="cameraModel-error cameraModel-help"
+                onBlur={() => handleBlur('cameraModel')}
+                aria-invalid={Boolean(touched.cameraModel && errors.cameraModel)}
               />
-              {/* <p id="cameraModel-help" className="sr-only">
-              Enter exactly one camera model.
-            </p> */}
-              {/* {touched.cameraModel && errors.cameraModel && (
-              <p id="cameraModel-error" className="form-error">
-                {errors.cameraModel}
-              </p>
-            )} */}
+              {touched.cameraModel && errors.cameraModel && (
+                <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
+                  <span>⚠</span> {errors.cameraModel}
+                </p>
+              )}
             </div>
 
             {/* Lens model */}
             <div className="form-field">
               <label htmlFor="lensModel" className="form-label">
                 Provide your lens make & model{" "}
-                <span className="required">*</span>
+                <span className="text-red-500 font-bold">*</span>
               </label>
               <p className="form-helper">
                 Only provide information for one Lens
@@ -416,28 +589,24 @@ const ProductDetails = () => {
                 inputMode="text"
                 autoComplete="off"
                 placeholder="OM SYSTEM 90mm Pro Macro, CANON RF100MM, NIK"
-                // className={`form-input ${touched.lensModel && errors.lensModel ? "has-error" : ""}`}
+                className={`form-input ${touched.lensModel && errors.lensModel ? "!border-red-500 !bg-red-500/10" : ""}`}
                 value={lensModel}
                 onChange={(e) => setLensModel(e.target.value)}
-                // onBlur={handleBlur}
-                // aria-invalid={Boolean(touched.lensModel && errors.lensModel)}
-                // aria-describedby="lensModel-error lensModel-help"
+                onBlur={() => handleBlur('lensModel')}
+                aria-invalid={Boolean(touched.lensModel && errors.lensModel)}
               />
-              {/* <p id="lensModel-help" className="sr-only">
-              Enter exactly one lens make and model.
-            </p> */}
-              {/* {touched.lensModel && errors.lensModel && (
-              <p id="lensModel-error" className="form-error">
-                {errors.lensModel}
-              </p>
-            )} */}
+              {touched.lensModel && errors.lensModel && (
+                <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
+                  <span>⚠</span> {errors.lensModel}
+                </p>
+              )}
             </div>
 
             {/* Flash model */}
             <div className="form-field">
               <label htmlFor="flashModel" className="form-label">
                 Provide your flash make & model{" "}
-                <span className="required">*</span>
+                <span className="text-red-500 font-bold">*</span>
               </label>
               <p className="form-helper">
                 Only provide information for one Flash
@@ -449,33 +618,30 @@ const ProductDetails = () => {
                 inputMode="text"
                 autoComplete="off"
                 placeholder="Godox V860III, Godox V350, Canon 600EX II-RT, Nikon S"
-                // className={`form-input ${touched.flashModel && errors.flashModel ? "has-error" : ""}`}
+                className={`form-input ${touched.flashModel && errors.flashModel ? "!border-red-500 !bg-red-500/10" : ""}`}
                 value={flashModel}
                 onChange={(e) => setFlashModel(e.target.value)}
-                // onBlur={handleBlur}
-                // aria-invalid={Boolean(touched.flashModel && errors.flashModel)}
-                // aria-describedby="flashModel-error flashModel-help"
+                onBlur={() => handleBlur('flashModel')}
+                aria-invalid={Boolean(touched.flashModel && errors.flashModel)}
               />
-              {/* <p id="flashModel-help" className="sr-only">
-              Enter exactly one flash make and model.
-            </p> */}
-              {/* {touched.flashModel && errors.flashModel && (
-              <p id="flashModel-error" className="form-error">
-                {errors.flashModel}
-              </p>
-            )} */}
+              {touched.flashModel && errors.flashModel && (
+                <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
+                  <span>⚠</span> {errors.flashModel}
+                </p>
+              )}
             </div>
 
             {/* Quantity */}
             <div className="form-field form-field--qty">
               <label htmlFor="quantity" className="form-label">
-                Quantity
+                Quantity <span className="text-red-500 font-bold">*</span>
                 <span className="radio">
                   <label className="radio">
                     <input
                       type="radio"
                       name="quantity"
                       value="1"
+                      checked={quantity === '1' || quantity === 1}
                       onChange={(e) => setQuantity(e.target.value)}
                     />
                     <span className="radio-text">One</span>
@@ -485,29 +651,68 @@ const ProductDetails = () => {
                       type="radio"
                       name="quantity"
                       value="2"
+                      checked={quantity === '2' || quantity === 2}
                       onChange={(e) => setQuantity(e.target.value)}
                     />
                     <span className="radio-text">Two</span>
                   </label>
                 </span>
               </label>
+              {touched.quantity && errors.quantity && (
+                <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
+                  <span>⚠</span> {errors.quantity}
+                </p>
+              )}
             </div>
             <div className="form-field">
               <p>(Maximum quantity in one order is 2 nos)</p>
             </div>
-            {product.sizes && (
+
+            {/* Variant Selection (if product has variants) */}
+            {product.variant && product.variant.length > 0 && (
               <div className="form-field">
-                <label>Select Filter Thread size : </label>
+                <label className="form-label">Select Variant <span className="text-red-500 font-bold">*</span></label>
                 <select
-                  value={selectedSize}
-                  onChange={(e) => setSelectedSize(e.target.value)}
+                  value={selectedVariant}
+                  onChange={(e) => setSelectedVariant(e.target.value)}
+                  onBlur={() => handleBlur('variant')}
+                  className={`${touched.variant && errors.variant ? "!border-red-500 !bg-red-500/10" : ""}`}
                 >
+                  <option value="">-- Select a variant --</option>
+                  {product.variant.map((v) => (
+                    <option key={v} value={v}>
+                      {v}
+                    </option>
+                  ))}
+                </select>
+                {touched.variant && errors.variant && (
+                  <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
+                    <span>⚠</span> {errors.variant}
+                  </p>
+                )}
+              </div>
+            )}
+            {product.sizes && product.sizes.length > 0 && (
+              <div className="form-field">
+                <label className="form-label">Select Filter Thread size <span className="text-red-500 font-bold">*</span></label>
+                <select
+                  value={selectedSize || ''}
+                  onChange={(e) => setSelectedSize(e.target.value)}
+                  onBlur={() => handleBlur('size')}
+                  className={`${touched.size && errors.size ? "!border-red-500 !bg-red-500/10" : ""}`}
+                >
+                  <option value="">-- Select a size --</option>
                   {product.sizes.map((size) => (
                     <option key={size} value={size}>
                       {size}
                     </option>
                   ))}
                 </select>
+                {touched.size && errors.size && (
+                  <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
+                    <span>⚠</span> {errors.size}
+                  </p>
+                )}
               </div>
             )}
             <div className="product-actions">
@@ -594,12 +799,20 @@ const ProductDetails = () => {
 
       <div className="specifications-table">
         {/* <h2>Guides</h2> */}
-        {product.info.map((infos, index) => (
-          <div key={index} className="spec-row">
+        
+          <div className="spec-row">
             <div className="spec-label">✓</div>
-            <div className="spec-value">{infos}</div>
+            <div className="spec-value">Though most flash models are supported, a few small flashes—such as the Meike MK-320 and Olympus FL-LM3—are not compatible.</div>
           </div>
-        ))}
+          <div className="spec-row">
+            <div className="spec-label">✓</div>
+            <div className="spec-value">Most macro lenses use the thread sizes listed in the dropdown, and a matching ring is included. If your lens size isn't listed, select “Filter thread size not listed” — you can still use the diffuser by tightening the cord panel around the lens.</div>
+          </div>
+          <div className="spec-row">
+            <div className="spec-label">✓</div>
+            <div className="spec-value">Lenses below Physical length of 2.5 inches (6.3 cm)  are not supported</div>
+          </div>
+       
       </div>
       <div className="specifications-table">
         <h2>Guides</h2>
@@ -610,6 +823,52 @@ const ProductDetails = () => {
           </div>
         ))}
       </div>
+
+      {/* Image Lightbox Modal */}
+      {showLightbox && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4"
+          onClick={() => setShowLightbox(false)}
+        >
+          {/* Close Button */}
+          <button 
+            className="absolute top-4 right-4 text-white hover:text-[#E8C547] transition-colors z-10"
+            onClick={() => setShowLightbox(false)}
+          >
+            <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+
+          {/* Image Container */}
+          <div 
+            className="relative max-w-5xl max-h-[90vh] w-full flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={imgSrc}
+              alt={product.name}
+              className="max-w-full max-h-[85vh] object-contain rounded-lg"
+            />
+            {/* Image Info */}
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 rounded-b-lg text-center">
+              <h3 className="text-white font-bold text-2xl">
+                {product.name}
+              </h3>
+              {product.subtitle && (
+                <span className="text-[#E8C547]">
+                  {product.subtitle}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Navigation hint */}
+          <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-gray-400 text-sm">
+            Click anywhere to close
+          </p>
+        </div>
+      )}
       
     
     </div>

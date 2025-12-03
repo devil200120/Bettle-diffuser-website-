@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
-
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
 const GOOGLE_MAPS_API_KEY = 'AIzaSyBecpP3O2kfTa0z-lLIiShmsZE6e1kDmOk';
 
 const Profile = () => {
@@ -98,7 +98,7 @@ const Profile = () => {
   const fetchProfile = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5001/api/auth/me', {
+      const response = await fetch(`${API_URL}/auth/me`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -249,7 +249,7 @@ const Profile = () => {
         };
       }
 
-      const response = await fetch('http://localhost:5001/api/auth/profile', {
+      const response = await fetch(`${API_URL}/auth/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -293,7 +293,7 @@ const Profile = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5001/api/auth/change-password', {
+      const response = await fetch(`${API_URL}/auth/change-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

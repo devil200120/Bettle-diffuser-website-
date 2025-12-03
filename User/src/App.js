@@ -24,6 +24,8 @@ import Profile from './pages/Profile';
 import Orders from './pages/Orders';
 import TrackOrder from './pages/TrackOrder';
 import Analytics from './pages/Analytics';
+import TermsAndConditions from './pages/TermsAndConditions';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 
 // Admin imports
 import AdminLogin from './pages/admin/AdminLogin';
@@ -78,6 +80,8 @@ function App() {
               <Route path="/analytics" element={<Analytics />} />
               <Route path="/track-order" element={<TrackOrder />} />
               <Route path="/track-order/:orderNumber" element={<TrackOrder />} />
+              <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               
               {/* Admin Routes */}
               <Route path="/admin/login" element={<AdminLogin />} />
