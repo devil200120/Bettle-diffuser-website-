@@ -1074,8 +1074,8 @@ body:not(:has(.admin-page)) {
 .submit-btn {
   display: block;
   margin: auto;
-  background: var(--accent-red);
-  color: black;
+  background: red;
+  color: white;
   border: none;
   padding: 10px 25px;
   font-size: 1.1rem;
@@ -1086,7 +1086,7 @@ body:not(:has(.admin-page)) {
 }
 
 .submit-btn:hover {
-  background: #7ed321;
+  background: #cc0000;
 }
 
 /* Testimonial Styles */
