@@ -609,7 +609,7 @@ body:not(:has(.admin-page)) {
 
 .product-details-grid {
   display: grid;
-   grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   /* gap: 4rem; */
   margin-top: 2rem;
 }
@@ -639,7 +639,6 @@ body:not(:has(.admin-page)) {
   margin-bottom: 0.5rem;
   color: white;
   font-weight: 600;
-  
 }
 
 /* Product Details Form Styling */
@@ -940,6 +939,14 @@ body:not(:has(.admin-page)) {
   padding: 100px 30px 50px;
 }
 
+.faq-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 40px;
+}
+
 .faq-section {
   margin-bottom: 30px;
   background: white;
@@ -1126,12 +1133,12 @@ body:not(:has(.admin-page)) {
   font-size: 1.4rem;
   font-weight: 600;
   margin: 0 0 5px 0;
-  color: #444;
+  color: #000;
 }
 
 .review-date {
   font-size: 0.85rem;
-  color: #777;
+  color: #000;
   margin-bottom: 5px;
 }
 
@@ -1146,7 +1153,7 @@ body:not(:has(.admin-page)) {
   padding-left: 15px;
   margin-bottom: 15px;
   line-height: 1.6;
-  color: #555;
+  color: #000;
   font-size: 0.95rem;
 }
 
@@ -1163,7 +1170,7 @@ body:not(:has(.admin-page)) {
 .review-author {
   text-align: right;
   font-style: italic;
-  color: #666;
+  color: #000;
   margin-top: 10px;
 }
 
@@ -1188,7 +1195,7 @@ body:not(:has(.admin-page)) {
   padding: 15px;
   /* background-color: rgba(255, 255, 255, 0.781); */
   /* background-color: rgba(255, 255, 255, 0.812); */
-  color: #666;
+  color: #000;
   font-size: 1rem;
   font-weight: 500;
   display: flex;

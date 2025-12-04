@@ -63,7 +63,7 @@ const ProductCard = ({ product }) => {
         </div>
         {!isIndia && !priceInfo.needsIntlPricing && product.internationalPrice?.double > 0 && (
           <p className="text-xs text-center text-green-400 mt-1">
-            Buy 2 for ${product.internationalPrice.double} (Save!)
+            Buy 2 or more to save more 
           </p>
         )}
         <div className="product-buy">

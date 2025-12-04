@@ -208,33 +208,39 @@ const ProductDetails = () => {
     }
   };
 
+  // Check if product is Twin Flash (skip gear details for this product)
+  const isTwinFlash = product?.name?.toLowerCase().includes('twin');
+
   // Form validation function
   const validateForm = () => {
     const newErrors = {};
     
-    // Camera model validation
-    if (!cameraModel || cameraModel.trim() === '') {
-      newErrors.cameraModel = 'Camera model is required';
-    }
-    
-    // Lens model validation
-    if (!lensModel || lensModel.trim() === '') {
-      newErrors.lensModel = 'Lens model is required';
-    }
-    
-    // Flash model validation
-    if (!flashModel || flashModel.trim() === '') {
-      newErrors.flashModel = 'Flash model is required';
+    // Skip camera/lens/flash/size validation for Twin Flash
+    if (!isTwinFlash) {
+      // Camera model validation
+      if (!cameraModel || cameraModel.trim() === '') {
+        newErrors.cameraModel = 'Camera model is required';
+      }
+      
+      // Lens model validation
+      if (!lensModel || lensModel.trim() === '') {
+        newErrors.lensModel = 'Lens model is required';
+      }
+      
+      // Flash model validation
+      if (!flashModel || flashModel.trim() === '') {
+        newErrors.flashModel = 'Flash model is required';
+      }
+      
+      // Size validation (if product has sizes)
+      if (product.sizes && product.sizes.length > 0 && !selectedSize) {
+        newErrors.size = 'Please select a filter thread size';
+      }
     }
     
     // Quantity validation
     if (!quantity || quantity < 1) {
       newErrors.quantity = 'Please select quantity (1 to 5)';
-    }
-    
-    // Size validation (if product has sizes)
-    if (product.sizes && product.sizes.length > 0 && !selectedSize) {
-      newErrors.size = 'Please select a filter thread size';
     }
     
     // Variant validation (if product has variants)
@@ -486,21 +492,23 @@ const ProductDetails = () => {
         ← Back to Products
       </button>
 
-      <div>
-        <p
-          style={{
-            backgroundColor: "var(--dark-card)",
-            color: "white",
-            padding: "1rem",
-            borderRadius: "10px",
-            textAlign: "center",
-          }}
-        >
-          We collect your gear details during checkout to ensure we send the
-          correct diffuser that fits your camera perfectly and is ideal for
-          macro photography.
-        </p>
-      </div>
+      {!isTwinFlash && (
+        <div>
+          <p
+            style={{
+              backgroundColor: "var(--dark-card)",
+              color: "white",
+              padding: "1rem",
+              borderRadius: "10px",
+              textAlign: "center",
+            }}
+          >
+            We collect your gear details during checkout to ensure we send the
+            correct diffuser that fits your camera perfectly and is ideal for
+            macro photography.
+          </p>
+        </div>
+      )}
 
       <div className="product-details-grid">
         <div className="product-details-image">
@@ -551,92 +559,96 @@ const ProductDetails = () => {
               <p className="product-description">{product.description}</p>
             </div>
 
-            {/* Camera model */}
+            {/* Camera, Lens, Flash models - Hidden for Twin Flash */}
+            {!isTwinFlash && (
+              <>
+                {/* Camera model */}
+                <div className="form-field">
+                  <label htmlFor="cameraModel" className="form-label">
+                    Provide your camera model <span className="text-red-500 font-bold">*</span>
+                  </label>
+                  <p className="form-helper">
+                    Only provide information for one Camera model
+                  </p>
+                  <input
+                    id="cameraModel"
+                    name="cameraModel"
+                    type="text"
+                    inputMode="text"
+                    autoComplete="off"
+                    placeholder="Olympus OM-1, Canon EOS R5, Sony A7 IV, or Nikon Z7"
+                    className={`form-input ${touched.cameraModel && errors.cameraModel ? "!border-red-500 !bg-red-500/10" : ""}`}
+                    value={cameraModel}
+                    onChange={(e) => setCameraModel(e.target.value)}
+                    onBlur={() => handleBlur('cameraModel')}
+                    aria-invalid={Boolean(touched.cameraModel && errors.cameraModel)}
+                  />
+                  {touched.cameraModel && errors.cameraModel && (
+                    <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
+                      <span>⚠</span> {errors.cameraModel}
+                    </p>
+                  )}
+                </div>
 
-            <div className="form-field">
-              <label htmlFor="cameraModel" className="form-label">
-                Provide your camera model <span className="text-red-500 font-bold">*</span>
-              </label>
-              <p className="form-helper">
-                Only provide information for one Camera model
-              </p>
-              <input
-                id="cameraModel"
-                name="cameraModel"
-                type="text"
-                inputMode="text"
-                autoComplete="off"
-                placeholder="Olympus OM-1, Canon EOS R5, Sony A7 IV, or Nikon Z7"
-                className={`form-input ${touched.cameraModel && errors.cameraModel ? "!border-red-500 !bg-red-500/10" : ""}`}
-                value={cameraModel}
-                onChange={(e) => setCameraModel(e.target.value)}
-                onBlur={() => handleBlur('cameraModel')}
-                aria-invalid={Boolean(touched.cameraModel && errors.cameraModel)}
-              />
-              {touched.cameraModel && errors.cameraModel && (
-                <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
-                  <span>⚠</span> {errors.cameraModel}
-                </p>
-              )}
-            </div>
+                {/* Lens model */}
+                <div className="form-field">
+                  <label htmlFor="lensModel" className="form-label">
+                    Provide your lens make & model{" "}
+                    <span className="text-red-500 font-bold">*</span>
+                  </label>
+                  <p className="form-helper">
+                    Only provide information for one Lens
+                  </p>
+                  <input
+                    id="lensModel"
+                    name="lensModel"
+                    type="text"
+                    inputMode="text"
+                    autoComplete="off"
+                    placeholder="OM SYSTEM 90mm Pro Macro, CANON RF100MM, NIK"
+                    className={`form-input ${touched.lensModel && errors.lensModel ? "!border-red-500 !bg-red-500/10" : ""}`}
+                    value={lensModel}
+                    onChange={(e) => setLensModel(e.target.value)}
+                    onBlur={() => handleBlur('lensModel')}
+                    aria-invalid={Boolean(touched.lensModel && errors.lensModel)}
+                  />
+                  {touched.lensModel && errors.lensModel && (
+                    <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
+                      <span>⚠</span> {errors.lensModel}
+                    </p>
+                  )}
+                </div>
 
-            {/* Lens model */}
-            <div className="form-field">
-              <label htmlFor="lensModel" className="form-label">
-                Provide your lens make & model{" "}
-                <span className="text-red-500 font-bold">*</span>
-              </label>
-              <p className="form-helper">
-                Only provide information for one Lens
-              </p>
-              <input
-                id="lensModel"
-                name="lensModel"
-                type="text"
-                inputMode="text"
-                autoComplete="off"
-                placeholder="OM SYSTEM 90mm Pro Macro, CANON RF100MM, NIK"
-                className={`form-input ${touched.lensModel && errors.lensModel ? "!border-red-500 !bg-red-500/10" : ""}`}
-                value={lensModel}
-                onChange={(e) => setLensModel(e.target.value)}
-                onBlur={() => handleBlur('lensModel')}
-                aria-invalid={Boolean(touched.lensModel && errors.lensModel)}
-              />
-              {touched.lensModel && errors.lensModel && (
-                <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
-                  <span>⚠</span> {errors.lensModel}
-                </p>
-              )}
-            </div>
-
-            {/* Flash model */}
-            <div className="form-field">
-              <label htmlFor="flashModel" className="form-label">
-                Provide your flash make & model{" "}
-                <span className="text-red-500 font-bold">*</span>
-              </label>
-              <p className="form-helper">
-                Only provide information for one Flash
-              </p>
-              <input
-                id="flashModel"
-                name="flashModel"
-                type="text"
-                inputMode="text"
-                autoComplete="off"
-                placeholder="Godox V860III, Godox V350, Canon 600EX II-RT, Nikon S"
-                className={`form-input ${touched.flashModel && errors.flashModel ? "!border-red-500 !bg-red-500/10" : ""}`}
-                value={flashModel}
-                onChange={(e) => setFlashModel(e.target.value)}
-                onBlur={() => handleBlur('flashModel')}
-                aria-invalid={Boolean(touched.flashModel && errors.flashModel)}
-              />
-              {touched.flashModel && errors.flashModel && (
-                <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
-                  <span>⚠</span> {errors.flashModel}
-                </p>
-              )}
-            </div>
+                {/* Flash model */}
+                <div className="form-field">
+                  <label htmlFor="flashModel" className="form-label">
+                    Provide your flash make & model{" "}
+                    <span className="text-red-500 font-bold">*</span>
+                  </label>
+                  <p className="form-helper">
+                    Only provide information for one Flash
+                  </p>
+                  <input
+                    id="flashModel"
+                    name="flashModel"
+                    type="text"
+                    inputMode="text"
+                    autoComplete="off"
+                    placeholder="Godox V860III, Godox V350, Canon 600EX II-RT, Nikon S"
+                    className={`form-input ${touched.flashModel && errors.flashModel ? "!border-red-500 !bg-red-500/10" : ""}`}
+                    value={flashModel}
+                    onChange={(e) => setFlashModel(e.target.value)}
+                    onBlur={() => handleBlur('flashModel')}
+                    aria-invalid={Boolean(touched.flashModel && errors.flashModel)}
+                  />
+                  {touched.flashModel && errors.flashModel && (
+                    <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
+                      <span>⚠</span> {errors.flashModel}
+                    </p>
+                  )}
+                </div>
+              </>
+            )}
 
             {/* Quantity */}
             <div className="form-field">
@@ -690,7 +702,7 @@ const ProductDetails = () => {
                 )}
               </div>
             )}
-            {product.sizes && product.sizes.length > 0 && (
+            {!isTwinFlash && product.sizes && product.sizes.length > 0 && (
               <div className="form-field">
                 <label className="form-label">Select Filter Thread size <span className="text-red-500 font-bold">*</span></label>
                 <select
@@ -795,8 +807,10 @@ const ProductDetails = () => {
         </div> */}
       </div>
 
-      <div className="specifications-table">
-        {/* <h2>Guides</h2> */}
+      {/* Compatibility notes - Hidden for Twin Flash */}
+      {!isTwinFlash && (
+        <div className="specifications-table">
+          {/* <h2>Guides</h2> */}
         
           <div className="spec-row">
             <div className="spec-label">✓</div>
@@ -811,16 +825,19 @@ const ProductDetails = () => {
             <div className="spec-value">Lenses below Physical length of 2.5 inches (6.3 cm)  are not supported</div>
           </div>
        
-      </div>
-      <div className="specifications-table">
-        <h2>Guides</h2>
-        {product.loader.map((load, index) => (
-          <div key={index} className="spec-row">
-            <div className="spec-label">✓</div>
-            <div className="spec-value">{load}</div>
-          </div>
-        ))}
-      </div>
+        </div>
+      )}
+      {!isTwinFlash && product.loader && product.loader.length > 0 && (
+        <div className="specifications-table">
+          <h2>Guides</h2>
+          {product.loader.map((load, index) => (
+            <div key={index} className="spec-row">
+              <div className="spec-label">✓</div>
+              <div className="spec-value">{load}</div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Package Includes Section - Pro Model */}
       {product.name && product.name.toLowerCase().includes('pro') && (
