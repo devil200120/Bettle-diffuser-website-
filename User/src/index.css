@@ -595,10 +595,16 @@ body:not(:has(.admin-page)) {
 
 /* Product Details */
 .product-details {
-  max-width: 1400px;
-  margin: 0 auto;
+  width: 100%;
+  min-height: 100vh;
   padding: 100px 2rem 3rem;
   background: black;
+}
+
+.product-details > * {
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .product-details-grid {
