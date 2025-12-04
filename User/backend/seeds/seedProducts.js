@@ -69,7 +69,7 @@ const products = [
     sortOrder: 2,
     description: "Diffuser ring design comes with two variants LED and Non-LED.",
     icon: "Lite grey background.jpg",
-    price: 3250,
+    price: 2500,
     internationalPrice: {
       qty1: 110,
       qty2: 200,

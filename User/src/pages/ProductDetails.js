@@ -532,7 +532,7 @@ const ProductDetails = () => {
           <div className="product-form__grid">
             <div className="product-details-info">
               <h1>{product.name}</h1>
-              <p className="product-subtitle">{product.subtitle}</p>
+              {/* <p className="product-subtitle">{product.subtitle}</p> */}
               {/* Region-based pricing with variant support */}
               {regionLoading ? (
                 <span className="product-price">Loading price...</span>
