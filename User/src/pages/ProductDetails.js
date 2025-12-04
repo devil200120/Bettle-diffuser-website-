@@ -663,7 +663,7 @@ const ProductDetails = () => {
                   <span>⚠</span> {errors.quantity}
                 </p>
               )}
-              <p className="text-sm text-gray-500 mt-1">(Maximum quantity in one order is 5 nos)</p>
+              
             </div>
 
             {/* Variant Selection (if product has variants) */}
@@ -821,6 +821,113 @@ const ProductDetails = () => {
           </div>
         ))}
       </div>
+
+      {/* Package Includes Section - Pro Model */}
+      {product.name && product.name.toLowerCase().includes('pro') && (
+        <div className="specifications-table">
+          <h2>Package Includes</h2>
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">Diffuser Body & diffusion panel</div>
+          </div>
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">LED Light with On/Off - dimmer switch cable</div>
+          </div>
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">Zipper bag</div>
+          </div>
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">Raynox holder</div>
+          </div>
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">Angle adjuster (Latch-strap mechanism)</div>
+          </div>
+          {isIndia ? (
+            <div className="spec-row">
+              <div className="spec-label">•</div>
+              <div className="spec-value">Power bank</div>
+            </div>
+          ) : (
+            <div className="spec-row">
+              <div className="spec-label">•</div>
+              <div className="spec-value">Velcro sticker for power bank</div>
+            </div>
+          )}
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">Beetle Ring</div>
+          </div>
+        </div>
+      )}
+
+      {/* Package Includes Section - Lite Model */}
+      {product.name && product.name.toLowerCase().includes('lite') && (
+        <div className="specifications-table">
+          <h2>Package Includes</h2>
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">Diffuser body & diffusion panel</div>
+          </div>
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">LED with on/off cable</div>
+          </div>
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">2 custom Bands</div>
+          </div>
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">Velcro strap</div>
+          </div>
+          {isIndia ? (
+            <div className="spec-row">
+              <div className="spec-label">•</div>
+              <div className="spec-value">Mini power bank</div>
+            </div>
+          ) : (
+            <div className="spec-row">
+              <div className="spec-label">•</div>
+              <div className="spec-value">Velcro sticker for power bank</div>
+            </div>
+          )}
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">Beetle ring</div>
+          </div>
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">Zipper bag</div>
+          </div>
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">Raynox holder (Optional)</div>
+          </div>
+        </div>
+      )}
+
+      {/* Package Includes Section - Twin Flash Model */}
+      {product.name && product.name.toLowerCase().includes('twin') && (
+        <div className="specifications-table">
+          <h2>Package Includes</h2>
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">Diffuser body & 2 sets of diffusion Panels</div>
+          </div>
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">2 Custom Mounting clamps</div>
+          </div>
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">Zipper Bag</div>
+          </div>
+        </div>
+      )}
 
       {/* Image Lightbox Modal */}
       {showLightbox && (

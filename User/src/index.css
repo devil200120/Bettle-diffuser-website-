@@ -609,8 +609,8 @@ body:not(:has(.admin-page)) {
 
 .product-details-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
+   grid-template-columns: 1fr 1fr;
+  /* gap: 4rem; */
   margin-top: 2rem;
 }
 
@@ -639,6 +639,7 @@ body:not(:has(.admin-page)) {
   margin-bottom: 0.5rem;
   color: white;
   font-weight: 600;
+  
 }
 
 /* Product Details Form Styling */
@@ -1049,6 +1050,8 @@ body:not(:has(.admin-page)) {
   font-size: 1rem;
   outline: none;
   transition: border-color 0.3s;
+  color: black;
+  background: white;
 }
 
 .form-group input:focus,
