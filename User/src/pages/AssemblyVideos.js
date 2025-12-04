@@ -5,24 +5,24 @@ const AssemblyVideos = () => {
   const videos = [
     {
       id: 1,
-      title: "Beetle Diffuser Assembly Guide",
-      description: "Learn how to assemble your Beetle Diffuser step by step.",
-      facebookUrl: "https://www.facebook.com/100069467586021/videos/778067515250125/",
-      embedUrl: "https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2F100069467586021%2Fvideos%2F778067515250125%2F&show_text=false&width=560"
+      title: "Beetle Diffuser Pro Assembly Guide",
+      description: "Learn how to assemble your Beetle Diffuser Pro step by step.",
+      youtubeId: "OsdgVmn0Hfk",
+      youtubeUrl: "https://youtu.be/OsdgVmn0Hfk"
     },
     {
       id: 2,
-      title: "Beetle Diffuser Setup Tutorial",
-      description: "Complete guide on setting up your Beetle Diffuser for macro photography.",
-      facebookUrl: "https://www.facebook.com/100069467586021/videos/886653000446033/",
-      embedUrl: "https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2F100069467586021%2Fvideos%2F886653000446033%2F&show_text=false&width=560"
+      title: "Beetle Diffuser Lite Setup Tutorial",
+      description: "Complete guide on setting up your Beetle Diffuser Lite for macro photography.",
+      youtubeId: "8RZyiuWr668",
+      youtubeUrl: "https://youtu.be/8RZyiuWr668"
     },
     {
       id: 3,
       title: "Beetle Diffuser Tips & Tricks",
       description: "Pro tips for getting the best results with your Beetle Diffuser.",
-      facebookUrl: "https://www.facebook.com/100069467586021/videos/1334880557946788/",
-      embedUrl: "https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2F100069467586021%2Fvideos%2F1334880557946788%2F&show_text=false&width=560"
+      youtubeId: "9GHRxSJkE1M",
+      youtubeUrl: "https://youtu.be/9GHRxSJkE1M"
     }
   ];
 
@@ -52,13 +52,12 @@ const AssemblyVideos = () => {
                 {/* Video Embed */}
                 <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
                   <iframe
-                    src={video.embedUrl}
+                    src={`https://www.youtube.com/embed/${video.youtubeId}`}
                     className="absolute top-0 left-0 w-full h-full"
-                    style={{ border: 'none', overflow: 'hidden' }}
-                    scrolling="no"
+                    style={{ border: 'none' }}
                     frameBorder="0"
                     allowFullScreen={true}
-                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     title={video.title}
                   ></iframe>
                 </div>
@@ -72,15 +71,15 @@ const AssemblyVideos = () => {
                     {video.description}
                   </p>
                   <a 
-                    href={video.facebookUrl}
+                    href={video.youtubeUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-[#E8C547] hover:text-[#d4b43f] transition-colors"
                   >
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
                     </svg>
-                    Watch on Facebook
+                    Watch on YouTube
                   </a>
                 </div>
               </div>
@@ -94,7 +93,7 @@ const AssemblyVideos = () => {
                 🎬 More assembly videos coming soon!
               </p>
               <p className="text-gray-500 text-sm mt-2">
-                Subscribe to our social media for updates.
+                Subscribe to our YouTube channel for updates.
               </p>
             </div>
           </div>
