@@ -12,9 +12,19 @@ const products = [
     name: "Beetle Diffuser Pro",
     subtitle: "Premium Macro Photography Diffuser",
     sku: "BD-PRO-001",
+    sortOrder: 1,
     description: "We will send you the diffuser that matches your equipment. Completely customized design for your equipment.",
     icon: "Pro Grey Background.jpg",
     price: 5500,
+    internationalPrice: {
+      qty1: 120,
+      qty2: 220,
+      qty3: 310,
+      qty4: 400,
+      qty5: 480,
+      single: 120,
+      double: 220
+    },
     rating: 5,
     features: [
       "Light Diffusion",
@@ -41,7 +51,7 @@ const products = [
     loader: [
       "All the Prices are inclusive of Fedex Priority/Express shipping",
       "You can always write to us if you have any doubts regarding your gear to info@beetlediffuser.com.",
-      "Maximum quantity in one order is 2 nos",
+      "Maximum quantity in one order is 5 nos",
       "For Bulk order write to info@beetlediffuser.com"
     ],
     info: [
@@ -56,9 +66,19 @@ const products = [
     name: "Beetle Diffuser Lite",
     subtitle: "Compact LED/Non-LED Diffuser",
     sku: "BD-LITE-002",
+    sortOrder: 2,
     description: "Diffuser ring design comes with two variants LED and Non-LED.",
     icon: "Lite grey background.jpg",
     price: 3250,
+    internationalPrice: {
+      qty1: 110,
+      qty2: 200,
+      qty3: 280,
+      qty4: 360,
+      qty5: 430,
+      single: 110,
+      double: 200
+    },
     rating: 5,
     features: [
       "Light Diffusion",
@@ -70,11 +90,11 @@ const products = [
     variantPricing: {
       "LED": {
         price: 3250,
-        internationalPrice: { single: 110, double: 180 }
+        internationalPrice: { qty1: 110, qty2: 200, qty3: 280, qty4: 360, qty5: 430, single: 110, double: 200 }
       },
       "Non-LED": {
         price: 2500,
-        internationalPrice: { single: 100, double: 160 }
+        internationalPrice: { qty1: 100, qty2: 180, qty3: 250, qty4: 320, qty5: 380, single: 100, double: 180 }
       }
     },
     specifications: [
@@ -91,7 +111,7 @@ const products = [
     loader: [
       "All the Prices are inclusive of Fedex Priority/Express shipping",
       "You can always write to us if you have any doubts regarding your gear to info@beetlediffuser.com.",
-      "Maximum quantity in one order is 2 nos",
+      "Maximum quantity in one order is 5 nos",
       "For Bulk order write to info@beetlediffuser.com"
     ],
     info: [],
@@ -102,9 +122,19 @@ const products = [
     name: "TWIN FLASH",
     subtitle: "Dual Flash Diffusion System",
     sku: "BD-TWIN-003",
+    sortOrder: 3,
     description: "Advanced dual-flash diffusion system for professional macro photography",
     icon: "Twin Grrey Background.jpg",
     price: 3250,
+    internationalPrice: {
+      qty1: 110,
+      qty2: 200,
+      qty3: 280,
+      qty4: 360,
+      qty5: 430,
+      single: 110,
+      double: 200
+    },
     rating: 5,
     features: [
       "Light Diffusion",
@@ -126,7 +156,7 @@ const products = [
     loader: [
       "All the Prices are inclusive of Fedex Priority/Express shipping",
       "You can always write to us if you have any doubts regarding your gear to info@beetlediffuser.com.",
-      "Maximum quantity in one order is 2 nos",
+      "Maximum quantity in one order is 5 nos",
       "For Bulk order write to info@beetlediffuser.com"
     ],
     info: [],

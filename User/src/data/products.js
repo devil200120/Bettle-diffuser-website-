@@ -1,4 +1,5 @@
 // Product Data
+// Order: 1. Beetle Diffuser Pro, 2. Beetle Diffuser Lite, 3. TWIN FLASH
 export const products = [
   {
     id: 1,
@@ -7,6 +8,15 @@ export const products = [
       "We will send you the diffuser that matches your equipment. Completely customized design for your equipment.",
     icon: "Pro Grey Background.jpg",
     price: 5500,
+    internationalPrice: {
+      qty1: 120,
+      qty2: 220,
+      qty3: 310,
+      qty4: 400,
+      qty5: 480,
+      single: 120,
+      double: 220
+    },
     rating: 5,
     features: [
       "Light Diffusion",
@@ -33,7 +43,7 @@ export const products = [
     loader: [
       "All the Prices are inclusive of Fedex Priority/Express shipping",
       "You can always write to us if you have any doubts regarding your gear to info@beetlediffuser.com.",
-      "Maximum quantity in one order is 2 nos",
+      "Maximum quantity in one order is 5 nos",
       "For Bulk order write to info@beetlediffuser.com",
     ],
     info: [
@@ -50,6 +60,15 @@ export const products = [
       "Diffuser ring design comes with two variants LED and Non-LED.",
     icon: "Lite grey background.jpg",
     price: 3250,
+    internationalPrice: {
+      qty1: 110,
+      qty2: 200,
+      qty3: 280,
+      qty4: 360,
+      qty5: 430,
+      single: 110,
+      double: 200
+    },
     rating: 5,
     features: [
       "Light Diffusion",
@@ -62,11 +81,11 @@ export const products = [
     variantPricing: {
       "LED": {
         price: 3250,
-        internationalPrice: { single: 110, double: 180 }
+        internationalPrice: { qty1: 110, qty2: 200, qty3: 280, qty4: 360, qty5: 430, single: 110, double: 200 }
       },
       "Non-LED": {
         price: 2500,
-        internationalPrice: { single: 100, double: 160 }
+        internationalPrice: { qty1: 100, qty2: 180, qty3: 250, qty4: 320, qty5: 380, single: 100, double: 180 }
       }
     },
     specifications: [
@@ -83,7 +102,7 @@ export const products = [
     loader: [
       "All the Prices are inclusive of Fedex Priority/Express shipping",
       "You can always write to us if you have any doubts regarding your gear to info@beetlediffuser.com.",
-      "Maximum quantity in one order is 2 nos",
+      "Maximum quantity in one order is 5 nos",
       "For Bulk order write to info@beetlediffuser.com",
     ],
   },
@@ -95,6 +114,15 @@ export const products = [
       "Advanced dual-flash diffusion system for professional macro photography",
     icon: "Twin Grrey Background.jpg",
     price: 3250,
+    internationalPrice: {
+      qty1: 110,
+      qty2: 200,
+      qty3: 280,
+      qty4: 360,
+      qty5: 430,
+      single: 110,
+      double: 200
+    },
     rating: 5,
     features: [
       "Light Diffusion",
@@ -116,7 +144,7 @@ export const products = [
     loader: [
       "All the Prices are inclusive of Fedex Priority/Express shipping",
       "You can always write to us if you have any doubts regarding your gear to info@beetlediffuser.com.",
-      "Maximum quantity in one order is 2 nos",
+      "Maximum quantity in one order is 5 nos",
       "For Bulk order write to info@beetlediffuser.com",
     ],
   },
@@ -126,18 +154,18 @@ export const products = [
 export const carouselSlides = [
   {
     image: "/images/Pro Grey Background.jpg",
-    title: "Beetle Diffuser Pro",
-    subtitle: "Unlock new levels of macro photography.",
+    title: "Perfect Diffusion",
+    subtitle: "Unlock new levels of macro Photography.",
   },
   {
-    image: "/images/slide-2.jpg",
-    title: "LED & Non-LED Models",
-    subtitle: "Precision or Portability, you choose.",
+    image: "/images/Lite grey background.jpg",
+    title: "Lightest Diffuser",
+    subtitle: "Lightweight and durable material.",
   },
   {
     image: "/images/Twin Grrey Background.jpg",
-    title: "Perfect Diffusion",
-    subtitle: "Designed for stunning, natural light.",
+    title: "Twin Diffusers",
+    subtitle: "Creative Lighting",
   },
 ];
 
@@ -147,87 +175,109 @@ export const faqData = [
     title: "Models & Features",
     items: [
       {
-        question: "What is the difference between the Pro and Lite models?",
-        answer: `The Pro model is our flagship diffuser, designed for maximum light control and professional-grade results. It features adjustable settings for varied lighting environments and is built with more robust materials for extensive use. The Lite model, on the other hand, is more compact and lightweight, offering a simpler setup ideal for photographers who prioritize portability. It delivers excellent diffusion for casual or on-the-go shooting. The Lite model has a max. recommended flash power of 1/4 where for the Pro we recommend 1/8 max. flash power. In Pro models, the internal diffusion material is one stop less than that of the Lite. This means with Pro models you can get a slightly higher guide number/power.`,
+        question: "What's the difference between Pro & Lite models?",
+        answer: `The Pro can vary the lighting angle precisely, comes with a unique latch strap mechanism to do the same, and has a more powerful LED for faster focus assistance and for shooting macro videos with diffused light.
+
+The Lite diffuser is simple and can be set up real quick. Diffusion is as good as the pro. You can also vary the angle of lighting by adjusting the cord panel. The Lite diffuser can utilise the built-in LED for focus assist, like the Godox 860 version 3, Godox V480, Godox V1 series and any speedlights which come with a built-in LED.
+
+There is an option to buy with mini LED for focus assist.`,
       },
       {
-        question:
-          "Is the Beetle Diffuser compatible with other extension tubes?",
-        answer:
-          "The Beetle Diffuser is engineered for compatibility with a wide range of extension tubes. However, to ensure the best fit, we recommend checking the specifications for your particular camera and extension tube setup.",
+        question: "What is the size of the diffuser?",
+        answer: "We collect your gear details during checkout to ensure we send the correct diffuser that fits your camera perfectly and is ideal for macro photography.",
       },
       {
-        question:
-          "How do I choose the right diffuser for my photography style?",
-        answer:
-          "Consider your primary photography environment. If you shoot in a studio or have controlled lighting, the Pro model offers more flexibility. For outdoor photographers or those who frequently travel, the Lite model is a convenient choice without compromising on quality. We also offer customization options if your requirements are specific.",
-      },
-    ],
-  },
-  {
-    title: "Compatibility & Sizing",
-    items: [
-      {
-        question:
-          "How do I select the correct size for my camera and lens setup?",
-        answer:
-          "During checkout, you will be prompted to provide details about your equipment. Our team will then customize a Beetle Diffuser to perfectly match your camera body and lens setup. If you have any specific needs or questions, feel free to reach out to our support team.",
+        question: "Is Beetle Diffuser easy to set up and fold completely flat?",
+        answer: "Yes, all our flash diffusers have been designed to be quick to set up and fold completely flat for easy storage. Each diffuser there is assembly video which you could refer to when you first receive the diffuser.",
       },
       {
-        question:
-          "Does the Beetle Diffuser fit all flashes and flash adapters?",
-        answer:
-          "The Beetle Diffuser is designed to be versatile. It accommodates most standard flashes and flash adapters. If your equipment has unique specifications, please contact us so we can provide a tailored solution.",
+        question: "What's the purpose of the LED light?",
+        answer: "The LED light helps for focusing in low-light conditions.",
       },
     ],
   },
   {
-    title: "What's in the Box",
+    title: "Compatibility & Gear",
     items: [
       {
-        question: "What components are included with the Beetle Diffuser?",
-        answer:
-          "Each Beetle Diffuser set includes the main diffuser body, customized connectors for your specific lens and camera, a micro-suede pouch for protection, and a user manual. The Pro model comes with interchangeable diffusion elements, while the Lite model includes a single optimized diffusion material.",
-      },
-      {
-        question: "Are there additional accessories I can purchase?",
-        answer:
-          "Yes, we offer a range of accessories including extra diffusion materials, protective cases, and adapters for different equipment. Check our Accessories page for more details and availability.",
+        question: "What gear is compatible with the Beetle Diffuser?",
+        answer: `Lenses:
+Lenses shorter than 70 mm or longer than 170 mm in physical length (not focal length) are not compatible. Please make sure to enter your exact lens model during checkout.
+
+Flashes:
+Only hot-shoe mount flashes are compatible. Most standard flashes such as the Godox 860, Nikon SB-5000, Canon 600EX-RT, similarly sized models, round-head flashes like the Godox V1, and compact models like the Godox TT/V350 are supported.
+
+Please make sure to enter the exact flash model during checkout.
+
+We do not support certain flashes, including the Godox SU-1, Godox GN12, Olympus FL-LM3, Leica SF 60, and Nissin i60A.`,
       },
     ],
   },
   {
-    title: "Power & Lighting",
+    title: "Pricing & Discounts",
     items: [
       {
-        question:
-          "What is the recommended flash power setting when using the Beetle Diffuser?",
-        answer:
-          "We suggest starting with your flash at 1/8 power when using the Pro model and 1/4 power for the Lite model. Adjust according to your specific lighting conditions and desired effect. It helps to experiment to find the sweet spot for your setup.",
-      },
-      {
-        question: "Can I use the Beetle Diffuser with continuous lighting?",
-        answer:
-          "The Beetle Diffuser is primarily designed for flash photography, but it can be used with continuous lighting sources. Ensure the light source does not produce excessive heat, as this could affect the diffuser materials.",
+        question: "Is there a discount when I buy two diffusers?",
+        answer: `For international customers you can purchase up to two diffusers to be shipped to the same address and receive a discount automatically when added to your cart. The discounted rate will be reflected in the total.
+
+For bulk orders, please contact info@beetlediffuser.com.`,
       },
     ],
   },
   {
-    title: "Shipping & Policies",
+    title: "Power Bank & LED",
     items: [
       {
-        question: "What is the return policy for the Beetle Diffuser?",
-        answer: `We are committed to customer satisfaction. If you are not completely satisfied with your purchase, you may return it within 30 days of receipt for a full refund, provided the product is in its original condition. Custom orders are non-refundable but can be exchanged if there's a defect.`,
+        question: "Is powerbank available in the package?",
+        answer: "Due to shipping regulations, power banks are not available for international customers. However, a Velcro sticker is provided for use with a power bank when using the diffuser.",
       },
       {
-        question: "How long does shipping take?",
-        answer:
-          "Domestic shipping within the US typically takes 5-10 business days. International shipping times vary by destination, usually ranging from 2-4 weeks. All orders are processed within 48 hours and tracking information is provided.",
+        question: "What Powerbank do you recommend?",
+        answer: "Recommended power is 5000mah as it's the right size. They are cheap and you can find them online.",
       },
       {
-        question: "Do you offer expedited shipping?",
-        answer:
-          "Yes, we offer express shipping options at checkout for an additional fee. Express orders are prioritized and typically arrive within 3-5 business days domestically.",
+        question: "What is a power bank, and do I need one?",
+        answer: `A power bank functions as a portable charger for the diffuser's LED light. If you don't plan to use the diffuser in low-light conditions, a power bank isn't needed.
+
+For the Pro Model make sure to use a minimum of 5000mah 2.4A power bank.
+For the Beetle Lite model any lightweight power bank with specs of 2.4A output will work.`,
+      },
+    ],
+  },
+  {
+    title: "Shipping & Delivery",
+    items: [
+      {
+        question: "Do you ship worldwide and what shipping methods do you use?",
+        answer: "Yes, we ship worldwide. For all international orders, we use FedEx Priority Shipping — the safest and fastest service offered by FedEx.",
+      },
+      {
+        question: "What is the shipping time?",
+        answer: `Once your order is confirmed, it will be shipped within 4 days. The estimated shipping times are listed below.
+
+• Domestic (India): Week to 10 days time.
+• International: FedEx priority shipping takes about 10 business days.`,
+      },
+      {
+        question: "When will my order ship?",
+        answer: "Once order is confirmed, it will ship within 3 to 4 days time.",
+      },
+      {
+        question: "Will my order come with a tracking number?",
+        answer: "Yes, every order includes a tracking number.",
+      },
+      {
+        question: "What is not included with my purchase?",
+        answer: "Customs fees may apply depending on the destination country.",
+      },
+    ],
+  },
+  {
+    title: "Refund Policy",
+    items: [
+      {
+        question: "What is your refund policy?",
+        answer: "Due to the customized nature of our products, we're unable to accept returns or issue refunds.",
       },
     ],
   },

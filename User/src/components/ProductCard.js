@@ -47,34 +47,28 @@ const ProductCard = ({ product }) => {
           onError={handleImageError}
         />
       </div>
-      <div className="product-body">
+      <div className="product-body text-center">
         <h3 className="product-title">{product.name}</h3>
-        <p className="product-subtitle">{product.subtitle}</p>
-        <p className="product-description">{product.description}</p>
-        <div className="product-features">
+        <div className="product-features justify-center">
           {product.features.map((feature, index) => (
             <span key={index} className="feature-tag">
               {feature}
             </span>
           ))}
         </div>
-        <div className="product-footer">
+        <div className="product-footer justify-center">
           <span className="product-price">
             {regionLoading ? '...' : priceInfo.formatted}
           </span>
-          <span className="product-rating">{"★".repeat(product.rating)}</span>
         </div>
         {!isIndia && !priceInfo.needsIntlPricing && product.internationalPrice?.double > 0 && (
-          <p className="text-xs text-center text-green-600 mt-1">
+          <p className="text-xs text-center text-green-400 mt-1">
             Buy 2 for ${product.internationalPrice.double} (Save!)
           </p>
         )}
         <div className="product-buy">
           <button className="order-now-btn" onClick={handleOrderNow}>Order Now</button>
         </div>
-        <p className="text-center pt-2 text-red-500 opacity-1">
-          *{product.footer}
-        </p>
       </div>
     </div>
   );

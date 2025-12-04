@@ -28,8 +28,11 @@ const AdminProductForm = () => {
     subtitle: '',
     description: '',
     price: '',
-    internationalPriceSingle: '',
-    internationalPriceDouble: '',
+    internationalPriceQty1: '',
+    internationalPriceQty2: '',
+    internationalPriceQty3: '',
+    internationalPriceQty4: '',
+    internationalPriceQty5: '',
     sku: '',
     stock: '',
     icon: '',
@@ -58,8 +61,11 @@ const AdminProductForm = () => {
         subtitle: product.subtitle || '',
         description: product.description || '',
         price: product.price?.toString() || '',
-        internationalPriceSingle: product.internationalPrice?.single?.toString() || '',
-        internationalPriceDouble: product.internationalPrice?.double?.toString() || '',
+        internationalPriceQty1: product.internationalPrice?.qty1?.toString() || product.internationalPrice?.single?.toString() || '',
+        internationalPriceQty2: product.internationalPrice?.qty2?.toString() || product.internationalPrice?.double?.toString() || '',
+        internationalPriceQty3: product.internationalPrice?.qty3?.toString() || '',
+        internationalPriceQty4: product.internationalPrice?.qty4?.toString() || '',
+        internationalPriceQty5: product.internationalPrice?.qty5?.toString() || '',
         sku: product.sku || '',
         stock: product.stock?.toString() || '',
         icon: product.icon || '',
@@ -127,8 +133,14 @@ const AdminProductForm = () => {
         description: formData.description,
         price: parseFloat(formData.price),
         internationalPrice: {
-          single: parseFloat(formData.internationalPriceSingle) || 0,
-          double: parseFloat(formData.internationalPriceDouble) || 0
+          qty1: parseFloat(formData.internationalPriceQty1) || 0,
+          qty2: parseFloat(formData.internationalPriceQty2) || 0,
+          qty3: parseFloat(formData.internationalPriceQty3) || 0,
+          qty4: parseFloat(formData.internationalPriceQty4) || 0,
+          qty5: parseFloat(formData.internationalPriceQty5) || 0,
+          // Keep backward compatibility
+          single: parseFloat(formData.internationalPriceQty1) || 0,
+          double: parseFloat(formData.internationalPriceQty2) || 0
         },
         sku: formData.sku,
         stock: parseInt(formData.stock),
@@ -346,46 +358,88 @@ const AdminProductForm = () => {
                 </div>
                 <div>
                   <h2 className="text-lg font-semibold text-gray-900">International Pricing (USD)</h2>
-                  <p className="text-sm text-gray-500">Set prices for international customers</p>
+                  <p className="text-sm text-gray-500">Set prices for international customers by quantity</p>
                 </div>
               </div>
               
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className={labelClass}>Single Unit Price ($)</label>
-                  <input
-                    type="number"
-                    name="internationalPriceSingle"
-                    value={formData.internationalPriceSingle}
-                    onChange={handleChange}
-                    className={inputClass}
-                    min="0"
-                    step="1"
-                    placeholder="e.g., 100"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">Price for 1 quantity</p>
-                </div>
-                
-                <div>
-                  <label className={labelClass}>Double Unit Price ($)</label>
-                  <input
-                    type="number"
-                    name="internationalPriceDouble"
-                    value={formData.internationalPriceDouble}
-                    onChange={handleChange}
-                    className={inputClass}
-                    min="0"
-                    step="1"
-                    placeholder="e.g., 160"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">Price for 2 quantity (discounted)</p>
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                  <div>
+                    <label className={labelClass}>Qty 1 Price ($)</label>
+                    <input
+                      type="number"
+                      name="internationalPriceQty1"
+                      value={formData.internationalPriceQty1}
+                      onChange={handleChange}
+                      className={inputClass}
+                      min="0"
+                      step="1"
+                      placeholder="e.g., 100"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className={labelClass}>Qty 2 Price ($)</label>
+                    <input
+                      type="number"
+                      name="internationalPriceQty2"
+                      value={formData.internationalPriceQty2}
+                      onChange={handleChange}
+                      className={inputClass}
+                      min="0"
+                      step="1"
+                      placeholder="e.g., 180"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className={labelClass}>Qty 3 Price ($)</label>
+                    <input
+                      type="number"
+                      name="internationalPriceQty3"
+                      value={formData.internationalPriceQty3}
+                      onChange={handleChange}
+                      className={inputClass}
+                      min="0"
+                      step="1"
+                      placeholder="e.g., 260"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className={labelClass}>Qty 4 Price ($)</label>
+                    <input
+                      type="number"
+                      name="internationalPriceQty4"
+                      value={formData.internationalPriceQty4}
+                      onChange={handleChange}
+                      className={inputClass}
+                      min="0"
+                      step="1"
+                      placeholder="e.g., 340"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className={labelClass}>Qty 5 Price ($)</label>
+                    <input
+                      type="number"
+                      name="internationalPriceQty5"
+                      value={formData.internationalPriceQty5}
+                      onChange={handleChange}
+                      className={inputClass}
+                      min="0"
+                      step="1"
+                      placeholder="e.g., 420"
+                    />
+                  </div>
                 </div>
               </div>
               
               <div className="mt-4 p-3 bg-purple-50 rounded-xl">
                 <p className="text-sm text-purple-700">
                   <strong>Note:</strong> International prices are shown to customers outside India. 
-                  The double unit price offers a discount when buying 2 items.
+                  Set discounted prices for higher quantities to encourage bulk orders.
                 </p>
               </div>
             </div>

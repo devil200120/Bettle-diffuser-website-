@@ -178,7 +178,18 @@ const ProductDetails = () => {
         total: total
       };
     } else {
-      const intlPrice = variantPrice.internationalPrice || { single: 0, double: 0 };
+      const intlPrice = variantPrice.internationalPrice || {};
+      // Check for quantity-specific pricing (qty1, qty2, qty3, qty4, qty5)
+      const qtyKey = `qty${qty}`;
+      if (intlPrice[qtyKey] > 0) {
+        return {
+          formatted: `$${intlPrice[qtyKey]}`,
+          unitPrice: intlPrice.qty1 || intlPrice.single || 0,
+          total: intlPrice[qtyKey],
+          isBundle: qty > 1
+        };
+      }
+      // Fallback to old single/double format for backward compatibility
       if (qty >= 2 && intlPrice.double > 0) {
         return {
           formatted: `$${intlPrice.double}`,
@@ -187,10 +198,11 @@ const ProductDetails = () => {
           isBundle: true
         };
       }
-      const total = (intlPrice.single || 0) * qty;
+      const unitPrice = intlPrice.single || intlPrice.qty1 || 0;
+      const total = unitPrice * qty;
       return {
         formatted: `$${total}`,
-        unitPrice: intlPrice.single || 0,
+        unitPrice: unitPrice,
         total: total
       };
     }
@@ -217,7 +229,7 @@ const ProductDetails = () => {
     
     // Quantity validation
     if (!quantity || quantity < 1) {
-      newErrors.quantity = 'Please select quantity (1 or 2)';
+      newErrors.quantity = 'Please select quantity (1 to 5)';
     }
     
     // Size validation (if product has sizes)
@@ -528,15 +540,10 @@ const ProductDetails = () => {
                       {selectedVariant} variant selected
                     </p>
                   )}
-                  {/* Bundle discount info for international customers */}
-                  {!isIndia && getVariantPrice().internationalPrice?.double > 0 && parseInt(quantity) < 2 && (
+                  {/* Quantity pricing info for international customers */}
+                  {!isIndia && parseInt(quantity) >= 2 && (
                     <p className="text-sm text-green-500 mt-1">
-                      💡 Buy 2 for ${getVariantPrice().internationalPrice.double} (Save ${(getVariantPrice().internationalPrice.single * 2) - getVariantPrice().internationalPrice.double}!)
-                    </p>
-                  )}
-                  {!isIndia && parseInt(quantity) >= 2 && getVariantPrice().internationalPrice?.double > 0 && (
-                    <p className="text-sm text-green-500 mt-1">
-                      ✓ Bundle discount applied!
+                      ✓ Quantity pricing applied for {quantity} items!
                     </p>
                   )}
                 </>
@@ -632,40 +639,31 @@ const ProductDetails = () => {
             </div>
 
             {/* Quantity */}
-            <div className="form-field form-field--qty">
+            <div className="form-field">
               <label htmlFor="quantity" className="form-label">
                 Quantity <span className="text-red-500 font-bold">*</span>
-                <span className="radio">
-                  <label className="radio">
-                    <input
-                      type="radio"
-                      name="quantity"
-                      value="1"
-                      checked={quantity === '1' || quantity === 1}
-                      onChange={(e) => setQuantity(e.target.value)}
-                    />
-                    <span className="radio-text">One</span>
-                  </label>
-                  <label className="radio">
-                    <input
-                      type="radio"
-                      name="quantity"
-                      value="2"
-                      checked={quantity === '2' || quantity === 2}
-                      onChange={(e) => setQuantity(e.target.value)}
-                    />
-                    <span className="radio-text">Two</span>
-                  </label>
-                </span>
               </label>
+              <select
+                id="quantity"
+                name="quantity"
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
+                onBlur={() => handleBlur('quantity')}
+                className={`${touched.quantity && errors.quantity ? "!border-red-500 !bg-red-500/10" : ""}`}
+              >
+                <option value="">-- Select quantity --</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
               {touched.quantity && errors.quantity && (
                 <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
                   <span>⚠</span> {errors.quantity}
                 </p>
               )}
-            </div>
-            <div className="form-field">
-              <p>(Maximum quantity in one order is 2 nos)</p>
+              <p className="text-sm text-gray-500 mt-1">(Maximum quantity in one order is 5 nos)</p>
             </div>
 
             {/* Variant Selection (if product has variants) */}

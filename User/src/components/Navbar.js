@@ -122,7 +122,8 @@ const Navbar = () => {
           {/* Logo */}
           <Link 
             to="/" 
-            className="text-xl sm:text-2xl font-bold text-red-500 tracking-wider flex-shrink-0"
+            className="text-xl sm:text-2xl font-bold tracking-wider flex-shrink-0"
+            style={{ color: 'red' }}
             onClick={() => setMenuOpen(false)}
           >
             BEETLE DIFFUSER

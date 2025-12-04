@@ -20,14 +20,44 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  sortOrder: {
+    type: Number,
+    default: 0
+  },
   // Indian pricing (INR)
   price: {
     type: Number,
     required: true,
     min: 0
   },
-  // International pricing (USD)
+  // International pricing (USD) - supports qty 1-5
   internationalPrice: {
+    qty1: {
+      type: Number,
+      default: 0,
+      min: 0
+    },
+    qty2: {
+      type: Number,
+      default: 0,
+      min: 0
+    },
+    qty3: {
+      type: Number,
+      default: 0,
+      min: 0
+    },
+    qty4: {
+      type: Number,
+      default: 0,
+      min: 0
+    },
+    qty5: {
+      type: Number,
+      default: 0,
+      min: 0
+    },
+    // Backward compatibility
     single: {
       type: Number,
       default: 0,
