@@ -90,6 +90,12 @@ const productSchema = new mongoose.Schema({
     of: {
       price: { type: Number, min: 0 },
       internationalPrice: {
+        qty1: { type: Number, default: 0, min: 0 },
+        qty2: { type: Number, default: 0, min: 0 },
+        qty3: { type: Number, default: 0, min: 0 },
+        qty4: { type: Number, default: 0, min: 0 },
+        qty5: { type: Number, default: 0, min: 0 },
+        // Backward compatibility
         single: { type: Number, default: 0, min: 0 },
         double: { type: Number, default: 0, min: 0 }
       }

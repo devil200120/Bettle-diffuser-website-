@@ -53,10 +53,30 @@ router.get('/', async (req, res) => {
 // @access  Private/Admin
 router.get('/:id', async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findById(req.params.id).lean();
     
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
+    }
+
+    // Convert variantPricing Map to plain object if it exists
+    if (product.variantPricing) {
+      // When using .lean(), MongoDB Map comes as plain object with $* keys or as-is
+      // Ensure it's a proper plain object
+      const variantPricingObj = {};
+      if (product.variantPricing instanceof Map) {
+        for (const [key, value] of product.variantPricing.entries()) {
+          variantPricingObj[key] = value;
+        }
+        product.variantPricing = variantPricingObj;
+      } else if (typeof product.variantPricing === 'object' && product.variantPricing !== null) {
+        // Already a plain object from .lean()
+        // Check if it has $* keys (old Map format)
+        const keys = Object.keys(product.variantPricing);
+        if (keys.length > 0 && !keys[0].startsWith('$')) {
+          // It's already in the right format
+        }
+      }
     }
 
     res.json({ success: true, data: product });
@@ -96,6 +116,26 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ message: 'SKU already exists' });
     }
 
+    // Handle variantPricing - convert to Map format for MongoDB
+    let variantPricingMap;
+    if (variantPricing && Object.keys(variantPricing).length > 0) {
+      variantPricingMap = new Map();
+      Object.entries(variantPricing).forEach(([key, value]) => {
+        variantPricingMap.set(key, {
+          price: value.price || 0,
+          internationalPrice: {
+            qty1: value.internationalPrice?.qty1 || 0,
+            qty2: value.internationalPrice?.qty2 || 0,
+            qty3: value.internationalPrice?.qty3 || 0,
+            qty4: value.internationalPrice?.qty4 || 0,
+            qty5: value.internationalPrice?.qty5 || 0,
+            single: value.internationalPrice?.single || value.internationalPrice?.qty1 || 0,
+            double: value.internationalPrice?.double || value.internationalPrice?.qty2 || 0
+          }
+        });
+      });
+    }
+
     const product = new Product({
       name,
       subtitle,
@@ -110,7 +150,7 @@ router.post('/', async (req, res) => {
       compatibility,
       sizes,
       variant,
-      variantPricing: variantPricing || undefined,
+      variantPricing: variantPricingMap || undefined,
       isActive: isActive !== undefined ? isActive : true,
       rating: rating || 5
     });
@@ -180,9 +220,33 @@ router.put('/:id', async (req, res) => {
     product.compatibility = compatibility || product.compatibility;
     product.sizes = sizes || product.sizes;
     product.variant = variant || product.variant;
-    product.variantPricing = variantPricing !== undefined ? variantPricing : product.variantPricing;
     product.isActive = isActive !== undefined ? isActive : product.isActive;
     product.rating = rating !== undefined ? rating : product.rating;
+
+    // Handle variantPricing - convert to Map format for MongoDB
+    if (variantPricing !== undefined) {
+      if (variantPricing === null || Object.keys(variantPricing).length === 0) {
+        product.variantPricing = undefined;
+      } else {
+        // Convert plain object to Map for MongoDB
+        const variantMap = new Map();
+        Object.entries(variantPricing).forEach(([key, value]) => {
+          variantMap.set(key, {
+            price: value.price || 0,
+            internationalPrice: {
+              qty1: value.internationalPrice?.qty1 || 0,
+              qty2: value.internationalPrice?.qty2 || 0,
+              qty3: value.internationalPrice?.qty3 || 0,
+              qty4: value.internationalPrice?.qty4 || 0,
+              qty5: value.internationalPrice?.qty5 || 0,
+              single: value.internationalPrice?.single || value.internationalPrice?.qty1 || 0,
+              double: value.internationalPrice?.double || value.internationalPrice?.qty2 || 0
+            }
+          });
+        });
+        product.variantPricing = variantMap;
+      }
+    }
 
     await product.save();
 

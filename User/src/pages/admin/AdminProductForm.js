@@ -58,18 +58,28 @@ const AdminProductForm = () => {
       const response = await api.get(`/admin/products/${id}`);
       const product = response.data.data;
       
-      // Convert variantPricing Map to object for form
+      // Convert variantPricing to object for form
       let variantPricingObj = {};
-      if (product.variantPricing) {
-        // Handle both Map and plain object formats
-        if (product.variantPricing instanceof Map || typeof product.variantPricing.entries === 'function') {
-          for (const [key, value] of product.variantPricing.entries()) {
-            variantPricingObj[key] = value;
-          }
-        } else if (typeof product.variantPricing === 'object') {
-          variantPricingObj = { ...product.variantPricing };
-        }
+      if (product.variantPricing && typeof product.variantPricing === 'object') {
+        // API returns plain object after .lean() conversion
+        Object.keys(product.variantPricing).forEach(key => {
+          const vp = product.variantPricing[key];
+          variantPricingObj[key] = {
+            price: vp?.price || 0,
+            internationalPrice: {
+              qty1: vp?.internationalPrice?.qty1 || vp?.internationalPrice?.single || 0,
+              qty2: vp?.internationalPrice?.qty2 || vp?.internationalPrice?.double || 0,
+              qty3: vp?.internationalPrice?.qty3 || 0,
+              qty4: vp?.internationalPrice?.qty4 || 0,
+              qty5: vp?.internationalPrice?.qty5 || 0,
+              single: vp?.internationalPrice?.single || vp?.internationalPrice?.qty1 || 0,
+              double: vp?.internationalPrice?.double || vp?.internationalPrice?.qty2 || 0
+            }
+          };
+        });
       }
+      
+      console.log('Loaded variantPricing:', variantPricingObj);
       
       setFormData({
         name: product.name || '',
