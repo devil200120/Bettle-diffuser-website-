@@ -493,13 +493,40 @@ const Orders = () => {
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="text-white font-medium truncate">{item.product?.name || 'Product'}</h4>
-                        <div className="text-zinc-400 text-sm space-x-2">
-                          {item.cameraModel && <span>Camera: {item.cameraModel}</span>}
-                          {item.lensModel && <span>• Lens: {item.lensModel}</span>}
-                          {item.flashModel && <span>• Flash: {item.flashModel}</span>}
+                        <h4 className="text-white font-medium mb-2">{item.product?.name || 'Product'}</h4>
+                        <div className="bg-zinc-600/50 rounded-lg p-2 space-y-1 text-xs mb-2">
+                          {item.cameraModel && (
+                            <div className="flex items-start gap-2">
+                              <span className="text-yellow-400 font-medium min-w-[60px]">📷 Camera:</span>
+                              <span className="text-zinc-300">{item.cameraModel}</span>
+                            </div>
+                          )}
+                          {item.lensModel && (
+                            <div className="flex items-start gap-2">
+                              <span className="text-yellow-400 font-medium min-w-[60px]">🔍 Lens:</span>
+                              <span className="text-zinc-300">{item.lensModel}</span>
+                            </div>
+                          )}
+                          {item.flashModel && (
+                            <div className="flex items-start gap-2">
+                              <span className="text-yellow-400 font-medium min-w-[60px]">⚡ Flash:</span>
+                              <span className="text-zinc-300">{item.flashModel}</span>
+                            </div>
+                          )}
+                          {item.size && (
+                            <div className="flex items-start gap-2">
+                              <span className="text-yellow-400 font-medium min-w-[60px]">📏 Size:</span>
+                              <span className="text-zinc-300">{item.size}</span>
+                            </div>
+                          )}
+                          {item.variant && (
+                            <div className="flex items-start gap-2">
+                              <span className="text-yellow-400 font-medium min-w-[60px]">🎨 Variant:</span>
+                              <span className="text-zinc-300">{item.variant}</span>
+                            </div>
+                          )}
                         </div>
-                        <p className="text-zinc-400 text-sm">Qty: {item.quantity}</p>
+                        <p className="text-zinc-400 text-sm font-medium">Quantity: {item.quantity}</p>
                       </div>
                       <div className="text-yellow-400 font-semibold">
                         {formatPrice(item.price * item.quantity)}
@@ -590,24 +617,63 @@ const Orders = () => {
                     )}
 
                     <div className="bg-zinc-700 rounded-lg p-4">
-                      <h4 className="text-yellow-400 font-semibold mb-3">Order Summary</h4>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between text-zinc-300">
-                          <span>Subtotal</span>
-                          <span>{formatPrice(order.subtotal || order.totalAmount)}</span>
+                      <h4 className="text-yellow-400 font-semibold mb-3 flex items-center gap-2">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        </svg>
+                        Order Summary
+                      </h4>
+                      <div className="space-y-3 text-sm">
+                        {/* Items breakdown */}
+                        <div className="space-y-1.5">
+                          {order.items?.map((item, idx) => (
+                            <div key={idx} className="flex justify-between text-zinc-400">
+                              <span className="flex-1">{item.product?.name || 'Product'} × {item.quantity}</span>
+                              <span>{formatPrice(item.price * item.quantity)}</span>
+                            </div>
+                          ))}
                         </div>
-                        {order.discount > 0 && (
-                          <div className="flex justify-between text-green-400">
-                            <span>Discount</span>
-                            <span>-{formatPrice(order.discount)}</span>
+                        
+                        <div className="border-t border-zinc-600 pt-2 space-y-2">
+                          <div className="flex justify-between text-zinc-300">
+                            <span className="font-medium">Subtotal</span>
+                            <span className="font-medium">{formatPrice(order.items?.reduce((sum, item) => sum + (item.price * item.quantity), 0) || 0)}</span>
                           </div>
-                        )}
-                        <div className="flex justify-between text-zinc-300">
-                          <span>Shipping</span>
-                          <span>{order.shippingCost > 0 ? formatPrice(order.shippingCost) : 'Free'}</span>
+                          
+                          {order.discount > 0 && (
+                            <div className="flex justify-between text-green-400">
+                              <span className="flex items-center gap-1">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                                </svg>
+                                Discount
+                              </span>
+                              <span>-{formatPrice(order.discount)}</span>
+                            </div>
+                          )}
+                          
+                          <div className="flex justify-between text-zinc-300">
+                            <span className="flex items-center gap-1">
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                              </svg>
+                              Shipping
+                            </span>
+                            <span className={order.shippingCost === 0 ? 'text-green-400 font-medium' : ''}>
+                              {order.shippingCost > 0 ? formatPrice(order.shippingCost) : 'Free'}
+                            </span>
+                          </div>
+                          
+                          {order.tax > 0 && (
+                            <div className="flex justify-between text-zinc-300">
+                              <span>Tax</span>
+                              <span>{formatPrice(order.tax)}</span>
+                            </div>
+                          )}
                         </div>
-                        <div className="flex justify-between text-white font-bold pt-2 border-t border-zinc-600">
-                          <span>Total</span>
+                        
+                        <div className="flex justify-between text-white font-bold text-base pt-3 border-t-2 border-yellow-400/30">
+                          <span>Total Amount</span>
                           <span className="text-yellow-400">{formatPrice(order.totalAmount)}</span>
                         </div>
                       </div>

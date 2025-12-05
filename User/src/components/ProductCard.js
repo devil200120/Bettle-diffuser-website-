@@ -19,9 +19,19 @@ const getRandomFallback = () => {
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
   const { getDisplayPrice, isIndia, loading: regionLoading } = useRegion();
-  const [imgSrc, setImgSrc] = useState(
-    product.icon ? `/images/${product.icon}` : getRandomFallback()
-  );
+  
+  // Check if icon is a full URL (Cloudinary) or local path
+  const getImageSrc = (icon) => {
+    if (!icon) return getRandomFallback();
+    // If it's a full URL (starts with http/https), use it directly
+    if (icon.startsWith('http://') || icon.startsWith('https://')) {
+      return icon;
+    }
+    // Otherwise, it's a local image path
+    return `/images/${icon}`;
+  };
+  
+  const [imgSrc, setImgSrc] = useState(getImageSrc(product.icon));
   const [hasError, setHasError] = useState(false);
 
   // Get region-based price

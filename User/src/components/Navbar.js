@@ -319,8 +319,9 @@ const Navbar = () => {
                 <span className="text-xl">🚚</span>
                 Track Order
               </Link>
+              <div className="border-t border-zinc-700 my-2"></div>
               <button
-                className="flex items-center gap-3 w-full px-4 py-3 text-red-400 text-base font-medium rounded-lg hover:bg-zinc-800 transition-colors text-left"
+                className="flex items-center gap-3 w-full px-4 py-3 text-red-400 text-base font-semibold rounded-lg hover:bg-red-500/10 hover:text-red-300 transition-colors text-left"
                 onClick={handleLogout}
               >
                 <span className="text-xl">🚪</span>

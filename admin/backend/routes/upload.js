@@ -48,23 +48,32 @@ const upload = multer({
 // @route   POST /api/upload/single
 // @desc    Upload single image to Cloudinary
 // @access  Private (Admin)
-router.post('/single', authenticateToken, adminOnly, upload.single('image'), (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ message: 'No file uploaded' });
+router.post('/single', authenticateToken, adminOnly, (req, res, next) => {
+  upload.single('image')(req, res, (err) => {
+    if (err) {
+      console.error('Multer error:', err);
+      return res.status(400).json({ error: err.message || 'File upload error' });
     }
+    
+    try {
+      if (!req.file) {
+        console.error('No file in request. Body:', req.body, 'Headers:', req.headers);
+        return res.status(400).json({ error: 'No image file provided' });
+      }
 
-    res.json({
-      message: 'File uploaded successfully',
-      url: req.file.path, // Cloudinary returns the full URL in path
-      publicId: req.file.filename,
-      originalname: req.file.originalname,
-      size: req.file.size
-    });
-  } catch (error) {
-    console.error('Upload error:', error);
-    res.status(500).json({ message: 'Upload failed' });
-  }
+      console.log('File uploaded successfully:', req.file);
+      res.json({
+        message: 'File uploaded successfully',
+        url: req.file.path, // Cloudinary returns the full URL in path
+        publicId: req.file.filename,
+        originalname: req.file.originalname,
+        size: req.file.size
+      });
+    } catch (error) {
+      console.error('Upload error:', error);
+      res.status(500).json({ error: 'Upload failed: ' + error.message });
+    }
+  });
 });
 
 // @route   POST /api/upload/multiple

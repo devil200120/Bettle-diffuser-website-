@@ -39,6 +39,12 @@ const Login = () => {
       const data = await response.json();
 
       if (!response.ok) {
+        // Check if user is banned
+        if (response.status === 403 && data.isBanned) {
+          setError(`🚫 Your account has been banned. Reason: ${data.bannedReason || 'Violation of terms and conditions'}`);
+          setLoading(false);
+          return;
+        }
         throw new Error(data.message || 'Login failed');
       }
 

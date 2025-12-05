@@ -43,6 +43,16 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
+  isBanned: {
+    type: Boolean,
+    default: false
+  },
+  bannedReason: {
+    type: String
+  },
+  bannedAt: {
+    type: Date
+  },
   isVerified: {
     type: Boolean,
     default: false

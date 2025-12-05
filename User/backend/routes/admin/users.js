@@ -208,4 +208,41 @@ router.patch('/:id/toggle-status', async (req, res) => {
   }
 });
 
+// @route   PATCH /api/admin/users/:id/ban
+// @desc    Ban/Unban a user
+// @access  Private/Admin
+router.patch('/:id/ban', async (req, res) => {
+  try {
+    const { reason } = req.body;
+    const user = await User.findById(req.params.id);
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.isBanned = !user.isBanned;
+    if (user.isBanned) {
+      user.bannedReason = reason || 'Violation of terms and conditions';
+      user.bannedAt = new Date();
+    } else {
+      user.bannedReason = undefined;
+      user.bannedAt = undefined;
+    }
+    
+    await user.save();
+
+    const userResponse = user.toObject();
+    delete userResponse.password;
+
+    res.json({
+      success: true,
+      message: `User ${user.isBanned ? 'banned' : 'unbanned'} successfully`,
+      data: userResponse
+    });
+  } catch (error) {
+    console.error('Ban user error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 module.exports = router;

@@ -18,13 +18,21 @@ const api = {
   
   post: async (url, body) => {
     const token = localStorage.getItem('adminToken');
+    const isFormData = body instanceof FormData;
+    
+    const headers = {
+      ...(token && { 'Authorization': `Bearer ${token}` })
+    };
+    
+    // Only set Content-Type for JSON, let browser set it for FormData
+    if (!isFormData) {
+      headers['Content-Type'] = 'application/json';
+    }
+    
     const response = await fetch(`${API_URL}${url}`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token && { 'Authorization': `Bearer ${token}` })
-      },
-      body: JSON.stringify(body)
+      headers,
+      body: isFormData ? body : JSON.stringify(body)
     });
     const data = await response.json();
     if (!response.ok) throw { response: { data } };

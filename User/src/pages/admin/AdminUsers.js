@@ -11,7 +11,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Shield,
-  AlertTriangle
+  AlertTriangle,
+  Ban,
+  CheckCircle
 } from 'lucide-react';
 import { useToast } from '../../components/Toast';
 
@@ -23,6 +25,7 @@ const AdminUsers = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [deleteModal, setDeleteModal] = useState({ isOpen: false, user: null });
+  const [banModal, setBanModal] = useState({ isOpen: false, user: null, reason: '' });
 
   useEffect(() => {
     fetchUsers();
@@ -66,6 +69,20 @@ const AdminUsers = () => {
       fetchUsers();
     } catch (err) {
       showError(err.response?.data?.message || 'Failed to delete user');
+    }
+  };
+
+  const handleBan = async () => {
+    if (!banModal.user) return;
+    try {
+      await api.patch(`/admin/users/${banModal.user._id}/ban`, {
+        reason: banModal.reason
+      });
+      showSuccess(`User ${banModal.user.isBanned ? 'unbanned' : 'banned'} successfully`);
+      setBanModal({ isOpen: false, user: null, reason: '' });
+      fetchUsers();
+    } catch (err) {
+      showError(err.response?.data?.message || 'Failed to ban/unban user');
     }
   };
 
@@ -156,6 +173,9 @@ const AdminUsers = () => {
                               {user.isAdmin && (
                                 <Shield className="h-4 w-4 text-green-500" title="Admin" />
                               )}
+                              {user.isBanned && (
+                                <span className="px-2 py-1 text-xs font-semibold bg-red-100 text-red-600 rounded-full">BANNED</span>
+                              )}
                             </div>
                             <div className="text-sm text-gray-500 flex items-center gap-1">
                               <Mail className="h-3 w-3" />
@@ -206,6 +226,17 @@ const AdminUsers = () => {
                       <td className="px-6 py-4">
                         <div className="flex items-center justify-end gap-1">
                           <button
+                            onClick={() => setBanModal({ isOpen: true, user, reason: '' })}
+                            className={`p-2 rounded-lg transition-all ${
+                              user.isBanned 
+                                ? 'text-green-500 hover:text-green-700 hover:bg-green-50' 
+                                : 'text-orange-500 hover:text-orange-700 hover:bg-orange-50'
+                            }`}
+                            title={user.isBanned ? 'Unban User' : 'Ban User'}
+                          >
+                            {user.isBanned ? <CheckCircle className="h-4 w-4" /> : <Ban className="h-4 w-4" />}
+                          </button>
+                          <button
                             onClick={() => setDeleteModal({ isOpen: true, user })}
                             className="p-2 rounded-lg text-red-500 hover:text-red-700 hover:bg-red-50 transition-all"
                             title="Delete"
@@ -250,6 +281,67 @@ const AdminUsers = () => {
           </>
         )}
       </div>
+
+      {/* Ban Modal */}
+      {banModal.isOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-6 max-w-md w-full mx-4">
+            <div className="flex items-start gap-4 mb-4">
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                banModal.user?.isBanned ? 'bg-green-100' : 'bg-orange-100'
+              }`}>
+                {banModal.user?.isBanned ? (
+                  <CheckCircle className="w-6 h-6 text-green-500" />
+                ) : (
+                  <Ban className="w-6 h-6 text-orange-500" />
+                )}
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                  {banModal.user?.isBanned ? 'Unban' : 'Ban'} "{banModal.user?.name}"?
+                </h3>
+                <p className="text-sm text-gray-500">
+                  {banModal.user?.isBanned 
+                    ? 'This user will be able to access their account again.'
+                    : 'This user will not be able to login or access their account.'}
+                </p>
+              </div>
+            </div>
+            {!banModal.user?.isBanned && (
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Reason for ban (optional)
+                </label>
+                <textarea
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  rows="3"
+                  placeholder="Enter reason for banning this user..."
+                  value={banModal.reason}
+                  onChange={(e) => setBanModal(prev => ({ ...prev, reason: e.target.value }))}
+                />
+              </div>
+            )}
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setBanModal({ isOpen: false, user: null, reason: '' })}
+                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleBan}
+                className={`px-4 py-2 text-white rounded-lg ${
+                  banModal.user?.isBanned 
+                    ? 'bg-green-500 hover:bg-green-600' 
+                    : 'bg-orange-500 hover:bg-orange-600'
+                }`}
+              >
+                {banModal.user?.isBanned ? 'Unban User' : 'Ban User'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Delete Modal */}
       {deleteModal.isOpen && (

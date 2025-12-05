@@ -13,7 +13,8 @@ import {
   Image,
   Globe,
   Upload,
-  Loader2
+  Loader2,
+  Truck
 } from 'lucide-react';
 import { useToast } from '../../components/Toast';
 
@@ -46,6 +47,12 @@ const AdminProductForm = () => {
     sizes: [''],
     variant: [''],
     variantPricing: {}, // Store variant-specific pricing
+    // Shipping configuration
+    shippingIsFree: true,
+    shippingDomesticCost: '0',
+    shippingInternationalCost: '0',
+    shippingDomesticDays: '7',
+    shippingInternationalDays: '14',
     isActive: true,
     rating: 5
   });
@@ -104,6 +111,12 @@ const AdminProductForm = () => {
         sizes: product.sizes?.length ? product.sizes : [''],
         variant: product.variant?.length ? product.variant : [''],
         variantPricing: variantPricingObj,
+        // Shipping configuration
+        shippingIsFree: product.shipping?.isFree ?? true,
+        shippingDomesticCost: product.shipping?.domesticCost?.toString() || '0',
+        shippingInternationalCost: product.shipping?.internationalCost?.toString() || '0',
+        shippingDomesticDays: product.shipping?.estimatedDays?.domestic?.toString() || '7',
+        shippingInternationalDays: product.shipping?.estimatedDays?.international?.toString() || '14',
         isActive: product.isActive ?? true,
         rating: product.rating || 5
       });
@@ -286,6 +299,16 @@ const AdminProductForm = () => {
         sizes: formData.sizes.filter(s => s.trim()),
         variant: formData.variant.filter(v => v.trim()),
         variantPricing: hasMultipleVariants() ? variantPricingData : undefined,
+        // Shipping configuration
+        shipping: {
+          isFree: formData.shippingIsFree,
+          domesticCost: parseFloat(formData.shippingDomesticCost) || 0,
+          internationalCost: parseFloat(formData.shippingInternationalCost) || 0,
+          estimatedDays: {
+            domestic: parseInt(formData.shippingDomesticDays) || 7,
+            international: parseInt(formData.shippingInternationalDays) || 14
+          }
+        },
         isActive: formData.isActive
       };
 
@@ -966,6 +989,106 @@ const AdminProductForm = () => {
               >
                 <Plus className="h-4 w-4" /> Add Size
               </button>
+            </div>
+
+            {/* Shipping Configuration */}
+            <div className={cardClass}>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+                  <Truck className="h-5 w-5 text-blue-600" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900">Shipping Configuration</h2>
+                  <p className="text-sm text-gray-500">Set shipping costs and delivery times</p>
+                </div>
+              </div>
+
+              {/* Free Shipping Toggle */}
+              <div className="mb-6">
+                <label className="flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="shippingIsFree"
+                    checked={formData.shippingIsFree}
+                    onChange={handleChange}
+                    className="w-5 h-5 text-orange-500 border-gray-300 rounded focus:ring-orange-500"
+                  />
+                  <span className="ml-3 text-sm font-medium text-gray-900">
+                    Free Shipping
+                  </span>
+                </label>
+                <p className="mt-1 ml-8 text-xs text-gray-500">
+                  Enable this to offer free shipping for this product
+                </p>
+              </div>
+
+              {/* Shipping Costs - Only show if not free */}
+              {!formData.shippingIsFree && (
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div>
+                    <label className={labelClass}>
+                      Domestic Cost (INR) <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      name="shippingDomesticCost"
+                      value={formData.shippingDomesticCost}
+                      onChange={handleChange}
+                      className={inputClass}
+                      placeholder="e.g. 50"
+                      min="0"
+                      step="0.01"
+                    />
+                  </div>
+                  <div>
+                    <label className={labelClass}>
+                      International Cost (USD) <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      name="shippingInternationalCost"
+                      value={formData.shippingInternationalCost}
+                      onChange={handleChange}
+                      className={inputClass}
+                      placeholder="e.g. 15"
+                      min="0"
+                      step="0.01"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Estimated Delivery Days */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className={labelClass}>
+                    Domestic Delivery (Days) <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    name="shippingDomesticDays"
+                    value={formData.shippingDomesticDays}
+                    onChange={handleChange}
+                    className={inputClass}
+                    placeholder="e.g. 7"
+                    min="1"
+                  />
+                </div>
+                <div>
+                  <label className={labelClass}>
+                    International Delivery (Days) <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    name="shippingInternationalDays"
+                    value={formData.shippingInternationalDays}
+                    onChange={handleChange}
+                    className={inputClass}
+                    placeholder="e.g. 14"
+                    min="1"
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Variants */}

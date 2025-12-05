@@ -71,9 +71,31 @@ app.use(cors({
   credentials: true
 }));
 
-// Body parser middleware
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+// Body parser middleware - conditionally applied
+app.use((req, res, next) => {
+  const contentType = req.headers['content-type'] || '';
+  
+  // Skip body parsing for multipart/form-data (let multer handle it)
+  if (contentType.includes('multipart/form-data')) {
+    return next();
+  }
+  
+  // Apply JSON parser for application/json
+  if (contentType.includes('application/json')) {
+    return express.json({ limit: '10mb' })(req, res, next);
+  }
+  
+  // Apply URL encoded parser for form submissions
+  if (contentType.includes('application/x-www-form-urlencoded')) {
+    return express.urlencoded({ extended: true, limit: '10mb' })(req, res, next);
+  }
+  
+  // Default: apply both parsers
+  express.json({ limit: '10mb' })(req, res, (err) => {
+    if (err) return next(err);
+    express.urlencoded({ extended: true, limit: '10mb' })(req, res, next);
+  });
+});
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI)

@@ -22,6 +22,17 @@ const getRandomFallback = () => {
   return fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
 };
 
+// Helper to get correct image source (Cloudinary URL or local path)
+const getImageSrc = (icon) => {
+  if (!icon) return getRandomFallback();
+  // If it's a full URL (starts with http/https), use it directly
+  if (icon.startsWith('http://') || icon.startsWith('https://')) {
+    return icon;
+  }
+  // Otherwise, it's a local image path
+  return `/images/${icon}`;
+};
+
 const ProductDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -92,7 +103,7 @@ const ProductDetails = () => {
           if (transformedProduct.variant && transformedProduct.variant.length > 0) {
             setSelectedVariant(transformedProduct.variant[0]);
           }
-          setImgSrc(transformedProduct.icon ? `/images/${transformedProduct.icon}` : getRandomFallback());
+          setImgSrc(getImageSrc(transformedProduct.icon));
           setImgError(false);
         } else {
           // Fallback to static products
@@ -104,7 +115,7 @@ const ProductDetails = () => {
             if (foundProduct.variant && foundProduct.variant.length > 0) {
               setSelectedVariant(foundProduct.variant[0]);
             }
-            setImgSrc(foundProduct.icon ? `/images/${foundProduct.icon}` : getRandomFallback());
+            setImgSrc(getImageSrc(foundProduct.icon));
             setImgError(false);
           }
         }
@@ -119,7 +130,7 @@ const ProductDetails = () => {
           if (foundProduct.variant && foundProduct.variant.length > 0) {
             setSelectedVariant(foundProduct.variant[0]);
           }
-          setImgSrc(foundProduct.icon ? `/images/${foundProduct.icon}` : getRandomFallback());
+          setImgSrc(getImageSrc(foundProduct.icon));
           setImgError(false);
         }
       } finally {

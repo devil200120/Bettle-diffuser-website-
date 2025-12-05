@@ -109,6 +109,35 @@ const productSchema = new mongoose.Schema({
     default: 100,
     min: 0
   },
+  // Shipping configuration
+  shipping: {
+    isFree: {
+      type: Boolean,
+      default: true
+    },
+    domesticCost: {
+      type: Number,
+      default: 0,
+      min: 0
+    },
+    internationalCost: {
+      type: Number,
+      default: 0,
+      min: 0
+    },
+    estimatedDays: {
+      domestic: {
+        type: Number,
+        default: 7,
+        min: 1
+      },
+      international: {
+        type: Number,
+        default: 14,
+        min: 1
+      }
+    }
+  },
   isActive: {
     type: Boolean,
     default: true
