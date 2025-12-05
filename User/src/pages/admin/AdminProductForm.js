@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import {
@@ -11,7 +11,9 @@ import {
   Layers,
   Settings,
   Image,
-  Globe
+  Globe,
+  Upload,
+  Loader2
 } from 'lucide-react';
 import { useToast } from '../../components/Toast';
 
@@ -20,9 +22,11 @@ const AdminProductForm = () => {
   const navigate = useNavigate();
   const { showSuccess, showError } = useToast();
   const isEditing = !!id;
+  const fileInputRef = useRef(null);
 
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(isEditing);
+  const [uploading, setUploading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     subtitle: '',
@@ -139,6 +143,54 @@ const AdminProductForm = () => {
       ...prev,
       [field]: prev[field].filter((_, i) => i !== index)
     }));
+  };
+
+  // Handle image upload to Cloudinary
+  const handleImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      showError('Please select an image file');
+      return;
+    }
+
+    // Validate file size (10MB max)
+    if (file.size > 10 * 1024 * 1024) {
+      showError('Image size must be less than 10MB');
+      return;
+    }
+
+    try {
+      setUploading(true);
+      
+      const formDataUpload = new FormData();
+      formDataUpload.append('image', file);
+
+      const response = await api.post('/admin/upload/image', formDataUpload, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      if (response.data.success) {
+        setFormData(prev => ({
+          ...prev,
+          icon: response.data.data.url
+        }));
+        showSuccess('Image uploaded successfully!');
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      showError(error.response?.data?.message || 'Failed to upload image');
+    } finally {
+      setUploading(false);
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
   };
 
   // Handle variant pricing changes
@@ -779,16 +831,78 @@ const AdminProductForm = () => {
               </div>
               
               {/* Image Preview */}
-              <div className="relative aspect-square rounded-xl overflow-hidden mb-4 border-2 border-dashed border-gray-300 bg-gray-50">
-                <img
-                  src={formData.icon || '/images/fallback.jpg'}
-                  alt={formData.name || 'Product'}
-                  className="w-full h-full object-cover"
-                  onError={(e) => { e.target.src = '/images/fallback.jpg'; }}
-                />
+              <div 
+                className="relative aspect-square rounded-xl overflow-hidden mb-4 border-2 border-dashed border-gray-300 bg-gray-50 cursor-pointer hover:border-orange-400 transition-colors group"
+                onClick={() => !uploading && fileInputRef.current?.click()}
+              >
+                {uploading ? (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-100">
+                    <Loader2 className="h-8 w-8 animate-spin text-orange-500 mb-2" />
+                    <span className="text-sm text-gray-600">Uploading...</span>
+                  </div>
+                ) : formData.icon ? (
+                  <>
+                    <img
+                      src={formData.icon.startsWith('http') ? formData.icon : `/images/${formData.icon}`}
+                      alt={formData.name || 'Product'}
+                      className="w-full h-full object-cover"
+                      onError={(e) => { e.target.src = '/images/fallback.jpg'; }}
+                    />
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <div className="text-center text-white">
+                        <Upload className="h-8 w-8 mx-auto mb-2" />
+                        <span className="text-sm">Click to change</span>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <Upload className="h-10 w-10 text-gray-400 mb-2" />
+                    <span className="text-sm text-gray-500">Click to upload</span>
+                    <span className="text-xs text-gray-400 mt-1">JPG, PNG, WebP (max 10MB)</span>
+                  </div>
+                )}
               </div>
 
-              <div>
+              {/* Hidden File Input */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="hidden"
+              />
+
+              {/* Upload Button */}
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading}
+                className="w-full mb-4 flex items-center justify-center gap-2 px-4 py-2.5 bg-orange-100 text-orange-700 rounded-xl hover:bg-orange-200 transition-colors disabled:opacity-50"
+              >
+                {uploading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Uploading...
+                  </>
+                ) : (
+                  <>
+                    <Upload className="h-4 w-4" />
+                    Upload Image
+                  </>
+                )}
+              </button>
+
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-200"></div>
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-white px-2 text-gray-400">or enter URL</span>
+                </div>
+              </div>
+
+              <div className="mt-4">
                 <label className={labelClass}>Image URL</label>
                 <input
                   type="text"
@@ -796,7 +910,7 @@ const AdminProductForm = () => {
                   value={formData.icon}
                   onChange={handleChange}
                   className={inputClass}
-                  placeholder="Enter image URL"
+                  placeholder="Enter image URL or upload above"
                 />
               </div>
             </div>

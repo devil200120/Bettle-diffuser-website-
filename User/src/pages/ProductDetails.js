@@ -947,6 +947,95 @@ const ProductDetails = () => {
         </div>
       )}
 
+      {/* Key Features Section - Pro Model */}
+      {product.name && product.name.toLowerCase().includes('pro') && (
+        <div className="specifications-table">
+          <h2>Key Features</h2>
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">Comes with a unique latch-strap mechanism that allows you to vary the lighting angle more precisely.</div>
+          </div>
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">Powerful (5-6 watts) focus assist light with dimmer switch which can also be used for shooting videos.</div>
+          </div>
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">Comes with Raynox holder for quick storage of Raynox in the field.</div>
+          </div>
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">Unique Beetle Diffuser Ring to avoid panel from slipping out and still be able to use the original lens cap.</div>
+          </div>
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">Bottom Reflector.</div>
+          </div>
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">Can be packed flat in a Bag.</div>
+          </div>
+        </div>
+      )}
+
+      {/* Key Features Section - Lite Model */}
+      {product.name && product.name.toLowerCase().includes('lite') && (
+        <div className="specifications-table">
+          <h2>Key Features</h2>
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">The lightest Beetle diffuser to date.</div>
+          </div>
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">Fastest Diffuser to assemble.</div>
+          </div>
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">Unique Beetle band with gripper tags for mounting on speedlights.</div>
+          </div>
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">Unique Beetle Diffuser Ring to avoid panel from slipping out and still be able to use the original lens cap.</div>
+          </div>
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">Variable lighting angle.</div>
+          </div>
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">Comes with Raynox holder for quick storage of Raynox in the field.</div>
+          </div>
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">Can be purchased with or without LED.</div>
+          </div>
+        </div>
+      )}
+
+      {/* Key Features Section - Twin Flash Model */}
+      {product.name && product.name.toLowerCase().includes('twin') && (
+        <div className="specifications-table">
+          <h2>Key Features</h2>
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">Custom made mounting clamps for perfect fit on the Laowa/Kuangren twin flash.</div>
+          </div>
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">Easy assembly.</div>
+          </div>
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">Can be packed flat in a Bag.</div>
+          </div>
+          <div className="spec-row">
+            <div className="spec-label">•</div>
+            <div className="spec-value">Extra pair of Diffusion panels.</div>
+          </div>
+        </div>
+      )}
+
       {/* Image Lightbox Modal */}
       {showLightbox && (
         <div 
