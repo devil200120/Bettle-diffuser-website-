@@ -76,7 +76,7 @@ export const products = [
       "Easy Setup",
       "Durable Design",
     ],
-    variant: ["LED", "Non-LED"],
+    variant: ["Non-LED", "LED"],
     // Variant-specific pricing
     variantPricing: {
       "LED": {

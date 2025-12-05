@@ -86,7 +86,7 @@ const products = [
       "Easy Setup",
       "Durable Design"
     ],
-    variant: ["LED", "Non-LED"],
+    variant: ["Non-LED", "LED"],
     variantPricing: {
       "LED": {
         price: 3250,

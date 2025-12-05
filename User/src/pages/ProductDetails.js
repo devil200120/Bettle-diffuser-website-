@@ -101,7 +101,13 @@ const ProductDetails = () => {
           
           // Set default variant if product has variants
           if (transformedProduct.variant && transformedProduct.variant.length > 0) {
-            setSelectedVariant(transformedProduct.variant[0]);
+            // For Beetle Diffuser Lite variants, default to Non-LED
+            if (transformedProduct.name && (transformedProduct.name.includes('Beetle Diffuser Lite'))) {
+              const nonLedVariant = transformedProduct.variant.find(v => v === 'Non-LED');
+              setSelectedVariant(nonLedVariant || transformedProduct.variant[0]);
+            } else {
+              setSelectedVariant(transformedProduct.variant[0]);
+            }
           }
           setImgSrc(getImageSrc(transformedProduct.icon));
           setImgError(false);
@@ -113,7 +119,13 @@ const ProductDetails = () => {
             setSelectedSize(null); // Don't auto-select, let user choose
             // Set default variant if product has variants
             if (foundProduct.variant && foundProduct.variant.length > 0) {
-              setSelectedVariant(foundProduct.variant[0]);
+              // For Beetle Diffuser Lite variants, default to Non-LED
+              if (foundProduct.name && (foundProduct.name.includes('Beetle Diffuser Lite'))) {
+                const nonLedVariant = foundProduct.variant.find(v => v === 'Non-LED');
+                setSelectedVariant(nonLedVariant || foundProduct.variant[0]);
+              } else {
+                setSelectedVariant(foundProduct.variant[0]);
+              }
             }
             setImgSrc(getImageSrc(foundProduct.icon));
             setImgError(false);
@@ -128,7 +140,13 @@ const ProductDetails = () => {
           setSelectedSize(null); // Don't auto-select, let user choose
           // Set default variant if product has variants
           if (foundProduct.variant && foundProduct.variant.length > 0) {
-            setSelectedVariant(foundProduct.variant[0]);
+            // For Beetle Diffuser Lite variants, default to Non-LED
+            if (foundProduct.name && (foundProduct.name.includes('Beetle Diffuser Lite'))) {
+              const nonLedVariant = foundProduct.variant.find(v => v === 'Non-LED');
+              setSelectedVariant(nonLedVariant || foundProduct.variant[0]);
+            } else {
+              setSelectedVariant(foundProduct.variant[0]);
+            }
           }
           setImgSrc(getImageSrc(foundProduct.icon));
           setImgError(false);
