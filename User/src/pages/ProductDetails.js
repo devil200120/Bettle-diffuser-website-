@@ -260,15 +260,6 @@ const ProductDetails = () => {
   const handleAddToCart = (e) => {
     e.preventDefault();
     
-    // Check if user is logged in FIRST
-    if (!isLoggedIn()) {
-      showWarning('Please login to add items to cart');
-      setTimeout(() => {
-        navigate('/login');
-      }, 1000);
-      return;
-    }
-    
     // Mark all fields as touched to show errors
     setTouched({
       cameraModel: true,
@@ -279,9 +270,18 @@ const ProductDetails = () => {
       variant: true
     });
     
-    // Validate form
+    // Validate form FIRST before checking login
     if (!validateForm()) {
       showError('Please fill all required fields before adding to cart');
+      return;
+    }
+    
+    // Check if user is logged in AFTER form validation
+    if (!isLoggedIn()) {
+      showWarning('Please login to add items to cart');
+      setTimeout(() => {
+        navigate('/login');
+      }, 1000);
       return;
     }
     
@@ -313,15 +313,6 @@ const ProductDetails = () => {
   const handleBuyNow = (e) => {
     e.preventDefault();
     
-    // Check if user is logged in FIRST
-    if (!isLoggedIn()) {
-      showWarning('Please login to purchase items');
-      setTimeout(() => {
-        navigate('/login');
-      }, 1000);
-      return;
-    }
-    
     // Mark all fields as touched to show errors
     setTouched({
       cameraModel: true,
@@ -332,9 +323,18 @@ const ProductDetails = () => {
       variant: true
     });
     
-    // Validate form
+    // Validate form FIRST before checking login
     if (!validateForm()) {
       showError('Please fill all required fields before purchasing');
+      return;
+    }
+    
+    // Check if user is logged in AFTER form validation
+    if (!isLoggedIn()) {
+      showWarning('Please login to purchase items');
+      setTimeout(() => {
+        navigate('/login');
+      }, 1000);
       return;
     }
     
@@ -516,9 +516,9 @@ const ProductDetails = () => {
             className="relative cursor-pointer group"
             onClick={() => setShowLightbox(true)}
           >
-            <img src={imgSrc} alt={product.name} onError={handleImageError} />
+            <img src={imgSrc} alt={product.name} onError={handleImageError} style={{ borderRadius: '10px' }} />
             {/* Zoom overlay hint */}
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center" style={{ borderRadius: '10px' }}>
               <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-[#E8C547] rounded-full p-3">
                 <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
@@ -675,6 +675,31 @@ const ProductDetails = () => {
               </>
             )}
 
+            {/* Filter Thread Size - moved above Quantity */}
+            {!isTwinFlash && product.sizes && product.sizes.length > 0 && (
+              <div className="form-field">
+                <label className="form-label">Select Filter Thread size <span className="text-red-500 font-bold">*</span></label>
+                <select
+                  value={selectedSize || ''}
+                  onChange={(e) => setSelectedSize(e.target.value)}
+                  onBlur={() => handleBlur('size')}
+                  className={`${touched.size && errors.size ? "!border-red-500 !bg-red-500/10" : ""}`}
+                >
+                  <option value="">-- Select a size --</option>
+                  {product.sizes.map((size) => (
+                    <option key={size} value={size}>
+                      {size}
+                    </option>
+                  ))}
+                </select>
+                {touched.size && errors.size && (
+                  <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
+                    <span>⚠</span> {errors.size}
+                  </p>
+                )}
+              </div>
+            )}
+
             {/* Quantity */}
             <div className="form-field">
               <label htmlFor="quantity" className="form-label">
@@ -700,33 +725,7 @@ const ProductDetails = () => {
                   <span>⚠</span> {errors.quantity}
                 </p>
               )}
-              
             </div>
-
-            
-            {!isTwinFlash && product.sizes && product.sizes.length > 0 && (
-              <div className="form-field">
-                <label className="form-label">Select Filter Thread size <span className="text-red-500 font-bold">*</span></label>
-                <select
-                  value={selectedSize || ''}
-                  onChange={(e) => setSelectedSize(e.target.value)}
-                  onBlur={() => handleBlur('size')}
-                  className={`${touched.size && errors.size ? "!border-red-500 !bg-red-500/10" : ""}`}
-                >
-                  <option value="">-- Select a size --</option>
-                  {product.sizes.map((size) => (
-                    <option key={size} value={size}>
-                      {size}
-                    </option>
-                  ))}
-                </select>
-                {touched.size && errors.size && (
-                  <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
-                    <span>⚠</span> {errors.size}
-                  </p>
-                )}
-              </div>
-            )}
             <div className="product-actions">
               <button
                 className="btn btn-primary"

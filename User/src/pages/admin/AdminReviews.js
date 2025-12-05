@@ -10,7 +10,9 @@ import {
   ChevronRight,
   User,
   Calendar,
-  X
+  X,
+  Edit2,
+  Save
 } from 'lucide-react';
 import { useToast } from '../../components/Toast';
 
@@ -27,6 +29,9 @@ const AdminReviews = () => {
     pages: 1
   });
   const [deleteModal, setDeleteModal] = useState({ isOpen: false, review: null });
+  const [editModal, setEditModal] = useState({ isOpen: false, review: null });
+  const [editForm, setEditForm] = useState({ title: '', body: '', rating: 5, author: '' });
+  const [saving, setSaving] = useState(false);
   const [stats, setStats] = useState(null);
 
   useEffect(() => {
@@ -75,6 +80,50 @@ const AdminReviews = () => {
       fetchStats();
     } catch (err) {
       showError('Failed to delete review');
+    }
+  };
+
+  const openEditModal = (review) => {
+    setEditForm({
+      title: review.title || '',
+      body: review.body || '',
+      rating: review.rating || 5,
+      author: review.author || ''
+    });
+    setEditModal({ isOpen: true, review });
+  };
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleEditRating = (rating) => {
+    setEditForm(prev => ({ ...prev, rating }));
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editForm.title.trim() || !editForm.body.trim() || !editForm.author.trim()) {
+      showError('Please fill all fields');
+      return;
+    }
+
+    try {
+      setSaving(true);
+      await api.put(`/admin/reviews/${editModal.review._id}`, {
+        title: editForm.title,
+        body: editForm.body,
+        rating: editForm.rating,
+        author: editForm.author
+      });
+      showSuccess('Review updated successfully');
+      setEditModal({ isOpen: false, review: null });
+      fetchReviews();
+      fetchStats();
+    } catch (err) {
+      showError('Failed to update review');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -242,13 +291,22 @@ const AdminReviews = () => {
                     </div>
                   </div>
                   
-                  <button
-                    onClick={() => setDeleteModal({ isOpen: true, review })}
-                    className="p-2 rounded-lg text-red-500 hover:text-red-700 hover:bg-red-50 transition-all"
-                    title="Delete Review"
-                  >
-                    <Trash2 className="h-5 w-5" />
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => openEditModal(review)}
+                      className="p-2 rounded-lg text-blue-500 hover:text-blue-700 hover:bg-blue-50 transition-all"
+                      title="Edit Review"
+                    >
+                      <Edit2 className="h-5 w-5" />
+                    </button>
+                    <button
+                      onClick={() => setDeleteModal({ isOpen: true, review })}
+                      className="p-2 rounded-lg text-red-500 hover:text-red-700 hover:bg-red-50 transition-all"
+                      title="Delete Review"
+                    >
+                      <Trash2 className="h-5 w-5" />
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -314,6 +372,109 @@ const AdminReviews = () => {
                 className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
               >
                 Delete Review
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Modal */}
+      {editModal.isOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-6 max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Edit Review</h3>
+              <button
+                onClick={() => setEditModal({ isOpen: false, review: null })}
+                className="p-1 hover:bg-gray-100 rounded-lg"
+              >
+                <X className="h-5 w-5 text-gray-500" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              {/* Author */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Author Name
+                </label>
+                <input
+                  type="text"
+                  name="author"
+                  value={editForm.author}
+                  onChange={handleEditChange}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  placeholder="Enter author name"
+                />
+              </div>
+
+              {/* Title */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Review Title
+                </label>
+                <input
+                  type="text"
+                  name="title"
+                  value={editForm.title}
+                  onChange={handleEditChange}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  placeholder="Enter review title"
+                />
+              </div>
+
+              {/* Rating */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Rating
+                </label>
+                <div className="flex items-center gap-1">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => handleEditRating(star)}
+                      className="p-1 hover:scale-110 transition-transform"
+                    >
+                      <Star
+                        className={`h-8 w-8 ${star <= editForm.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
+                      />
+                    </button>
+                  ))}
+                  <span className="ml-2 text-sm text-gray-600">{editForm.rating}/5</span>
+                </div>
+              </div>
+
+              {/* Body */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Review Content
+                </label>
+                <textarea
+                  name="body"
+                  value={editForm.body}
+                  onChange={handleEditChange}
+                  rows={5}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none"
+                  placeholder="Enter review content"
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-3 justify-end mt-6">
+              <button
+                onClick={() => setEditModal({ isOpen: false, review: null })}
+                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveEdit}
+                disabled={saving}
+                className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:opacity-50 flex items-center gap-2"
+              >
+                <Save className="h-4 w-4" />
+                {saving ? 'Saving...' : 'Save Changes'}
               </button>
             </div>
           </div>

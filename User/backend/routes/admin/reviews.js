@@ -92,6 +92,38 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+// @route   PUT /api/admin/reviews/:id
+// @desc    Update review
+// @access  Private/Admin
+router.put('/:id', async (req, res) => {
+  try {
+    const { title, body, rating, author } = req.body;
+    
+    const review = await Review.findById(req.params.id);
+    
+    if (!review) {
+      return res.status(404).json({ message: 'Review not found' });
+    }
+
+    // Update fields
+    if (title !== undefined) review.title = title;
+    if (body !== undefined) review.body = body;
+    if (rating !== undefined) review.rating = rating;
+    if (author !== undefined) review.author = author;
+
+    await review.save();
+
+    res.json({
+      success: true,
+      message: 'Review updated successfully',
+      data: review
+    });
+  } catch (error) {
+    console.error('Update review error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // @route   GET /api/admin/reviews/stats
 // @desc    Get review statistics
 // @access  Private/Admin

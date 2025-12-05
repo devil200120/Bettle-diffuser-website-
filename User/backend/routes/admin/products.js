@@ -85,6 +85,7 @@ router.post('/', async (req, res) => {
       compatibility,
       sizes,
       variant,
+      variantPricing,
       isActive,
       rating
     } = req.body;
@@ -109,6 +110,7 @@ router.post('/', async (req, res) => {
       compatibility,
       sizes,
       variant,
+      variantPricing: variantPricing || undefined,
       isActive: isActive !== undefined ? isActive : true,
       rating: rating || 5
     });
@@ -145,6 +147,7 @@ router.put('/:id', async (req, res) => {
       compatibility,
       sizes,
       variant,
+      variantPricing,
       isActive,
       rating
     } = req.body;
@@ -177,6 +180,7 @@ router.put('/:id', async (req, res) => {
     product.compatibility = compatibility || product.compatibility;
     product.sizes = sizes || product.sizes;
     product.variant = variant || product.variant;
+    product.variantPricing = variantPricing !== undefined ? variantPricing : product.variantPricing;
     product.isActive = isActive !== undefined ? isActive : product.isActive;
     product.rating = rating !== undefined ? rating : product.rating;
 

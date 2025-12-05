@@ -14,6 +14,7 @@ const contactRoutes = require('./routes/contact');
 const reviewRoutes = require('./routes/reviews');
 const addressRoutes = require('./routes/address');
 const regionRoutes = require('./routes/region');
+const galleryRoutes = require('./routes/gallery');
 
 // Admin Route imports
 const adminAuthRoutes = require('./routes/admin/auth');
@@ -22,6 +23,7 @@ const adminProductRoutes = require('./routes/admin/products');
 const adminOrderRoutes = require('./routes/admin/orders');
 const adminUserRoutes = require('./routes/admin/users');
 const adminReviewRoutes = require('./routes/admin/reviews');
+const adminGalleryRoutes = require('./routes/admin/gallery');
 
 const app = express();
 
@@ -86,6 +88,7 @@ app.use('/api/contact', contactRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/address', addressRoutes);
 app.use('/api/region', regionRoutes);
+app.use('/api/gallery', galleryRoutes);
 
 // Admin Routes
 app.use('/api/admin/auth', adminAuthRoutes);
@@ -94,6 +97,7 @@ app.use('/api/admin/products', adminProductRoutes);
 app.use('/api/admin/orders', adminOrderRoutes);
 app.use('/api/admin/users', adminUserRoutes);
 app.use('/api/admin/reviews', adminReviewRoutes);
+app.use('/api/admin/gallery', adminGalleryRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

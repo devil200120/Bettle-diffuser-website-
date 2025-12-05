@@ -41,6 +41,7 @@ const AdminProductForm = () => {
     compatibility: [''],
     sizes: [''],
     variant: [''],
+    variantPricing: {}, // Store variant-specific pricing
     isActive: true,
     rating: 5
   });
@@ -56,6 +57,20 @@ const AdminProductForm = () => {
       setFetching(true);
       const response = await api.get(`/admin/products/${id}`);
       const product = response.data.data;
+      
+      // Convert variantPricing Map to object for form
+      let variantPricingObj = {};
+      if (product.variantPricing) {
+        // Handle both Map and plain object formats
+        if (product.variantPricing instanceof Map || typeof product.variantPricing.entries === 'function') {
+          for (const [key, value] of product.variantPricing.entries()) {
+            variantPricingObj[key] = value;
+          }
+        } else if (typeof product.variantPricing === 'object') {
+          variantPricingObj = { ...product.variantPricing };
+        }
+      }
+      
       setFormData({
         name: product.name || '',
         subtitle: product.subtitle || '',
@@ -74,6 +89,7 @@ const AdminProductForm = () => {
         compatibility: product.compatibility?.length ? product.compatibility : [''],
         sizes: product.sizes?.length ? product.sizes : [''],
         variant: product.variant?.length ? product.variant : [''],
+        variantPricing: variantPricingObj,
         isActive: product.isActive ?? true,
         rating: product.rating || 5
       });
@@ -115,6 +131,42 @@ const AdminProductForm = () => {
     }));
   };
 
+  // Handle variant pricing changes
+  const handleVariantPriceChange = (variantName, field, value) => {
+    setFormData(prev => {
+      const newVariantPricing = { ...prev.variantPricing };
+      if (!newVariantPricing[variantName]) {
+        newVariantPricing[variantName] = {
+          price: 0,
+          internationalPrice: { qty1: 0, qty2: 0, qty3: 0, qty4: 0, qty5: 0, single: 0, double: 0 }
+        };
+      }
+      
+      if (field === 'price') {
+        newVariantPricing[variantName].price = parseFloat(value) || 0;
+      } else if (field.startsWith('intl_')) {
+        const intlField = field.replace('intl_', '');
+        if (!newVariantPricing[variantName].internationalPrice) {
+          newVariantPricing[variantName].internationalPrice = { qty1: 0, qty2: 0, qty3: 0, qty4: 0, qty5: 0, single: 0, double: 0 };
+        }
+        newVariantPricing[variantName].internationalPrice[intlField] = parseFloat(value) || 0;
+      }
+      
+      return { ...prev, variantPricing: newVariantPricing };
+    });
+  };
+
+  // Check if product has multiple non-empty variants
+  const hasMultipleVariants = () => {
+    const nonEmptyVariants = formData.variant.filter(v => v.trim());
+    return nonEmptyVariants.length > 1;
+  };
+
+  // Get non-empty variants
+  const getNonEmptyVariants = () => {
+    return formData.variant.filter(v => v.trim());
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -126,6 +178,26 @@ const AdminProductForm = () => {
 
     try {
       setLoading(true);
+      
+      // Build variant pricing object for submission
+      const variantPricingData = {};
+      if (hasMultipleVariants()) {
+        getNonEmptyVariants().forEach(variantName => {
+          const vp = formData.variantPricing[variantName] || {};
+          variantPricingData[variantName] = {
+            price: vp.price || parseFloat(formData.price) || 0,
+            internationalPrice: {
+              qty1: vp.internationalPrice?.qty1 || parseFloat(formData.internationalPriceQty1) || 0,
+              qty2: vp.internationalPrice?.qty2 || parseFloat(formData.internationalPriceQty2) || 0,
+              qty3: vp.internationalPrice?.qty3 || parseFloat(formData.internationalPriceQty3) || 0,
+              qty4: vp.internationalPrice?.qty4 || parseFloat(formData.internationalPriceQty4) || 0,
+              qty5: vp.internationalPrice?.qty5 || parseFloat(formData.internationalPriceQty5) || 0,
+              single: vp.internationalPrice?.qty1 || parseFloat(formData.internationalPriceQty1) || 0,
+              double: vp.internationalPrice?.qty2 || parseFloat(formData.internationalPriceQty2) || 0
+            }
+          };
+        });
+      }
       
       const cleanedData = {
         name: formData.name,
@@ -151,6 +223,7 @@ const AdminProductForm = () => {
         compatibility: formData.compatibility.filter(c => c.trim()),
         sizes: formData.sizes.filter(s => s.trim()),
         variant: formData.variant.filter(v => v.trim()),
+        variantPricing: hasMultipleVariants() ? variantPricingData : undefined,
         isActive: formData.isActive
       };
 
@@ -443,6 +516,124 @@ const AdminProductForm = () => {
                 </p>
               </div>
             </div>
+
+            {/* Variant-Specific Pricing - Only shown when multiple variants exist */}
+            {hasMultipleVariants() && (
+              <div className={cardClass}>
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
+                    <DollarSign className="h-5 w-5 text-amber-600" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-semibold text-gray-900">Variant-Specific Pricing</h2>
+                    <p className="text-sm text-gray-500">Set different prices for each variant (e.g., LED vs Non-LED)</p>
+                  </div>
+                </div>
+                
+                <div className="space-y-6">
+                  {getNonEmptyVariants().map((variantName, index) => (
+                    <div key={index} className="p-4 bg-gray-50 rounded-xl border border-gray-200">
+                      <h3 className="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                        <span className="w-6 h-6 bg-amber-500 text-white rounded-full flex items-center justify-center text-xs">
+                          {index + 1}
+                        </span>
+                        {variantName} Variant
+                      </h3>
+                      
+                      {/* Indian Price (INR) */}
+                      <div className="mb-4">
+                        <label className={labelClass}>Price (₹) for {variantName} *</label>
+                        <input
+                          type="number"
+                          value={formData.variantPricing[variantName]?.price || ''}
+                          onChange={(e) => handleVariantPriceChange(variantName, 'price', e.target.value)}
+                          className={inputClass}
+                          min="0"
+                          step="0.01"
+                          placeholder={`Enter price for ${variantName}`}
+                        />
+                      </div>
+                      
+                      {/* International Prices (USD) */}
+                      <div className="mt-4">
+                        <label className="block text-sm font-medium mb-3 text-gray-600">
+                          International Prices (USD) for {variantName}
+                        </label>
+                        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                          <div>
+                            <label className="block text-xs text-gray-500 mb-1">Qty 1 ($)</label>
+                            <input
+                              type="number"
+                              value={formData.variantPricing[variantName]?.internationalPrice?.qty1 || ''}
+                              onChange={(e) => handleVariantPriceChange(variantName, 'intl_qty1', e.target.value)}
+                              className={`${inputClass} text-sm py-2`}
+                              min="0"
+                              step="1"
+                              placeholder="0"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs text-gray-500 mb-1">Qty 2 ($)</label>
+                            <input
+                              type="number"
+                              value={formData.variantPricing[variantName]?.internationalPrice?.qty2 || ''}
+                              onChange={(e) => handleVariantPriceChange(variantName, 'intl_qty2', e.target.value)}
+                              className={`${inputClass} text-sm py-2`}
+                              min="0"
+                              step="1"
+                              placeholder="0"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs text-gray-500 mb-1">Qty 3 ($)</label>
+                            <input
+                              type="number"
+                              value={formData.variantPricing[variantName]?.internationalPrice?.qty3 || ''}
+                              onChange={(e) => handleVariantPriceChange(variantName, 'intl_qty3', e.target.value)}
+                              className={`${inputClass} text-sm py-2`}
+                              min="0"
+                              step="1"
+                              placeholder="0"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs text-gray-500 mb-1">Qty 4 ($)</label>
+                            <input
+                              type="number"
+                              value={formData.variantPricing[variantName]?.internationalPrice?.qty4 || ''}
+                              onChange={(e) => handleVariantPriceChange(variantName, 'intl_qty4', e.target.value)}
+                              className={`${inputClass} text-sm py-2`}
+                              min="0"
+                              step="1"
+                              placeholder="0"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs text-gray-500 mb-1">Qty 5 ($)</label>
+                            <input
+                              type="number"
+                              value={formData.variantPricing[variantName]?.internationalPrice?.qty5 || ''}
+                              onChange={(e) => handleVariantPriceChange(variantName, 'intl_qty5', e.target.value)}
+                              className={`${inputClass} text-sm py-2`}
+                              min="0"
+                              step="1"
+                              placeholder="0"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                <div className="mt-4 p-3 bg-amber-50 rounded-xl">
+                  <p className="text-sm text-amber-700">
+                    <strong>Note:</strong> When a product has multiple variants, each variant can have its own price. 
+                    The base price above is used as a fallback. Customers will see variant-specific prices when they select a variant.
+                  </p>
+                </div>
+              </div>
+            )}
 
             {/* Features */}
             <div className={cardClass}>

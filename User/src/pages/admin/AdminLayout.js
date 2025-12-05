@@ -14,7 +14,8 @@ import {
   Bell,
   Search,
   ChevronLeft,
-  MessageSquare
+  MessageSquare,
+  Image
 } from 'lucide-react';
 
 const AdminLayout = () => {
@@ -69,6 +70,7 @@ const AdminLayout = () => {
     { name: 'Orders', href: '/admin/orders', icon: ShoppingCart },
     { name: 'Users', href: '/admin/users', icon: Users },
     { name: 'Reviews', href: '/admin/reviews', icon: MessageSquare },
+    { name: 'Gallery', href: '/admin/gallery', icon: Image },
   ];
 
   const isActive = (href) => {

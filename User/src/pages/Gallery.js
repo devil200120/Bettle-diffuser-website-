@@ -1,89 +1,140 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Footer from '../components/Footer';
+
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
+
+// Fallback static images (used when API returns no images)
+const staticImages = [
+  {
+    id: 1,
+    url: "https://ik.imagekit.io/ghpc4i0u6/1-Hyllus-semicupreus-female.jpg",
+    title: "Hyllus Semicupreus Female",
+    category: "Spiders"
+  },
+  {
+    id: 2,
+    url: "https://ik.imagekit.io/ghpc4i0u6/7-Raorchestes-jayarami.jpg",
+    title: "Raorchestes Jayarami",
+    category: "Frogs"
+  },
+  {
+    id: 3,
+    url: "https://ik.imagekit.io/ghpc4i0u6/6-Assasin-bugs.jpg",
+    title: "Assassin Bugs",
+    category: "Insects"
+  },
+  {
+    id: 4,
+    url: "https://ik.imagekit.io/ghpc4i0u6/5-Robber-fly-with-kill.jpg",
+    title: "Robber Fly with Kill",
+    category: "Insects"
+  },
+  {
+    id: 5,
+    url: "https://ik.imagekit.io/ghpc4i0u6/Final.jpg",
+    title: "Macro Shot",
+    category: "Featured"
+  },
+  {
+    id: 6,
+    url: "https://ik.imagekit.io/ghpc4i0u6/2-Robber-fly-with-kill.jpg",
+    title: "Robber Fly with Prey",
+    category: "Insects"
+  },
+  {
+    id: 7,
+    url: "https://ik.imagekit.io/ghpc4i0u6/Untitled-1.jpg",
+    title: "Macro Photography",
+    category: "Featured"
+  },
+  {
+    id: 8,
+    url: "https://ik.imagekit.io/ghpc4i0u6/8-Raorchestes-luteolus.jpg",
+    title: "Raorchestes Luteolus",
+    category: "Frogs"
+  },
+  {
+    id: 9,
+    url: "https://ik.imagekit.io/ghpc4i0u6/Ant-mimic.jpg",
+    title: "Ant Mimic Spider",
+    category: "Spiders"
+  },
+  {
+    id: 10,
+    url: "https://ik.imagekit.io/ghpc4i0u6/Untitled-2.jpg",
+    title: "Nature Close-up",
+    category: "Featured"
+  },
+  {
+    id: 11,
+    url: "https://ik.imagekit.io/ghpc4i0u6/Final-contrast.jpg",
+    title: "High Contrast Macro",
+    category: "Featured"
+  },
+  {
+    id: 12,
+    url: "https://ik.imagekit.io/ghpc4i0u6/PB160315-copy.jpg",
+    title: "Wildlife Macro",
+    category: "Featured"
+  },
+  {
+    id: 13,
+    url: "https://ik.imagekit.io/ghpc4i0u6/P9152323-copy-3.jpg",
+    title: "Detailed Macro Shot",
+    category: "Featured"
+  }
+];
 
 const Gallery = () => {
   const [selectedImage, setSelectedImage] = useState(null);
+  const [images, setImages] = useState([]);
+  const [categories, setCategories] = useState(['All']);
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [loading, setLoading] = useState(true);
 
-  const images = [
-    {
-      id: 1,
-      url: "https://ik.imagekit.io/ghpc4i0u6/1-Hyllus-semicupreus-female.jpg",
-      title: "Hyllus Semicupreus Female",
-      category: "Spiders"
-    },
-    {
-      id: 2,
-      url: "https://ik.imagekit.io/ghpc4i0u6/7-Raorchestes-jayarami.jpg",
-      title: "Raorchestes Jayarami",
-      category: "Frogs"
-    },
-    {
-      id: 3,
-      url: "https://ik.imagekit.io/ghpc4i0u6/6-Assasin-bugs.jpg",
-      title: "Assassin Bugs",
-      category: "Insects"
-    },
-    {
-      id: 4,
-      url: "https://ik.imagekit.io/ghpc4i0u6/5-Robber-fly-with-kill.jpg",
-      title: "Robber Fly with Kill",
-      category: "Insects"
-    },
-    {
-      id: 5,
-      url: "https://ik.imagekit.io/ghpc4i0u6/Final.jpg",
-      title: "Macro Shot",
-      category: "Featured"
-    },
-    {
-      id: 6,
-      url: "https://ik.imagekit.io/ghpc4i0u6/2-Robber-fly-with-kill.jpg",
-      title: "Robber Fly with Prey",
-      category: "Insects"
-    },
-    {
-      id: 7,
-      url: "https://ik.imagekit.io/ghpc4i0u6/Untitled-1.jpg",
-      title: "Macro Photography",
-      category: "Featured"
-    },
-    {
-      id: 8,
-      url: "https://ik.imagekit.io/ghpc4i0u6/8-Raorchestes-luteolus.jpg",
-      title: "Raorchestes Luteolus",
-      category: "Frogs"
-    },
-    {
-      id: 9,
-      url: "https://ik.imagekit.io/ghpc4i0u6/Ant-mimic.jpg",
-      title: "Ant Mimic Spider",
-      category: "Spiders"
-    },
-    {
-      id: 10,
-      url: "https://ik.imagekit.io/ghpc4i0u6/Untitled-2.jpg",
-      title: "Nature Close-up",
-      category: "Featured"
-    },
-    {
-      id: 11,
-      url: "https://ik.imagekit.io/ghpc4i0u6/Final-contrast.jpg",
-      title: "High Contrast Macro",
-      category: "Featured"
-    },
-    {
-      id: 12,
-      url: "https://ik.imagekit.io/ghpc4i0u6/PB160315-copy.jpg",
-      title: "Wildlife Macro",
-      category: "Featured"
-    },
-    {
-      id: 13,
-      url: "https://ik.imagekit.io/ghpc4i0u6/P9152323-copy-3.jpg",
-      title: "Detailed Macro Shot",
-      category: "Featured"
+  useEffect(() => {
+    fetchGallery();
+  }, []);
+
+  const fetchGallery = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${API_URL}/gallery`);
+      const data = await response.json();
+      
+      if (data.success && data.data && data.data.length > 0) {
+        // Transform API data to match component structure
+        const transformedImages = data.data.map((img, index) => ({
+          id: img._id || index,
+          url: img.imageUrl,
+          title: img.title,
+          category: img.category
+        }));
+        setImages(transformedImages);
+        
+        // Extract unique categories
+        const uniqueCategories = ['All', ...new Set(transformedImages.map(img => img.category))];
+        setCategories(uniqueCategories);
+      } else {
+        // Use static images as fallback
+        setImages(staticImages);
+        const uniqueCategories = ['All', ...new Set(staticImages.map(img => img.category))];
+        setCategories(uniqueCategories);
+      }
+    } catch (error) {
+      console.error('Error fetching gallery:', error);
+      // Use static images as fallback
+      setImages(staticImages);
+      const uniqueCategories = ['All', ...new Set(staticImages.map(img => img.category))];
+      setCategories(uniqueCategories);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  const filteredImages = selectedCategory === 'All' 
+    ? images 
+    : images.filter(img => img.category === selectedCategory);
 
   const openLightbox = (image) => {
     setSelectedImage(image);
@@ -109,11 +160,37 @@ const Gallery = () => {
         </div>
       </div>
 
+      {/* Category Filter */}
+      <div className="px-4 pb-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-wrap justify-center gap-2">
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                  selectedCategory === category
+                    ? 'bg-[#E8C547] text-black'
+                    : 'bg-[#2a2a2a] text-gray-300 hover:bg-[#3a3a3a]'
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Gallery Grid */}
       <div className="px-4 pb-16">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {images.map((image) => (
+          {loading ? (
+            <div className="flex items-center justify-center py-20">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#E8C547]"></div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {filteredImages.map((image) => (
               <div
                 key={image.id}
                 className="relative group cursor-pointer overflow-hidden rounded-xl aspect-square bg-[#2a2a2a]"
@@ -146,7 +223,8 @@ const Gallery = () => {
                 </div>
               </div>
             ))}
-          </div>
+            </div>
+          )}
         </div>
       </div>
 

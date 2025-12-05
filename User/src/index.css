@@ -1135,7 +1135,7 @@ body:not(:has(.admin-page)) {
 .testimonial-container {
   display: flex;
   flex-wrap: wrap;
-  min-width: 400px;
+  /* min-width: 400px; */
   gap: 40px;
   padding: 60px;
   padding-top: 100px;

@@ -37,6 +37,7 @@ import AdminOrders from './pages/admin/AdminOrders';
 import AdminOrderView from './pages/admin/AdminOrderView';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminReviews from './pages/admin/AdminReviews';
+import AdminGallery from './pages/admin/AdminGallery';
 
 // Layout component that conditionally renders Navbar
 const AppLayout = ({ children }) => {
@@ -96,6 +97,7 @@ function App() {
                 <Route path="orders/:id" element={<AdminOrderView />} />
                 <Route path="users" element={<AdminUsers />} />
                 <Route path="reviews" element={<AdminReviews />} />
+                <Route path="gallery" element={<AdminGallery />} />
               </Route>
             </Routes>
           </AppLayout>
