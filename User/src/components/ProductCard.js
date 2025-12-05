@@ -4,12 +4,9 @@ import { useRegion } from "../context/RegionContext";
 
 // Fallback placeholder images from local images folder
 const fallbackImages = [
-  '/images/Pro Grey Background.jpg',
-  '/images/Lite grey background.jpg',
+  '/images/Pro Grey Background.jpg', 
   '/images/Twin Grrey Background.jpg',
-  '/images/Pro White Background.jpg',
   '/images/Beetle Lite White Background.jpg',
-  '/images/Twin Beetle Diffusers White Background.jpg',
 ];
 
 const getRandomFallback = () => {
@@ -63,7 +60,7 @@ const ProductCard = ({ product }) => {
         </div>
         {!isIndia && !priceInfo.needsIntlPricing && product.internationalPrice?.double > 0 && (
           <p className="text-xs text-center text-green-400 mt-1">
-            Buy 2 or more to save more 
+            (Buy 2 or more to save more) 
           </p>
         )}
         <div className="product-buy">

@@ -5,24 +5,24 @@ const AssemblyVideos = () => {
   const videos = [
     {
       id: 1,
-      title: "Beetle Diffuser Pro Assembly Guide",
-      description: "Learn how to assemble your Beetle Diffuser Pro step by step.",
-      youtubeId: "OsdgVmn0Hfk",
-      youtubeUrl: "https://youtu.be/OsdgVmn0Hfk"
+      title: "Beetle Diffuser Pro v2 Assembly Video",
+      description: "Learn how to assemble your Beetle Diffuser Pro version 2 step by step. ",
+      youtubeId: "9GHRxSJkE1M",
+      youtubeUrl: "https://youtu.be/9GHRxSJkE1M"
     },
     {
       id: 2,
-      title: "Beetle Diffuser Lite Setup Tutorial",
-      description: "Complete guide on setting up your Beetle Diffuser Lite for macro photography.",
-      youtubeId: "8RZyiuWr668",
-      youtubeUrl: "https://youtu.be/8RZyiuWr668"
+      title: "Beetle Diffuser Lite v2 Assembly Video",
+      description: "Learn how to assemble your Beetle Diffuser Lite version 2 step by step.",
+      youtubeId: "qUtLdRH_C5Y",
+      youtubeUrl: "https://youtu.be/qUtLdRH_C5Y"
     },
     {
       id: 3,
-      title: "Beetle Diffuser Tips & Tricks",
-      description: "Pro tips for getting the best results with your Beetle Diffuser.",
-      youtubeId: "9GHRxSJkE1M",
-      youtubeUrl: "https://youtu.be/9GHRxSJkE1M"
+      title: "Twin Beetle Diffuser Assembly Video",
+      description: "Complete guide on setting up your Twin Beetle Diffusers for macro photography.",
+      youtubeId: "8RZyiuWr668",
+      youtubeUrl: "https://youtu.be/8RZyiuWr668"
     }
   ];
 
