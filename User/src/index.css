@@ -754,11 +754,17 @@ body:not(:has(.admin-page)) {
 @media (max-width: 760px) {
   .product-details-info {
     padding: 0px;
+    text-align: center;
   }
   .product-details-info h1 {
     /* padding: 0 ; */
+    margin-top: 12px;
     text-align: center;
-    font-size: 1.82rem;
+    font-size: 1.92rem;
+    font-weight: 500;
+  }
+  .product-price{
+    font-size: 1.2rem;
     font-weight: 500;
   }
 }
@@ -792,6 +798,18 @@ body:not(:has(.admin-page)) {
 .spec-value {
   flex: 1;
   color: rgba(255, 255, 255, 0.9);
+}
+@media(max-width:760px){
+  .specifications-table {
+    padding: 1rem;
+    margin-top: 1.5rem;
+  }
+  .spec-row {
+    padding: 0.5rem 0;
+  }
+  .spec-label {
+    width: 20px;
+  }
 }
 
 /* Cart Styles */

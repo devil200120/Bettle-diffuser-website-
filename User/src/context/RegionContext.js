@@ -84,7 +84,7 @@ export const RegionProvider = ({ children }) => {
         price: product.price,
         currency: 'INR',
         symbol: '₹',
-        formatted: `₹${product.price?.toLocaleString('en-IN') || 0}`
+        formatted: `₹${product.price?.toLocaleString('en-IN') || 0} /-`
       };
     } else {
       // For international: use international price if available, otherwise convert INR to approximate USD

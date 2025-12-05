@@ -484,7 +484,7 @@ const ProductDetails = () => {
           <h2>Compatibility</h2>
           {product.compatibility.map((comp, index) => (
             <div key={index} className="spec-row">
-              <div className="spec-label">✓</div>
+              <div className="spec-label">»</div>
               <div className="spec-value">{comp}</div>
             </div>
           ))}
@@ -825,15 +825,15 @@ const ProductDetails = () => {
           {/* <h2>Guides</h2> */}
         
           <div className="spec-row">
-            <div className="spec-label">✓</div>
+            <div className="spec-label">»</div>
             <div className="spec-value">Though most flash models are supported, a few small flashes—such as the Meike MK-320 and Olympus FL-LM3—are not compatible.</div>
           </div>
           <div className="spec-row">
-            <div className="spec-label">✓</div>
+            <div className="spec-label">»</div>
             <div className="spec-value">Most macro lenses use the thread sizes listed in the dropdown, and a matching ring is included. If your lens size isn't listed, select “Filter thread size not listed” — you can still use the diffuser by tightening the cord panel around the lens.</div>
           </div>
           <div className="spec-row">
-            <div className="spec-label">✓</div>
+            <div className="spec-label">»</div>
             <div className="spec-value">Lenses below Physical length of 2.5 inches (6.3 cm)  are not supported</div>
           </div>
        
@@ -844,7 +844,7 @@ const ProductDetails = () => {
           <h2>Guides</h2>
           {product.loader.map((load, index) => (
             <div key={index} className="spec-row">
-              <div className="spec-label">✓</div>
+              <div className="spec-label">»</div>
               <div className="spec-value">{load}</div>
             </div>
           ))}
@@ -934,7 +934,7 @@ const ProductDetails = () => {
           </div>
           <div className="spec-row">
             <div className="spec-label">•</div>
-            <div className="spec-value">Raynox holder (Optional)</div>
+            <div className="spec-value">Raynox holder </div>
           </div>
         </div>
       )}
