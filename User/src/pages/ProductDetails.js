@@ -544,7 +544,7 @@ const ProductDetails = () => {
                   </span>
                   {/* Show variant price info */}
                   {product.variantPricing && selectedVariant && (
-                    <p className="text-sm text-gray-400 mt-1">
+                    <p className="text-sm text-gray-400 my-2">
                       {selectedVariant} variant selected
                     </p>
                   )}
@@ -558,6 +558,31 @@ const ProductDetails = () => {
               )}
               <p className="product-description">{product.description}</p>
             </div>
+
+            {/* Variant Selection (if product has variants) */}
+            {product.variant && product.variant.length > 0 && (
+              <div className="form-field">
+                <label className="form-label">Select Variant <span className="text-red-500 font-bold">*</span></label>
+                <select
+                  value={selectedVariant}
+                  onChange={(e) => setSelectedVariant(e.target.value)}
+                  onBlur={() => handleBlur('variant')}
+                  className={`${touched.variant && errors.variant ? "!border-red-500 !bg-red-500/10" : ""}`}
+                >
+                  <option value="">-- Select a variant --</option>
+                  {product.variant.map((v) => (
+                    <option key={v} value={v}>
+                      {v}
+                    </option>
+                  ))}
+                </select>
+                {touched.variant && errors.variant && (
+                  <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
+                    <span>⚠</span> {errors.variant}
+                  </p>
+                )}
+              </div>
+            )}
 
             {/* Camera, Lens, Flash models - Hidden for Twin Flash */}
             {!isTwinFlash && (
@@ -678,30 +703,7 @@ const ProductDetails = () => {
               
             </div>
 
-            {/* Variant Selection (if product has variants) */}
-            {product.variant && product.variant.length > 0 && (
-              <div className="form-field">
-                <label className="form-label">Select Variant <span className="text-red-500 font-bold">*</span></label>
-                <select
-                  value={selectedVariant}
-                  onChange={(e) => setSelectedVariant(e.target.value)}
-                  onBlur={() => handleBlur('variant')}
-                  className={`${touched.variant && errors.variant ? "!border-red-500 !bg-red-500/10" : ""}`}
-                >
-                  <option value="">-- Select a variant --</option>
-                  {product.variant.map((v) => (
-                    <option key={v} value={v}>
-                      {v}
-                    </option>
-                  ))}
-                </select>
-                {touched.variant && errors.variant && (
-                  <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
-                    <span>⚠</span> {errors.variant}
-                  </p>
-                )}
-              </div>
-            )}
+            
             {!isTwinFlash && product.sizes && product.sizes.length > 0 && (
               <div className="form-field">
                 <label className="form-label">Select Filter Thread size <span className="text-red-500 font-bold">*</span></label>

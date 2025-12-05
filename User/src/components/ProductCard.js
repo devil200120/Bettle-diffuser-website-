@@ -69,6 +69,7 @@ const ProductCard = ({ product }) => {
         <div className="product-buy">
           <button className="order-now-btn" onClick={handleOrderNow}>Order Now</button>
         </div>
+        <p>(Inclusive of Free shipping*)</p>
       </div>
     </div>
   );

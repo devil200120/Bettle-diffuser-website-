@@ -75,7 +75,7 @@ const Home = () => {
       <section className="hero">
         <div className="hero-container">
           <div className="hero-content">
-            <div className="hero-badge">🏆 Award-Winning Design</div>
+            {/* <div className="hero-badge">🏆 Award-Winning Design</div> */}
             <h1 className="hero-title">Innovation in Macro Photography</h1>
             <p className="hero-subtitle">
               Professional-grade diffusers designed for perfection. Completely customized
