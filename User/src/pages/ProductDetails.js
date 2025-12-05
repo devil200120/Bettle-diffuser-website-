@@ -923,7 +923,7 @@ const ProductDetails = () => {
           </div>
           <div className="spec-row">
             <div className="spec-label">•</div>
-            <div className="spec-value">Raynox holder (Optional)</div>
+            <div className="spec-value">Raynox holder </div>
           </div>
         </div>
       )}
