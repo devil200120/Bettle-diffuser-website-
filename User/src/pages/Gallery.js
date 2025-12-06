@@ -154,9 +154,9 @@ const Gallery = () => {
           <h1 className="text-4xl md:text-5xl font-bold text-[#E8C547] mb-4">
             Photo Gallery
           </h1>
-          <p className="text-gray-300 text-lg max-w-2xl mx-auto">
+          {/* <p className="text-gray-300 text-lg max-w-2xl mx-auto">
             Stunning macro photography captured using Beetle Diffuser. See the incredible detail and lighting quality achieved by our community of photographers.
-          </p>
+          </p> */}
         </div>
       </div>
 

@@ -504,8 +504,11 @@ body:not(:has(.admin-page)) {
   object-fit: fill;
 }
 @media (max-width: 900px) {
+  .products-section{
+    padding: 5rem 1rem;
+  }
   .product-image img {
-    min-height: 300px;
+    min-height: 240px;
     max-height: 400px;
   }
 }
@@ -1484,6 +1487,7 @@ body:not(:has(.admin-page)) {
     font-size: 1.8rem;
   }
 
+  .footer{margin-top: 0px;}
   .footer-content {
     grid-template-columns: 1fr;
   }
