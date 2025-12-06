@@ -110,14 +110,26 @@ const AdminAssemblyVideos = () => {
         xhr.setRequestHeader('Authorization', `Bearer ${token}`);
         
         xhr.onload = () => {
-          if (xhr.status >= 200 && xhr.status < 300) {
-            resolve(JSON.parse(xhr.response));
-          } else {
-            reject(JSON.parse(xhr.response));
+          try {
+            const data = JSON.parse(xhr.response);
+            if (xhr.status >= 200 && xhr.status < 300) {
+              resolve(data);
+            } else {
+              reject({ response: { data } });
+            }
+          } catch (e) {
+            // If response is not JSON, return raw response
+            reject({ 
+              response: { 
+                data: { 
+                  message: `Server error: ${xhr.statusText || 'Unknown error'}. Status: ${xhr.status}` 
+                } 
+              } 
+            });
           }
         };
         
-        xhr.onerror = () => reject({ message: 'Network error' });
+        xhr.onerror = () => reject({ response: { data: { message: 'Network error. Check if server is running.' } } });
         xhr.send(submitData);
       });
       
