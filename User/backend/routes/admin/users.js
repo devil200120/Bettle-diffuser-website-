@@ -3,6 +3,55 @@ const router = express.Router();
 const User = require('../../models/User');
 const bcrypt = require('bcryptjs');
 
+// @route   POST /api/admin/users/create-admin
+// @desc    Create a new admin user
+// @access  Private/Admin
+router.post('/create-admin', async (req, res) => {
+  try {
+    const { name, email, password, phone, address } = req.body;
+
+    // Validation
+    if (!name || !email || !password || !phone) {
+      return res.status(400).json({ message: 'Please provide all required fields' });
+    }
+
+    // Check if user exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: 'User with this email already exists' });
+    }
+
+    // Create admin user
+    const user = new User({
+      name,
+      email,
+      password, // Will be hashed by pre-save hook
+      phone,
+      address: address || {
+        formattedAddress: 'Admin Office',
+        coordinates: { lat: 0, lng: 0 }
+      },
+      isAdmin: true,
+      isActive: true,
+      isVerified: true
+    });
+
+    await user.save();
+
+    const userResponse = user.toObject();
+    delete userResponse.password;
+
+    res.status(201).json({
+      success: true,
+      message: 'Admin user created successfully',
+      data: userResponse
+    });
+  } catch (error) {
+    console.error('Create admin error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // @route   GET /api/admin/users
 // @desc    Get all users with pagination
 // @access  Private/Admin
@@ -241,6 +290,34 @@ router.patch('/:id/ban', async (req, res) => {
     });
   } catch (error) {
     console.error('Ban user error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// @route   PATCH /api/admin/users/:id/toggle-admin
+// @desc    Toggle user admin status
+// @access  Private/Admin
+router.patch('/:id/toggle-admin', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.isAdmin = !user.isAdmin;
+    await user.save();
+
+    const userResponse = user.toObject();
+    delete userResponse.password;
+
+    res.json({
+      success: true,
+      message: `User ${user.isAdmin ? 'promoted to admin' : 'removed from admin'} successfully`,
+      data: userResponse
+    });
+  } catch (error) {
+    console.error('Toggle admin status error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });

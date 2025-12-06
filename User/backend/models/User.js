@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
   address: {
     formattedAddress: {
       type: String,
-      required: true
+      required: false
     },
     street: String,
     city: String,
@@ -35,8 +35,8 @@ const userSchema = new mongoose.Schema({
     country: { type: String, default: 'India' },
     placeId: String, // Google Maps Place ID
     coordinates: {
-      lat: { type: Number, required: true },
-      lng: { type: Number, required: true }
+      lat: { type: Number, required: false },
+      lng: { type: Number, required: false }
     }
   },
   isActive: {
@@ -52,6 +52,10 @@ const userSchema = new mongoose.Schema({
   },
   bannedAt: {
     type: Date
+  },
+  isAdmin: {
+    type: Boolean,
+    default: false
   },
   isVerified: {
     type: Boolean,

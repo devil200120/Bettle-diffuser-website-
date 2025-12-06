@@ -38,6 +38,7 @@ import AdminOrderView from './pages/admin/AdminOrderView';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminReviews from './pages/admin/AdminReviews';
 import AdminGallery from './pages/admin/AdminGallery';
+import AdminAssemblyVideos from './pages/admin/AdminAssemblyVideos';
 
 // Layout component that conditionally renders Navbar
 const AppLayout = ({ children }) => {
@@ -98,6 +99,7 @@ function App() {
                 <Route path="users" element={<AdminUsers />} />
                 <Route path="reviews" element={<AdminReviews />} />
                 <Route path="gallery" element={<AdminGallery />} />
+                <Route path="assembly-videos" element={<AdminAssemblyVideos />} />
               </Route>
             </Routes>
           </AppLayout>

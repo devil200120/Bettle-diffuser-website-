@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const path = require('path');
 require('dotenv').config();
 
 // Route imports
@@ -15,6 +16,7 @@ const reviewRoutes = require('./routes/reviews');
 const addressRoutes = require('./routes/address');
 const regionRoutes = require('./routes/region');
 const galleryRoutes = require('./routes/gallery');
+const assemblyVideosRoutes = require('./routes/assemblyVideos');
 
 // Admin Route imports
 const adminAuthRoutes = require('./routes/admin/auth');
@@ -25,12 +27,13 @@ const adminUserRoutes = require('./routes/admin/users');
 const adminReviewRoutes = require('./routes/admin/reviews');
 const adminGalleryRoutes = require('./routes/admin/gallery');
 const adminUploadRoutes = require('./routes/admin/upload');
+const adminAssemblyVideosRoutes = require('./routes/admin/assemblyVideos');
 
 const app = express();
 
 // Trust proxy - Required for Render, Heroku, and other cloud platforms
 // This allows Express to correctly read x-forwarded-for headers for client IP
-app.set('trust proxy', true);
+app.set('trust proxy', 1);
 
 // Security middleware
 app.use(helmet({
@@ -41,7 +44,10 @@ app.use(helmet({
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 500, // limit each IP to 500 requests per windowMs
-  message: 'Too many requests from this IP'
+  message: 'Too many requests from this IP',
+  standardHeaders: true,
+  legacyHeaders: false,
+  validate: { trustProxy: false }
 });
 app.use('/api/', limiter);
 
@@ -97,6 +103,9 @@ app.use((req, res, next) => {
   });
 });
 
+// Static file serving for video uploads
+app.use('/api/uploads/videos', express.static(path.join(__dirname, 'uploads/videos')));
+
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected successfully'))
@@ -112,6 +121,7 @@ app.use('/api/reviews', reviewRoutes);
 app.use('/api/address', addressRoutes);
 app.use('/api/region', regionRoutes);
 app.use('/api/gallery', galleryRoutes);
+app.use('/api/assembly-videos', assemblyVideosRoutes);
 
 // Admin Routes
 app.use('/api/admin/auth', adminAuthRoutes);
@@ -122,6 +132,7 @@ app.use('/api/admin/users', adminUserRoutes);
 app.use('/api/admin/reviews', adminReviewRoutes);
 app.use('/api/admin/gallery', adminGalleryRoutes);
 app.use('/api/admin/upload', adminUploadRoutes);
+app.use('/api/admin/assembly-videos', adminAssemblyVideosRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
