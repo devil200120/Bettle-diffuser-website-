@@ -15,31 +15,67 @@ router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Check against admin credentials
-    if (email !== ADMIN_EMAIL) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
-
-    if (password !== ADMIN_PASSWORD) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
-
-    // Create token
-    const token = jwt.sign(
-      { userId: 'admin', role: 'admin' },
-      process.env.JWT_SECRET,
-      { expiresIn: '7d' }
-    );
-
-    res.json({
-      token,
-      user: {
-        id: 'admin',
-        name: 'Administrator',
-        email: ADMIN_EMAIL,
-        role: 'admin'
+    // First check if user exists in database with isAdmin flag
+    const user = await User.findOne({ email, isAdmin: true, isActive: true });
+    
+    if (user) {
+      // Check if user is banned
+      if (user.isBanned) {
+        return res.status(403).json({ 
+          message: 'Your account has been banned', 
+          isBanned: true
+        });
       }
-    });
+
+      // Verify password
+      const isMatch = await user.comparePassword(password);
+      
+      if (!isMatch) {
+        return res.status(401).json({ message: 'Invalid credentials' });
+      }
+
+      // Update last login
+      user.lastLogin = new Date();
+      await user.save();
+
+      // Create token
+      const token = jwt.sign(
+        { userId: user._id, role: 'admin' },
+        process.env.JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+
+      return res.json({
+        token,
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: 'admin'
+        }
+      });
+    }
+
+    // Fallback to environment variables for default admin
+    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+      const token = jwt.sign(
+        { userId: 'admin', role: 'admin' },
+        process.env.JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+
+      return res.json({
+        token,
+        user: {
+          id: 'admin',
+          name: 'Administrator',
+          email: ADMIN_EMAIL,
+          role: 'admin'
+        }
+      });
+    }
+
+    return res.status(401).json({ message: 'Invalid credentials' });
   } catch (error) {
     console.error('Admin login error:', error);
     res.status(500).json({ message: 'Server error' });

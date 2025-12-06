@@ -15,7 +15,8 @@ import {
   Search,
   ChevronLeft,
   MessageSquare,
-  Image
+  Image,
+  Video
 } from 'lucide-react';
 
 const AdminLayout = () => {
@@ -71,6 +72,7 @@ const AdminLayout = () => {
     { name: 'Users', href: '/admin/users', icon: Users },
     { name: 'Reviews', href: '/admin/reviews', icon: MessageSquare },
     { name: 'Gallery', href: '/admin/gallery', icon: Image },
+    { name: 'Assembly Videos', href: '/admin/assembly-videos', icon: Video },
   ];
 
   const isActive = (href) => {

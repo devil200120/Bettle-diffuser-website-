@@ -13,7 +13,8 @@ import {
   Shield,
   AlertTriangle,
   Ban,
-  CheckCircle
+  CheckCircle,
+  UserPlus
 } from 'lucide-react';
 import { useToast } from '../../components/Toast';
 
@@ -26,6 +27,10 @@ const AdminUsers = () => {
   const [statusFilter, setStatusFilter] = useState('');
   const [deleteModal, setDeleteModal] = useState({ isOpen: false, user: null });
   const [banModal, setBanModal] = useState({ isOpen: false, user: null, reason: '' });
+  const [createAdminModal, setCreateAdminModal] = useState({ 
+    isOpen: false, 
+    formData: { name: '', email: '', password: '', phone: '' }
+  });
 
   useEffect(() => {
     fetchUsers();
@@ -86,6 +91,39 @@ const AdminUsers = () => {
     }
   };
 
+  const handleToggleAdmin = async (userId) => {
+    try {
+      await api.patch(`/admin/users/${userId}/toggle-admin`);
+      showSuccess('Admin status updated');
+      fetchUsers();
+    } catch (err) {
+      showError(err.response?.data?.message || 'Failed to update admin status');
+    }
+  };
+
+  const handleCreateAdmin = async () => {
+    const { name, email, password, phone } = createAdminModal.formData;
+    
+    if (!name || !email || !password || !phone) {
+      showError('Please fill all required fields');
+      return;
+    }
+
+    try {
+      await api.post('/admin/users/create-admin', {
+        name,
+        email,
+        password,
+        phone
+      });
+      showSuccess('Admin user created successfully');
+      setCreateAdminModal({ isOpen: false, formData: { name: '', email: '', password: '', phone: '' } });
+      fetchUsers();
+    } catch (err) {
+      showError(err.response?.data?.message || 'Failed to create admin');
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -94,9 +132,18 @@ const AdminUsers = () => {
           <h1 className="text-3xl font-bold text-gray-900">Users</h1>
           <p className="mt-1 text-gray-500">Manage user accounts</p>
         </div>
-        <div className="flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-xl">
-          <UsersIcon className="h-4 w-4 text-orange-500" />
-          <span className="text-sm text-gray-600">{pagination.total || 0} total users</span>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setCreateAdminModal({ isOpen: true, formData: { name: '', email: '', password: '', phone: '' } })}
+            className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition-colors"
+          >
+            <UserPlus className="h-4 w-4" />
+            <span>Add Admin</span>
+          </button>
+          <div className="flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-xl">
+            <UsersIcon className="h-4 w-4 text-orange-500" />
+            <span className="text-sm text-gray-600">{pagination.total || 0} total users</span>
+          </div>
         </div>
       </div>
 
@@ -225,6 +272,17 @@ const AdminUsers = () => {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center justify-end gap-1">
+                          <button
+                            onClick={() => handleToggleAdmin(user._id)}
+                            className={`p-2 rounded-lg transition-all ${
+                              user.isAdmin 
+                                ? 'text-green-500 hover:text-green-700 hover:bg-green-50' 
+                                : 'text-gray-500 hover:text-green-700 hover:bg-green-50'
+                            }`}
+                            title={user.isAdmin ? 'Remove Admin' : 'Make Admin'}
+                          >
+                            <Shield className="h-4 w-4" />
+                          </button>
                           <button
                             onClick={() => setBanModal({ isOpen: true, user, reason: '' })}
                             className={`p-2 rounded-lg transition-all ${
@@ -372,6 +430,104 @@ const AdminUsers = () => {
                 className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
               >
                 Delete User
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Create Admin Modal */}
+      {createAdminModal.isOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-md w-full">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
+                <UserPlus className="w-6 h-6 text-orange-500" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Create Admin User</h3>
+                <p className="text-sm text-gray-500">Add a new administrator</p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={createAdminModal.formData.name}
+                  onChange={(e) => setCreateAdminModal(prev => ({
+                    ...prev,
+                    formData: { ...prev.formData, name: e.target.value }
+                  }))}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  placeholder="Enter full name"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Email <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="email"
+                  value={createAdminModal.formData.email}
+                  onChange={(e) => setCreateAdminModal(prev => ({
+                    ...prev,
+                    formData: { ...prev.formData, email: e.target.value }
+                  }))}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  placeholder="admin@example.com"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Password <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="password"
+                  value={createAdminModal.formData.password}
+                  onChange={(e) => setCreateAdminModal(prev => ({
+                    ...prev,
+                    formData: { ...prev.formData, password: e.target.value }
+                  }))}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  placeholder="Minimum 6 characters"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Phone <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="tel"
+                  value={createAdminModal.formData.phone}
+                  onChange={(e) => setCreateAdminModal(prev => ({
+                    ...prev,
+                    formData: { ...prev.formData, phone: e.target.value }
+                  }))}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  placeholder="Enter phone number"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => setCreateAdminModal({ isOpen: false, formData: { name: '', email: '', password: '', phone: '' } })}
+                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleCreateAdmin}
+                className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
+              >
+                Create Admin
               </button>
             </div>
           </div>
