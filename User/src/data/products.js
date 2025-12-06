@@ -47,9 +47,9 @@ export const products = [
       "For Bulk order write to info@beetlediffuser.com",
     ],
     info: [
-      "Though most flash models are supported, a few small flashes—such as the Meike MK-320 and Olympus FL-LM3—are not compatible.",
+      "Though most flash models are supported, a few small flashes such as the Meike MK-320 and Olympus FL-LM3 are not compatible.",
       "Lenses below Physical length of 2.5 inches (6.3 cm)  are not supported",
-      "Most macro lenses use the thread sizes listed in the dropdown, and a matching ring is included. If your lens size isn't listed, select “Filter thread size not listed” — you can still use the diffuser by tightening the cord panel around the lens."
+      "Most macro lenses use the thread sizes listed in the dropdown, and a matching ring is included. If your lens size isn't listed, select “Filter thread size not listed”. You can still use the diffuser by tightening the cord panel around the lens."
     ],
   },
   {
@@ -290,7 +290,7 @@ export const initialReviews = [
     title: "Great Diffuser",
     date: "Tuesday, November 18, 2025",
     rating: 5,
-    body: "The **AK Diffuser** truly changed the way I approach macro photography. Before, lighting felt inconsistent and sometimes distracting, but with this diffuser everything became smoother, more natural, and beautifully balanced.",
+    body: "The Beetle Diffuser truly changed the way I approach macro photography. Before, lighting felt inconsistent and sometimes distracting, but with this diffuser everything became smoother, more natural, and beautifully balanced.",
     author: "Jose Vega",
   },
   {
@@ -298,7 +298,7 @@ export const initialReviews = [
     title: "World record holder",
     date: "Thursday, October 16, 2025",
     rating: 5,
-    body: 'The terms "trustworthy" and "customer-oriented" must have been invented especially for these AK guys. Less than 48 hours (!!!) between ordering (in Florida/USA!) and delivery.',
-    author: "Example User",
+    body: 'The terms "trustworthy" and "customer-oriented" must have been invented especially for these AK guys. Less than 48 hours between ordering (in Florida/USA!) and delivery.',
+    author: "Ela Lisa",
   },
 ];
