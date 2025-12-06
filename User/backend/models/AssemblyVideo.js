@@ -10,9 +10,23 @@ const assemblyVideoSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  videoType: {
+    type: String,
+    enum: ['file', 'youtube'],
+    default: 'file'
+  },
   videoPath: {
     type: String,
-    required: true
+    required: function() {
+      return this.videoType === 'file';
+    }
+  },
+  youtubeId: {
+    type: String,
+    required: function() {
+      return this.videoType === 'youtube';
+    },
+    trim: true
   },
   duration: {
     type: Number // Duration in seconds

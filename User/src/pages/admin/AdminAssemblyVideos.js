@@ -13,7 +13,9 @@ const AdminAssemblyVideos = () => {
     title: '',
     description: '',
     sortOrder: 0,
-    isActive: true
+    isActive: true,
+    videoType: 'file',
+    youtubeId: ''
   });
   const [videoFile, setVideoFile] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -72,8 +74,14 @@ const AdminAssemblyVideos = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!editingVideo && !videoFile) {
+    // Validation based on video type
+    if (formData.videoType === 'file' && !editingVideo && !videoFile) {
       showError('Please select a video file');
+      return;
+    }
+
+    if (formData.videoType === 'youtube' && !formData.youtubeId.trim()) {
+      showError('Please enter a YouTube video ID or URL');
       return;
     }
 
@@ -87,9 +95,18 @@ const AdminAssemblyVideos = () => {
       submitData.append('description', formData.description);
       submitData.append('sortOrder', formData.sortOrder);
       submitData.append('isActive', formData.isActive);
+      submitData.append('videoType', formData.videoType);
       
-      if (videoFile) {
+      if (formData.videoType === 'file' && videoFile) {
         submitData.append('video', videoFile);
+      } else if (formData.videoType === 'youtube') {
+        // Extract YouTube ID from URL if needed
+        let ytId = formData.youtubeId.trim();
+        const ytUrlMatch = ytId.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
+        if (ytUrlMatch) {
+          ytId = ytUrlMatch[1];
+        }
+        submitData.append('youtubeId', ytId);
       }
 
       const url = editingVideo 
@@ -152,7 +169,9 @@ const AdminAssemblyVideos = () => {
       title: video.title,
       description: video.description,
       sortOrder: video.sortOrder || 0,
-      isActive: video.isActive
+      isActive: video.isActive,
+      videoType: video.videoType || 'file',
+      youtubeId: video.youtubeId || ''
     });
     setVideoFile(null);
     setShowModal(true);
@@ -205,7 +224,9 @@ const AdminAssemblyVideos = () => {
       title: '',
       description: '',
       sortOrder: 0,
-      isActive: true
+      isActive: true,
+      videoType: 'file',
+      youtubeId: ''
     });
     setVideoFile(null);
   };
@@ -314,15 +335,27 @@ const AdminAssemblyVideos = () => {
                 </div>
               </div>
 
-              {video.videoPath && (
+              {(video.videoPath || video.youtubeId) && (
                 <div className="mt-4">
-                  <video
-                    controls
-                    className="w-full max-w-2xl rounded-lg"
-                    src={`${API_URL}${video.videoPath}`}
-                  >
-                    Your browser does not support the video tag.
-                  </video>
+                  {video.videoType === 'youtube' ? (
+                    <iframe
+                      className="w-full max-w-2xl rounded-lg"
+                      height="400"
+                      src={`https://www.youtube.com/embed/${video.youtubeId}`}
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      title={video.title}
+                    />
+                  ) : (
+                    <video
+                      controls
+                      className="w-full max-w-2xl rounded-lg"
+                      src={`${API_URL}${video.videoPath}`}
+                    >
+                      Your browser does not support the video tag.
+                    </video>
+                  )}
                 </div>
               )}
             </div>
@@ -372,6 +405,75 @@ const AdminAssemblyVideos = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Video Type *
+                  </label>
+                  <div className="flex gap-4">
+                    <label className="flex items-center">
+                      <input
+                        type="radio"
+                        name="videoType"
+                        value="file"
+                        checked={formData.videoType === 'file'}
+                        onChange={handleInputChange}
+                        className="mr-2"
+                      />
+                      Upload File
+                    </label>
+                    <label className="flex items-center">
+                      <input
+                        type="radio"
+                        name="videoType"
+                        value="youtube"
+                        checked={formData.videoType === 'youtube'}
+                        onChange={handleInputChange}
+                        className="mr-2"
+                      />
+                      YouTube Video
+                    </label>
+                  </div>
+                </div>
+
+                {formData.videoType === 'youtube' ? (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      YouTube Video ID or URL *
+                    </label>
+                    <input
+                      type="text"
+                      name="youtubeId"
+                      value={formData.youtubeId}
+                      onChange={handleInputChange}
+                      required={formData.videoType === 'youtube'}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="e.g., dQw4w9WgXcQ or https://youtu.be/dQw4w9WgXcQ"
+                    />
+                    <p className="text-sm text-gray-500 mt-1">
+                      Enter the YouTube video ID or full URL
+                    </p>
+                  </div>
+                ) : (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Video File {!editingVideo && '*'}
+                    </label>
+                    <input
+                      type="file"
+                      accept="video/mp4,video/avi,video/quicktime,video/x-matroska,video/x-ms-wmv,video/x-flv,video/webm"
+                      onChange={handleFileChange}
+                      required={!editingVideo && formData.videoType === 'file'}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                    <p className="text-sm text-gray-500 mt-1">
+                      Supported formats: mp4, avi, mov, mkv, wmv, flv, webm (Max: 10GB)
+                    </p>
+                    {editingVideo && (
+                      <p className="text-sm text-blue-500 mt-1">Leave empty to keep current video</p>
+                    )}
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Sort Order
                   </label>
                   <input
@@ -383,25 +485,6 @@ const AdminAssemblyVideos = () => {
                     placeholder="0"
                   />
                   <p className="text-sm text-gray-500 mt-1">Lower numbers appear first</p>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Video File {!editingVideo && '*'}
-                  </label>
-                  <input
-                    type="file"
-                    accept="video/mp4,video/avi,video/quicktime,video/x-matroska,video/x-ms-wmv,video/x-flv,video/webm"
-                    onChange={handleFileChange}
-                    required={!editingVideo}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                  <p className="text-sm text-gray-500 mt-1">
-                    Supported formats: mp4, avi, mov, mkv, wmv, flv, webm (Max: 10GB)
-                  </p>
-                  {editingVideo && (
-                    <p className="text-sm text-blue-500 mt-1">Leave empty to keep current video</p>
-                  )}
                 </div>
 
                 <div className="flex items-center">

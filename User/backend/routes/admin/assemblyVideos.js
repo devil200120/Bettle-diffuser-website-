@@ -76,32 +76,47 @@ router.get('/:id', async (req, res) => {
 // @access  Private/Admin
 router.post('/', upload.single('video'), async (req, res) => {
   try {
-    const { title, description, sortOrder, isActive } = req.body;
-
-    if (!req.file) {
-      return res.status(400).json({ message: 'Video file is required' });
-    }
+    const { title, description, sortOrder, isActive, videoType, youtubeId } = req.body;
 
     if (!title || !description) {
-      // Delete uploaded file if validation fails
-      await fs.unlink(req.file.path).catch(console.error);
+      if (req.file) {
+        await fs.unlink(req.file.path).catch(console.error);
+      }
       return res.status(400).json({ message: 'Title and description are required' });
     }
 
-    const video = new AssemblyVideo({
+    const type = videoType || 'file';
+
+    // Validate based on video type
+    if (type === 'file' && !req.file) {
+      return res.status(400).json({ message: 'Video file is required for file uploads' });
+    }
+
+    if (type === 'youtube' && !youtubeId) {
+      return res.status(400).json({ message: 'YouTube ID is required for YouTube videos' });
+    }
+
+    const videoData = {
       title,
       description,
-      videoPath: `/uploads/videos/${req.file.filename}`,
-      fileSize: req.file.size,
+      videoType: type,
       sortOrder: sortOrder || 0,
       isActive: isActive !== undefined ? isActive : true
-    });
+    };
 
+    if (type === 'file') {
+      videoData.videoPath = `/api/uploads/videos/${req.file.filename}`;
+      videoData.fileSize = req.file.size;
+    } else {
+      videoData.youtubeId = youtubeId.trim();
+    }
+
+    const video = new AssemblyVideo(videoData);
     await video.save();
 
     res.status(201).json({
       success: true,
-      message: 'Video uploaded successfully',
+      message: 'Video created successfully',
       data: video
     });
   } catch (error) {
@@ -119,7 +134,7 @@ router.post('/', upload.single('video'), async (req, res) => {
 // @access  Private/Admin
 router.put('/:id', upload.single('video'), async (req, res) => {
   try {
-    const { title, description, sortOrder, isActive } = req.body;
+    const { title, description, sortOrder, isActive, videoType, youtubeId } = req.body;
     
     const video = await AssemblyVideo.findById(req.params.id);
     
@@ -136,14 +151,33 @@ router.put('/:id', upload.single('video'), async (req, res) => {
     if (sortOrder !== undefined) video.sortOrder = sortOrder;
     if (isActive !== undefined) video.isActive = isActive;
 
-    // If new video file is uploaded, delete old one and update path
-    if (req.file) {
-      // Delete old video file
-      const oldFilePath = path.join(__dirname, '../../', video.videoPath);
-      await fs.unlink(oldFilePath).catch(console.error);
+    // Handle video type change
+    if (videoType && videoType !== video.videoType) {
+      // If changing from file to youtube, delete old file
+      if (video.videoType === 'file' && videoType === 'youtube') {
+        const oldFilePath = path.join(__dirname, '../../', video.videoPath.replace('/api', ''));
+        await fs.unlink(oldFilePath).catch(console.error);
+        video.videoPath = undefined;
+        video.fileSize = undefined;
+      }
+      video.videoType = videoType;
+    }
+
+    // Handle file upload for file type
+    if (video.videoType === 'file' && req.file) {
+      // Delete old video file if exists
+      if (video.videoPath) {
+        const oldFilePath = path.join(__dirname, '../../', video.videoPath.replace('/api', ''));
+        await fs.unlink(oldFilePath).catch(console.error);
+      }
       
-      video.videoPath = `/uploads/videos/${req.file.filename}`;
+      video.videoPath = `/api/uploads/videos/${req.file.filename}`;
       video.fileSize = req.file.size;
+    }
+
+    // Handle YouTube ID for youtube type
+    if (video.videoType === 'youtube' && youtubeId) {
+      video.youtubeId = youtubeId.trim();
     }
 
     await video.save();

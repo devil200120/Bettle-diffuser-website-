@@ -72,14 +72,25 @@ const AssemblyVideos = () => {
                   >
                     {/* Video Player */}
                     <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
-                      <video
-                        controls
-                        className="absolute top-0 left-0 w-full h-full"
-                        src={`${API_URL}${video.videoPath}`}
-                        style={{ objectFit: 'cover' }}
-                      >
-                        Your browser does not support the video tag.
-                      </video>
+                      {video.videoType === 'youtube' ? (
+                        <iframe
+                          src={`https://www.youtube.com/embed/${video.youtubeId}`}
+                          className="absolute top-0 left-0 w-full h-full"
+                          frameBorder="0"
+                          allowFullScreen
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          title={video.title}
+                        />
+                      ) : (
+                        <video
+                          controls
+                          className="absolute top-0 left-0 w-full h-full"
+                          src={`${API_URL}${video.videoPath}`}
+                          style={{ objectFit: 'cover' }}
+                        >
+                          Your browser does not support the video tag.
+                        </video>
+                      )}
                     </div>
                     
                     {/* Video Info */}
