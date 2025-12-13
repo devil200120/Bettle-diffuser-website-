@@ -80,6 +80,12 @@ const AdminOrders = () => {
   const statusOptions = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'];
   const paymentOptions = ['pending', 'paid', 'failed', 'refunded'];
 
+  const formatCurrency = (amount, currency = 'INR') => {
+    const currencySymbol = currency === 'USD' ? '$' : '₹';
+    const locale = currency === 'USD' ? 'en-US' : 'en-IN';
+    return `${currencySymbol}${amount?.toLocaleString(locale) || 0}`;
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -269,7 +275,7 @@ const AdminOrders = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-semibold flex items-center gap-1 text-gray-900">
                           <DollarSign className="h-4 w-4 text-green-500" />
-                          ₹{order.totalAmount?.toLocaleString('en-IN')}
+                          {formatCurrency(order.totalAmount, order.currency)}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">

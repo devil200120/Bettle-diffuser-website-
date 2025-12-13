@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
-const GOOGLE_MAPS_API_KEY = 'AIzaSyBecpP3O2kfTa0z-lLIiShmsZE6e1kDmOk';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -10,52 +9,10 @@ const Register = () => {
     name: '',
     email: '',
     phone: '',
-    password: '',
-    confirmPassword: ''
+    password: ''
   });
-  const [addressInput, setAddressInput] = useState('');
-  const [addressData, setAddressData] = useState(null);
-  const [addressSuggestions, setAddressSuggestions] = useState([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [manualPincode, setManualPincode] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [mapsLoaded, setMapsLoaded] = useState(false);
-  const autocompleteService = useRef(null);
-  const placesService = useRef(null);
-  const addressInputRef = useRef(null);
-
-  // Load Google Maps Script
-  useEffect(() => {
-    if (window.google && window.google.maps) {
-      setMapsLoaded(true);
-      return;
-    }
-
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`;
-    script.async = true;
-    script.defer = true;
-    script.onload = () => setMapsLoaded(true);
-    document.head.appendChild(script);
-
-    return () => {
-      const existingScript = document.querySelector(`script[src*="maps.googleapis.com"]`);
-      if (existingScript && existingScript.parentNode) {
-        // Don't remove script, other components might need it
-      }
-    };
-  }, []);
-
-  // Initialize Places services when maps loaded
-  useEffect(() => {
-    if (mapsLoaded && window.google) {
-      autocompleteService.current = new window.google.maps.places.AutocompleteService();
-      const mapDiv = document.createElement('div');
-      const map = new window.google.maps.Map(mapDiv);
-      placesService.current = new window.google.maps.places.PlacesService(map);
-    }
-  }, [mapsLoaded]);
 
   const handleChange = (e) => {
     setFormData({
@@ -65,99 +22,10 @@ const Register = () => {
     setError('');
   };
 
-  const handleAddressChange = (e) => {
-    const value = e.target.value;
-    setAddressInput(value);
-    setAddressData(null); // Clear selected address when typing
-
-    if (value.length > 2 && autocompleteService.current) {
-      autocompleteService.current.getPlacePredictions(
-        {
-          input: value,
-          componentRestrictions: { country: 'in' } // Restrict to India
-        },
-        (predictions, status) => {
-          if (status === window.google.maps.places.PlacesServiceStatus.OK && predictions) {
-            setAddressSuggestions(predictions);
-            setShowSuggestions(true);
-          } else {
-            setAddressSuggestions([]);
-            setShowSuggestions(false);
-          }
-        }
-      );
-    } else {
-      setAddressSuggestions([]);
-      setShowSuggestions(false);
-    }
-  };
-
-  const handleSelectAddress = (placeId, description) => {
-    setAddressInput(description);
-    setShowSuggestions(false);
-
-    if (placesService.current) {
-      placesService.current.getDetails(
-        { placeId, fields: ['formatted_address', 'geometry', 'address_components', 'place_id'] },
-        (place, status) => {
-          if (status === window.google.maps.places.PlacesServiceStatus.OK && place) {
-            const addressComponents = place.address_components || [];
-            
-            let street = '', city = '', state = '', zipCode = '', country = '';
-            
-            addressComponents.forEach(component => {
-              const types = component.types;
-              if (types.includes('street_number') || types.includes('route')) {
-                street += (street ? ' ' : '') + component.long_name;
-              }
-              if (types.includes('locality') || types.includes('sublocality_level_1')) {
-                city = component.long_name;
-              }
-              if (types.includes('administrative_area_level_1')) {
-                state = component.long_name;
-              }
-              if (types.includes('postal_code')) {
-                zipCode = component.long_name;
-              }
-              if (types.includes('country')) {
-                country = component.long_name;
-              }
-            });
-
-            setAddressData({
-              formattedAddress: place.formatted_address,
-              street,
-              city,
-              state,
-              zipCode,
-              country: country || 'India',
-              placeId: place.place_id,
-              coordinates: {
-                lat: place.geometry.location.lat(),
-                lng: place.geometry.location.lng()
-              }
-            });
-            // Set manual pincode if Google provided one
-            if (zipCode) {
-              setManualPincode(zipCode);
-            }
-          }
-        }
-      );
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
-
-    // Validate passwords match
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
-      setLoading(false);
-      return;
-    }
 
     // Validate password length
     if (formData.password.length < 6) {
@@ -176,13 +44,7 @@ const Register = () => {
           name: formData.name,
           email: formData.email,
           phone: formData.phone,
-          password: formData.password,
-          ...(addressData && { 
-            address: {
-              ...addressData,
-              zipCode: manualPincode || addressData.zipCode || ''
-            }
-          })
+          password: formData.password
         })
       });
 
@@ -192,13 +54,19 @@ const Register = () => {
         throw new Error(data.message || 'Registration failed');
       }
 
-      // Store token and user data
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      // Check if verification is required
+      if (data.requiresVerification) {
+        // Redirect to verification pending page
+        navigate('/verification-pending', { state: { email: data.email } });
+      } else {
+        // Store token and user data (backward compatibility)
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
 
-      // Redirect to home
-      navigate('/');
-      window.location.reload(); // Refresh to update navbar
+        // Redirect to home
+        navigate('/');
+        window.location.reload(); // Refresh to update navbar
+      }
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.');
     } finally {
@@ -283,79 +151,6 @@ const Register = () => {
                 className="w-full bg-zinc-600 border border-zinc-500 rounded-lg px-4 py-3 text-white placeholder-zinc-400 focus:outline-none focus:border-yellow-400 transition-colors"
               />
             </div>
-
-            <div>
-              <label htmlFor="confirmPassword" className="block text-zinc-300 text-sm mb-2">
-                Confirm Password
-              </label>
-              <input
-                type="password"
-                id="confirmPassword"
-                name="confirmPassword"
-                placeholder="Confirm your password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-                className="w-full bg-zinc-600 border border-zinc-500 rounded-lg px-4 py-3 text-white placeholder-zinc-400 focus:outline-none focus:border-yellow-400 transition-colors"
-              />
-            </div>
-
-            <div className="relative">
-              <label htmlFor="address" className="block text-zinc-300 text-sm mb-2">
-                Address (Optional)
-              </label>
-              <input
-                type="text"
-                id="address"
-                name="address"
-                placeholder="Start typing your address..."
-                value={addressInput}
-                onChange={handleAddressChange}
-                ref={addressInputRef}
-                autoComplete="off"
-                className="w-full bg-zinc-600 border border-zinc-500 rounded-lg px-4 py-3 text-white placeholder-zinc-400 focus:outline-none focus:border-yellow-400 transition-colors"
-              />
-              {showSuggestions && addressSuggestions.length > 0 && (
-                <ul className="absolute z-10 w-full bg-zinc-700 border border-zinc-500 rounded-lg mt-1 max-h-48 overflow-y-auto shadow-xl">
-                  {addressSuggestions.map((suggestion) => (
-                    <li
-                      key={suggestion.place_id}
-                      onClick={() => handleSelectAddress(suggestion.place_id, suggestion.description)}
-                      className="px-4 py-3 hover:bg-zinc-600 cursor-pointer text-white text-sm flex items-start gap-2"
-                    >
-                      <span className="text-yellow-400">📍</span>
-                      {suggestion.description}
-                    </li>
-                  ))}
-                </ul>
-              )}
-              {addressData && (
-                <p className="text-green-400 text-sm mt-2">
-                  ✓ Address selected: {addressData.city}, {addressData.state}
-                </p>
-              )}
-            </div>
-
-            {addressData && (
-              <div>
-                <label htmlFor="pincode" className="block text-zinc-300 text-sm mb-2">
-                  Pincode <span className="text-red-400">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="pincode"
-                  name="pincode"
-                  placeholder="Enter 6-digit pincode"
-                  value={manualPincode}
-                  onChange={(e) => setManualPincode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                  maxLength={6}
-                  className="w-full bg-zinc-600 border border-zinc-500 rounded-lg px-4 py-3 text-white placeholder-zinc-400 focus:outline-none focus:border-yellow-400 transition-colors"
-                />
-                {!manualPincode && (
-                  <p className="text-yellow-400 text-xs mt-1">Please enter your pincode for accurate delivery</p>
-                )}
-              </div>
-            )}
 
             <button 
               type="submit" 

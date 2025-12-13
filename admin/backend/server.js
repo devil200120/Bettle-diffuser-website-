@@ -14,9 +14,45 @@ const uploadRoutes = require('./routes/upload');
 
 const app = express();
 
-// Security middleware (configured for Cloudinary image loading)
+// Security middleware (configured for Cloudinary image loading and external APIs)
 app.use(helmet({
-  crossOriginResourcePolicy: { policy: "cross-origin" }
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      connectSrc: [
+        "'self'",
+        "http://localhost:5001",
+        "http://localhost:5000",
+        "https://api.razorpay.com",
+        "https://checkout.razorpay.com",
+        "https://maps.googleapis.com",
+        "https://maps.gstatic.com"
+      ],
+      imgSrc: [
+        "'self'",
+        "data:",
+        "blob:",
+        "https:",
+        "http:"
+      ],
+      scriptSrc: [
+        "'self'",
+        "'unsafe-inline'",
+        "'unsafe-eval'",
+        "https://checkout.razorpay.com",
+        "https://maps.googleapis.com"
+      ],
+      styleSrc: [
+        "'self'",
+        "'unsafe-inline'"
+      ],
+      fontSrc: [
+        "'self'",
+        "data:"
+      ]
+    }
+  }
 }));
 
 // Rate limiting

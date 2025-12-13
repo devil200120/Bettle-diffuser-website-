@@ -4,6 +4,7 @@ import { CartProvider } from './context/CartContext';
 import { RegionProvider } from './context/RegionContext';
 import { ToastProvider } from './components/Toast';
 import Navbar from './components/Navbar';
+import ScrollToTop from './components/ScrollToTop';
 import SuccessMessage from './components/SuccessMessage';
 import Home from './pages/Home';
 import ProductDetails from './pages/ProductDetails';
@@ -20,6 +21,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import VerificationPending from './pages/VerificationPending';
+import VerifyEmail from './pages/VerifyEmail';
 import Profile from './pages/Profile';
 import Orders from './pages/Orders';
 import TrackOrder from './pages/TrackOrder';
@@ -40,6 +43,7 @@ import AdminReviews from './pages/admin/AdminReviews';
 import AdminGallery from './pages/admin/AdminGallery';
 import AdminAssemblyVideos from './pages/admin/AdminAssemblyVideos';
 import AdminFAQs from './pages/admin/AdminFAQs';
+import AdminCoupons from './pages/admin/AdminCoupons';
 
 // Layout component that conditionally renders Navbar
 const AppLayout = ({ children }) => {
@@ -61,6 +65,7 @@ function App() {
       <RegionProvider>
         <CartProvider>
           <Router>
+            <ScrollToTop />
             <AppLayout>
               <Routes>
                 <Route path="/" element={<Home />} />
@@ -78,6 +83,8 @@ function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password/:token" element={<ResetPassword />} />
+              <Route path="/verification-pending" element={<VerificationPending />} />
+              <Route path="/verify-email/:token" element={<VerifyEmail />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/orders" element={<Orders />} />
               <Route path="/analytics" element={<Analytics />} />
@@ -97,6 +104,7 @@ function App() {
                 <Route path="products/:id/edit" element={<AdminProductForm />} />
                 <Route path="orders" element={<AdminOrders />} />
                 <Route path="orders/:id" element={<AdminOrderView />} />
+                <Route path="coupons" element={<AdminCoupons />} />
                 <Route path="users" element={<AdminUsers />} />
                 <Route path="reviews" element={<AdminReviews />} />
                 <Route path="gallery" element={<AdminGallery />} />

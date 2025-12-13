@@ -41,6 +41,48 @@ exports.sendEmail = async ({ to, subject, html, text }) => {
 };
 
 // Email templates
+exports.sendVerificationEmail = async (user, verificationToken) => {
+  const verificationUrl = `${process.env.CLIENT_URL}/verify-email/${verificationToken}`;
+  
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); padding: 30px; text-align: center;">
+        <h1 style="color: #f9d423; margin: 0;">Verify Your Email</h1>
+      </div>
+      <div style="padding: 30px; background: #fff;">
+        <h2 style="color: #333;">Hello ${user.name}!</h2>
+        <p style="color: #666; line-height: 1.6;">
+          Thank you for registering with Beetle Diffuser! Please verify your email address by clicking the button below.
+          This link will expire in 24 hours.
+        </p>
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${verificationUrl}" 
+             style="background: #f9d423; color: #1a1a2e; padding: 12px 30px; 
+                    text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">
+            Verify Email Address
+          </a>
+        </div>
+        <p style="color: #999; font-size: 12px; line-height: 1.6;">
+          If you didn't create an account with Beetle Diffuser, please ignore this email.
+        </p>
+        <p style="color: #999; font-size: 12px;">
+          Or copy and paste this link: <br>
+          <a href="${verificationUrl}" style="color: #666;">${verificationUrl}</a>
+        </p>
+      </div>
+      <div style="background: #f5f5f5; padding: 20px; text-align: center; color: #999;">
+        <p>© 2025 Beetle Diffuser. All rights reserved.</p>
+      </div>
+    </div>
+  `;
+
+  return this.sendEmail({
+    to: user.email,
+    subject: 'Verify Your Email - Beetle Diffuser',
+    html
+  });
+};
+
 exports.sendWelcomeEmail = async (user) => {
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -118,11 +160,11 @@ exports.sendOrderConfirmationEmail = async (order, email) => {
         
         <h3 style="color: #333; margin-top: 30px;">Shipping Address</h3>
         <p style="color: #666;">
-          ${order.shippingAddress.name}<br>
-          ${order.shippingAddress.street}<br>
-          ${order.shippingAddress.city}, ${order.shippingAddress.state} ${order.shippingAddress.zipCode}<br>
-          ${order.shippingAddress.country}<br>
-          Phone: ${order.shippingAddress.phone}
+          ${[order.shippingAddress.firstName, order.shippingAddress.lastName].filter(Boolean).join(' ') || 'N/A'}<br>
+          ${order.shippingAddress.street || ''}<br>
+          ${[order.shippingAddress.city, order.shippingAddress.state, order.shippingAddress.zipCode].filter(Boolean).join(', ')}<br>
+          ${order.shippingAddress.country || 'N/A'}<br>
+          ${order.shippingAddress.phone ? `Phone: ${order.shippingAddress.phone}` : ''}
         </p>
       </div>
       <div style="background: #f5f5f5; padding: 20px; text-align: center; color: #999;">
@@ -202,6 +244,66 @@ exports.sendPasswordResetEmail = async (user, resetToken) => {
   return this.sendEmail({
     to: user.email,
     subject: 'Password Reset - Beetle Diffuser',
+    html
+  });
+};
+
+exports.sendAccountCreatedEmail = async (user, resetToken) => {
+  const setPasswordUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
+  
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); padding: 30px; text-align: center;">
+        <h1 style="color: #f9d423; margin: 0;">🎉 Account Created!</h1>
+      </div>
+      <div style="padding: 30px; background: #fff;">
+        <h2 style="color: #333;">Welcome ${user.name}!</h2>
+        <p style="color: #666; line-height: 1.6;">
+          Great news! Your account has been automatically created during your purchase at Beetle Diffuser.
+        </p>
+        <p style="color: #666; line-height: 1.6;">
+          <strong>Your account details:</strong><br>
+          Email: ${user.email}<br>
+          Phone: ${user.phone || 'Not provided'}
+        </p>
+        <p style="color: #666; line-height: 1.6;">
+          To complete your account setup and be able to login, please set your password by clicking the button below.
+          This link will expire in 7 days.
+        </p>
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${setPasswordUrl}" 
+             style="background: #f9d423; color: #1a1a2e; padding: 15px 35px; 
+                    text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">
+            Set Your Password
+          </a>
+        </div>
+        <div style="background: #f0f9ff; border-left: 4px solid #3b82f6; padding: 15px; margin: 20px 0;">
+          <p style="color: #1e40af; margin: 0; font-size: 14px;">
+            <strong>With your account you can:</strong><br>
+            ✓ Track your orders<br>
+            ✓ View order history<br>
+            ✓ Faster checkout next time<br>
+            ✓ Save your shipping addresses
+          </p>
+        </div>
+        <p style="color: #999; font-size: 12px; line-height: 1.6;">
+          If you don't want to set up an account, you can simply ignore this email. 
+          Your order will still be processed normally.
+        </p>
+        <p style="color: #999; font-size: 12px;">
+          Or copy and paste this link: <br>
+          <a href="${setPasswordUrl}" style="color: #666;">${setPasswordUrl}</a>
+        </p>
+      </div>
+      <div style="background: #f5f5f5; padding: 20px; text-align: center; color: #999;">
+        <p>© 2025 Beetle Diffuser. All rights reserved.</p>
+      </div>
+    </div>
+  `;
+
+  return this.sendEmail({
+    to: user.email,
+    subject: '🎉 Your Beetle Diffuser Account Has Been Created!',
     html
   });
 };

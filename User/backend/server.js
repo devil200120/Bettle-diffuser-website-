@@ -18,6 +18,8 @@ const regionRoutes = require('./routes/region');
 const galleryRoutes = require('./routes/gallery');
 const assemblyVideosRoutes = require('./routes/assemblyVideos');
 const faqRoutes = require('./routes/faqs');
+const paymentRoutes = require('./routes/payment');
+const couponRoutes = require('./routes/coupons');
 
 // Admin Route imports
 const adminAuthRoutes = require('./routes/admin/auth');
@@ -30,6 +32,7 @@ const adminGalleryRoutes = require('./routes/admin/gallery');
 const adminUploadRoutes = require('./routes/admin/upload');
 const adminAssemblyVideosRoutes = require('./routes/admin/assemblyVideos');
 const adminFaqRoutes = require('./routes/admin/faqs');
+const adminCouponRoutes = require('./routes/admin/coupons');
 
 const app = express();
 
@@ -125,6 +128,8 @@ app.use('/api/region', regionRoutes);
 app.use('/api/gallery', galleryRoutes);
 app.use('/api/assembly-videos', assemblyVideosRoutes);
 app.use('/api/faqs', faqRoutes);
+app.use('/api/payment', paymentRoutes);
+app.use('/api/coupons', couponRoutes);
 
 // Admin Routes
 app.use('/api/admin/auth', adminAuthRoutes);
@@ -137,6 +142,7 @@ app.use('/api/admin/gallery', adminGalleryRoutes);
 app.use('/api/admin/upload', adminUploadRoutes);
 app.use('/api/admin/assembly-videos', adminAssemblyVideosRoutes);
 app.use('/api/admin/faqs', adminFaqRoutes);
+app.use('/api/admin/coupons', adminCouponRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

@@ -189,11 +189,20 @@ const TrackOrder = () => {
             <div className="bg-zinc-700 rounded-2xl overflow-hidden">
               <div className="bg-gradient-to-r from-yellow-400/20 to-yellow-500/10 p-6 border-b border-zinc-600">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                  <div>
+                  <div className="flex-1">
                     <p className="text-zinc-400 text-sm">Order Number</p>
                     <p className="text-2xl font-bold text-yellow-400 font-mono">
                       #{order.orderNumber || order._id?.slice(-8).toUpperCase()}
                     </p>
+                    {order.trackingNumber && (
+                      <div className="mt-3 flex items-center gap-2">
+                        <span className="text-cyan-400">🚚</span>
+                        <div>
+                          <p className="text-zinc-400 text-xs">Tracking Number</p>
+                          <p className="text-cyan-400 font-semibold font-mono text-sm">{order.trackingNumber}</p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <div className="text-right">
                     <p className="text-zinc-400 text-sm">Order Date</p>
@@ -339,21 +348,6 @@ const TrackOrder = () => {
                 )}
               </div>
             </div>
-
-            {/* Tracking Number (if available) */}
-            {order.trackingNumber && (
-              <div className="bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 rounded-2xl p-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-cyan-500/30 rounded-full flex items-center justify-center">
-                    <span className="text-2xl">🚚</span>
-                  </div>
-                  <div>
-                    <p className="text-zinc-400 text-sm">Tracking Number</p>
-                    <p className="text-xl font-bold text-cyan-400 font-mono">{order.trackingNumber}</p>
-                  </div>
-                </div>
-              </div>
-            )}
 
             {/* Actions */}
             <div className="flex flex-col sm:flex-row gap-4">

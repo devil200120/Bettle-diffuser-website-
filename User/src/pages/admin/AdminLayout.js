@@ -17,7 +17,8 @@ import {
   MessageSquare,
   Image,
   Video,
-  HelpCircle
+  HelpCircle,
+  Ticket
 } from 'lucide-react';
 
 const AdminLayout = () => {
@@ -70,6 +71,7 @@ const AdminLayout = () => {
     { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
     { name: 'Products', href: '/admin/products', icon: Package },
     { name: 'Orders', href: '/admin/orders', icon: ShoppingCart },
+    { name: 'Coupons', href: '/admin/coupons', icon: Ticket },
     { name: 'Users', href: '/admin/users', icon: Users },
     { name: 'Reviews', href: '/admin/reviews', icon: MessageSquare },
     { name: 'Gallery', href: '/admin/gallery', icon: Image },
@@ -120,7 +122,7 @@ const AdminLayout = () => {
         </div>
 
         {/* Navigation */}
-        <nav className="p-3 space-y-1 mt-2">
+        <nav className="flex-1 overflow-y-auto p-3 space-y-1 mt-2" style={{ maxHeight: 'calc(100vh - 220px)' }}>
           {navigation.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.href);
@@ -149,7 +151,7 @@ const AdminLayout = () => {
         </nav>
 
         {/* Collapse Toggle (Desktop only) */}
-        <div className="hidden lg:block absolute bottom-24 left-0 right-0 px-3">
+        <div className="hidden lg:block px-3 py-2">
           <button
             onClick={toggleSidebarCollapse}
             className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-all"
@@ -160,7 +162,7 @@ const AdminLayout = () => {
         </div>
 
         {/* Back to Main Site */}
-        <div className="absolute bottom-0 left-0 right-0 p-3 border-t border-gray-100 bg-gray-50/50">
+        <div className="p-3 border-t border-gray-100 bg-gray-50/50">
           <Link
             to="/"
             className={`flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-white hover:text-orange-600 hover:shadow-md transition-all duration-200 ${

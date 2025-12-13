@@ -121,17 +121,20 @@ const Orders = () => {
     });
   };
 
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      maximumFractionDigits: 0
-    }).format(price);
+  const formatPrice = (price, currency = 'INR') => {
+    const currencySymbol = currency === 'USD' ? '$' : '₹';
+    const locale = currency === 'USD' ? 'en-US' : 'en-IN';
+    return `${currencySymbol}${price?.toLocaleString(locale, { maximumFractionDigits: 2 }) || 0}`;
   };
 
   const handleDownloadInvoice = async (order) => {
     // Create a new window for printing
     const printWindow = window.open('', '_blank');
+    
+    // Currency helper for invoice
+    const currencySymbol = order.currency === 'USD' ? '$' : '₹';
+    const currencyLocale = order.currency === 'USD' ? 'en-US' : 'en-IN';
+    const formatInvoicePrice = (price) => `${currencySymbol}${price?.toLocaleString(currencyLocale, { maximumFractionDigits: 2 }) || 0}`;
     
     const invoiceHTML = `
       <!DOCTYPE html>
@@ -143,8 +146,10 @@ const Orders = () => {
           body { font-family: 'Segoe UI', Arial, sans-serif; padding: 40px; background: white; color: #333; }
           .invoice-container { max-width: 800px; margin: 0 auto; }
           .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 3px solid #f59e0b; }
-          .logo { font-size: 28px; font-weight: bold; color: #18181b; }
-          .logo span { color: #f59e0b; }
+          .logo { display: flex; align-items: center; gap: 15px; }
+          .logo img { height: 80px; width: auto; }
+          .logo-text { font-size: 28px; font-weight: bold; color: #18181b; }
+          .logo-text span { color: #f59e0b; }
           .invoice-title { text-align: right; }
           .invoice-title h1 { font-size: 32px; color: #18181b; margin-bottom: 5px; }
           .invoice-title p { color: #666; font-size: 14px; }
@@ -176,7 +181,10 @@ const Orders = () => {
       <body>
         <div class="invoice-container">
           <div class="header">
-            <div class="logo">Beetle<span>Diffuser</span></div>
+            <div class="logo">
+              <img src="${window.location.origin}/images/beetle_logo.png" alt="Beetle Diffuser Logo" />
+              <div class="logo-text">Beetle<span>Diffuser</span></div>
+            </div>
             <div class="invoice-title">
               <h1>INVOICE</h1>
               <p>#${order.orderNumber || order._id.slice(-8).toUpperCase()}</p>
@@ -222,8 +230,8 @@ const Orders = () => {
                     ${item.flashModel ? 'Flash: ' + item.flashModel : ''}
                   </td>
                   <td>${item.quantity}</td>
-                  <td>₹${item.price?.toLocaleString('en-IN')}</td>
-                  <td><strong>₹${(item.price * item.quantity)?.toLocaleString('en-IN')}</strong></td>
+                  <td>${formatInvoicePrice(item.price)}</td>
+                  <td><strong>${formatInvoicePrice(item.price * item.quantity)}</strong></td>
                 </tr>
               `).join('')}
             </tbody>
@@ -232,21 +240,21 @@ const Orders = () => {
           <div class="totals">
             <div class="totals-row">
               <span>Subtotal</span>
-              <span>₹${(order.subtotal || order.totalAmount)?.toLocaleString('en-IN')}</span>
+              <span>${formatInvoicePrice(order.subtotal || order.totalAmount)}</span>
             </div>
             ${order.discount > 0 ? `
               <div class="totals-row" style="color: #16a34a;">
                 <span>Discount</span>
-                <span>-₹${order.discount?.toLocaleString('en-IN')}</span>
+                <span>-${formatInvoicePrice(order.discount)}</span>
               </div>
             ` : ''}
             <div class="totals-row">
               <span>Shipping</span>
-              <span>${order.shippingCost > 0 ? '₹' + order.shippingCost?.toLocaleString('en-IN') : 'Free'}</span>
+              <span>${order.shippingCost > 0 ? formatInvoicePrice(order.shippingCost) : 'Free'}</span>
             </div>
             <div class="totals-row total">
               <span>Grand Total</span>
-              <span class="amount">₹${order.totalAmount?.toLocaleString('en-IN')}</span>
+              <span class="amount">${formatInvoicePrice(order.totalAmount)}</span>
             </div>
           </div>
           
@@ -370,11 +378,7 @@ const Orders = () => {
               <div className="text-2xl font-bold text-green-400">{statusCounts.delivered}</div>
               <div className="text-xs text-zinc-400">Delivered</div>
             </div>
-            <div className="bg-gradient-to-br from-red-500/20 to-red-600/10 border border-red-500/30 rounded-xl p-3 text-center">
-              <div className="text-2xl mb-1">❌</div>
-              <div className="text-2xl font-bold text-red-400">{statusCounts.cancelled}</div>
-              <div className="text-xs text-zinc-400">Cancelled</div>
-            </div>
+
           </div>
         )}
 
@@ -423,13 +427,6 @@ const Orders = () => {
               >
                 {getStatusIcon('delivered')} Delivered
                 {statusCounts.delivered > 0 && <span className="bg-white/20 px-1.5 py-0.5 rounded text-xs">{statusCounts.delivered}</span>}
-              </button>
-              <button 
-                onClick={() => setActiveFilter('cancelled')}
-                className={getFilterBtnClass('cancelled')}
-              >
-                {getStatusIcon('cancelled')} Cancelled
-                {statusCounts.cancelled > 0 && <span className="bg-white/20 px-1.5 py-0.5 rounded text-xs">{statusCounts.cancelled}</span>}
               </button>
             </div>
           </div>
@@ -529,7 +526,7 @@ const Orders = () => {
                         <p className="text-zinc-400 text-sm font-medium">Quantity: {item.quantity}</p>
                       </div>
                       <div className="text-yellow-400 font-semibold">
-                        {formatPrice(item.price * item.quantity)}
+                        {formatPrice(item.price * item.quantity, order.currency)}
                       </div>
                     </div>
                   ))}
@@ -539,7 +536,7 @@ const Orders = () => {
                 <div className="flex flex-col sm:flex-row justify-between items-center gap-4 p-4 bg-zinc-600/30 border-t border-zinc-600">
                   <div className="flex items-center gap-2">
                     <span className="text-zinc-400">Total:</span>
-                    <span className="text-xl font-bold text-yellow-400">{formatPrice(order.totalAmount)}</span>
+                    <span className="text-xl font-bold text-yellow-400">{formatPrice(order.totalAmount, order.currency)}</span>
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
                     <Link
@@ -575,17 +572,6 @@ const Orders = () => {
                     >
                       {selectedOrder === order._id ? 'Hide' : 'Details'}
                     </button>
-                    {canCancelOrder(order.status) && (
-                      <button 
-                        onClick={() => openCancelModal(order)}
-                        className="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                        Cancel
-                      </button>
-                    )}
                   </div>
                 </div>
 
@@ -629,7 +615,7 @@ const Orders = () => {
                           {order.items?.map((item, idx) => (
                             <div key={idx} className="flex justify-between text-zinc-400">
                               <span className="flex-1">{item.product?.name || 'Product'} × {item.quantity}</span>
-                              <span>{formatPrice(item.price * item.quantity)}</span>
+                              <span>{formatPrice(item.price * item.quantity, order.currency)}</span>
                             </div>
                           ))}
                         </div>
@@ -637,7 +623,7 @@ const Orders = () => {
                         <div className="border-t border-zinc-600 pt-2 space-y-2">
                           <div className="flex justify-between text-zinc-300">
                             <span className="font-medium">Subtotal</span>
-                            <span className="font-medium">{formatPrice(order.items?.reduce((sum, item) => sum + (item.price * item.quantity), 0) || 0)}</span>
+                            <span className="font-medium">{formatPrice(order.items?.reduce((sum, item) => sum + (item.price * item.quantity), 0) || 0, order.currency)}</span>
                           </div>
                           
                           {order.discount > 0 && (
@@ -648,7 +634,7 @@ const Orders = () => {
                                 </svg>
                                 Discount
                               </span>
-                              <span>-{formatPrice(order.discount)}</span>
+                              <span>-{formatPrice(order.discount, order.currency)}</span>
                             </div>
                           )}
                           
@@ -660,21 +646,21 @@ const Orders = () => {
                               Shipping
                             </span>
                             <span className={order.shippingCost === 0 ? 'text-green-400 font-medium' : ''}>
-                              {order.shippingCost > 0 ? formatPrice(order.shippingCost) : 'Free'}
+                              {order.shippingCost > 0 ? formatPrice(order.shippingCost, order.currency) : 'Free'}
                             </span>
                           </div>
                           
                           {order.tax > 0 && (
                             <div className="flex justify-between text-zinc-300">
                               <span>Tax</span>
-                              <span>{formatPrice(order.tax)}</span>
+                              <span>{formatPrice(order.tax, order.currency)}</span>
                             </div>
                           )}
                         </div>
                         
                         <div className="flex justify-between text-white font-bold text-base pt-3 border-t-2 border-yellow-400/30">
                           <span>Total Amount</span>
-                          <span className="text-yellow-400">{formatPrice(order.totalAmount)}</span>
+                          <span className="text-yellow-400">{formatPrice(order.totalAmount, order.currency)}</span>
                         </div>
                       </div>
                     </div>
@@ -763,8 +749,8 @@ const Orders = () => {
                           {item.flashModel && <span className="block">Flash: {item.flashModel}</span>}
                         </td>
                         <td className="p-3 text-center text-zinc-800">{item.quantity}</td>
-                        <td className="p-3 text-right text-zinc-800">{formatPrice(item.price)}</td>
-                        <td className="p-3 text-right font-semibold text-zinc-800">{formatPrice(item.price * item.quantity)}</td>
+                        <td className="p-3 text-right text-zinc-800">{formatPrice(item.price, invoiceOrder.currency)}</td>
+                        <td className="p-3 text-right font-semibold text-zinc-800">{formatPrice(item.price * item.quantity, invoiceOrder.currency)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -776,21 +762,21 @@ const Orders = () => {
                 <div className="w-full sm:w-72 space-y-2">
                   <div className="flex justify-between text-zinc-600 text-sm">
                     <span>Subtotal</span>
-                    <span>{formatPrice(invoiceOrder.subtotal || invoiceOrder.totalAmount)}</span>
+                    <span>{formatPrice(invoiceOrder.subtotal || invoiceOrder.totalAmount, invoiceOrder.currency)}</span>
                   </div>
                   {invoiceOrder.discount > 0 && (
                     <div className="flex justify-between text-green-600 text-sm">
                       <span>Discount</span>
-                      <span>-{formatPrice(invoiceOrder.discount)}</span>
+                      <span>-{formatPrice(invoiceOrder.discount, invoiceOrder.currency)}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-zinc-600 text-sm">
                     <span>Shipping</span>
-                    <span>{invoiceOrder.shippingCost > 0 ? formatPrice(invoiceOrder.shippingCost) : 'Free'}</span>
+                    <span>{invoiceOrder.shippingCost > 0 ? formatPrice(invoiceOrder.shippingCost, invoiceOrder.currency) : 'Free'}</span>
                   </div>
                   <div className="flex justify-between text-lg font-bold pt-2 border-t-2 border-zinc-200">
                     <span className="text-zinc-800">Grand Total</span>
-                    <span className="text-yellow-600">{formatPrice(invoiceOrder.totalAmount)}</span>
+                    <span className="text-yellow-600">{formatPrice(invoiceOrder.totalAmount, invoiceOrder.currency)}</span>
                   </div>
                 </div>
               </div>
@@ -818,86 +804,6 @@ const Orders = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
                 Download PDF
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Cancel Order Modal */}
-      {showCancelModal && cancellingOrder && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-zinc-800 rounded-2xl max-w-md w-full shadow-2xl overflow-hidden">
-            {/* Modal Header */}
-            <div className="bg-red-500/10 border-b border-red-500/20 p-5">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center">
-                  <svg className="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-white">Cancel Order</h3>
-                  <p className="text-zinc-400 text-sm">#{cancellingOrder.orderNumber || cancellingOrder._id.slice(-8).toUpperCase()}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Modal Body */}
-            <div className="p-5 space-y-4">
-              <p className="text-zinc-300">
-                Are you sure you want to cancel this order? This action cannot be undone.
-              </p>
-              
-              <div className="bg-zinc-700/50 rounded-lg p-3">
-                <p className="text-sm text-zinc-400 mb-1">Order Total</p>
-                <p className="text-xl font-bold text-yellow-400">{formatPrice(cancellingOrder.totalAmount)}</p>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-2">
-                  Reason for cancellation (optional)
-                </label>
-                <select
-                  value={cancelReason}
-                  onChange={(e) => setCancelReason(e.target.value)}
-                  className="w-full bg-zinc-700 border border-zinc-600 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-yellow-400 transition-colors"
-                >
-                  <option value="">Select a reason...</option>
-                  <option value="Changed my mind">Changed my mind</option>
-                  <option value="Found a better price">Found a better price</option>
-                  <option value="Ordered by mistake">Ordered by mistake</option>
-                  <option value="Delivery time too long">Delivery time too long</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
-
-              {cancelReason === 'Other' && (
-                <textarea
-                  placeholder="Please specify your reason..."
-                  onChange={(e) => setCancelReason(e.target.value)}
-                  className="w-full bg-zinc-700 border border-zinc-600 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-yellow-400 transition-colors resize-none"
-                  rows={3}
-                />
-              )}
-            </div>
-
-            {/* Modal Footer */}
-            <div className="bg-zinc-900/50 px-5 py-4 flex flex-col sm:flex-row gap-3">
-              <button
-                onClick={closeCancelModal}
-                className="flex-1 px-6 py-3 bg-zinc-600 hover:bg-zinc-500 text-white font-medium rounded-lg transition-colors"
-              >
-                Keep Order
-              </button>
-              <button
-                onClick={handleCancelOrder}
-                className="flex-1 px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-                Yes, Cancel Order
               </button>
             </div>
           </div>

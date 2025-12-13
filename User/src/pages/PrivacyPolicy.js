@@ -56,7 +56,7 @@ export default function PrivacyPolicy() {
       id: 6,
       title: "6. Your Rights",
       content:
-        "Depending on your location, you may have rights to access, correct, or delete your personal data. Contact us at privacy@beetlediffuser.com to exercise these rights. We will respond to your request within 30 days.",
+        "Depending on your location, you may have rights to access, correct, or delete your personal data. Contact us at connect@beetlediffuser.com to exercise these rights. We will respond to your request within 30 days.",
     },
     {
       id: 7,
@@ -70,7 +70,7 @@ export default function PrivacyPolicy() {
       content:
         "If you have questions about this Privacy Policy or our privacy practices, please contact us at:",
       items: [
-        "Email: privacy@beetlediffuser.com",
+        "Email: connect@beetlediffuser.com",
         "Website: www.beetlediffuser.com",
         "Address: Beetle Diffuser, Macro Photography Solutions",
       ],
@@ -166,10 +166,10 @@ export default function PrivacyPolicy() {
               <div>
                 <h3 className="font-semibold mb-2">Email</h3>
                 <a
-                  href="mailto:privacy@beetlediffuser.com"
+                  href="mailto:connect@beetlediffuser.com"
                   className="text-gray-300 hover:text-red-600 transition-colors duration-200"
                 >
-                  privacy@beetlediffuser.com
+                  connect@beetlediffuser.com
                 </a>
               </div>
             </div>

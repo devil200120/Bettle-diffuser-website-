@@ -57,10 +57,6 @@ const ProductDetails = () => {
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
 
-  const isLoggedIn = () => {
-    return !!localStorage.getItem('token');
-  };
-
   const handleImageError = () => {
     if (!imgError) {
       setImgError(true);
@@ -299,18 +295,9 @@ const ProductDetails = () => {
       variant: true
     });
     
-    // Validate form FIRST before checking login
+    // Validate form before adding to cart
     if (!validateForm()) {
       showError('Please fill all required fields before adding to cart');
-      return;
-    }
-    
-    // Check if user is logged in AFTER form validation
-    if (!isLoggedIn()) {
-      showWarning('Please login to add items to cart');
-      setTimeout(() => {
-        navigate('/login');
-      }, 1000);
       return;
     }
     
@@ -352,18 +339,9 @@ const ProductDetails = () => {
       variant: true
     });
     
-    // Validate form FIRST before checking login
+    // Validate form before purchasing
     if (!validateForm()) {
       showError('Please fill all required fields before purchasing');
-      return;
-    }
-    
-    // Check if user is logged in AFTER form validation
-    if (!isLoggedIn()) {
-      showWarning('Please login to purchase items');
-      setTimeout(() => {
-        navigate('/login');
-      }, 1000);
       return;
     }
     
@@ -857,15 +835,24 @@ const ProductDetails = () => {
        
         </div>
       )}
-      {!isTwinFlash && product.loader && product.loader.length > 0 && (
+      {product.loader && product.loader.length > 0 && (
         <div className="specifications-table">
           <h2>Guides</h2>
-          {product.loader.map((load, index) => (
-            <div key={index} className="spec-row">
-              <div className="spec-label">»</div>
-              <div className="spec-value">{load}</div>
-            </div>
-          ))}
+          {product.loader.map((load, index) => {
+            // Replace shipping text based on region
+            let displayText = load;
+            if (load.includes('Fedex Priority/Express shipping') || load.includes('inclusive of')) {
+              displayText = isIndia 
+                ? 'All prices are inclusive of shipping' 
+                : 'All the Prices are inclusive of Fedex Priority/Express shipping';
+            }
+            return (
+              <div key={index} className="spec-row">
+                <div className="spec-label">»</div>
+                <div className="spec-value">{displayText}</div>
+              </div>
+            );
+          })}
         </div>
       )}
 

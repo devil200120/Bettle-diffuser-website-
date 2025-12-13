@@ -60,7 +60,8 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const order = await Order.findById(req.params.id)
-      .populate('user', 'name email phone');
+      .populate('user', 'name email phone')
+      .populate('items.product', 'name icon images');
     
     if (!order) {
       return res.status(404).json({ message: 'Order not found' });

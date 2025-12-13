@@ -39,6 +39,11 @@ const Login = () => {
       const data = await response.json();
 
       if (!response.ok) {
+        // Check if email verification is required
+        if (response.status === 403 && data.requiresVerification) {
+          navigate('/verification-pending', { state: { email: data.email } });
+          return;
+        }
         // Check if user is banned
         if (response.status === 403 && data.isBanned) {
           setError(`🚫 Your account has been banned. Reason: ${data.bannedReason || 'Violation of terms and conditions'}`);
@@ -52,9 +57,11 @@ const Login = () => {
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
 
+      // Dispatch custom event to update navbar
+      window.dispatchEvent(new Event('userLogin'));
+
       // Redirect to home or previous page
       navigate('/');
-      window.location.reload(); // Refresh to update navbar
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.');
     } finally {

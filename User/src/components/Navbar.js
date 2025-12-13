@@ -35,6 +35,18 @@ const Navbar = () => {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
+  // Listen for custom login event
+  useEffect(() => {
+    const handleUserLogin = () => {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+    };
+    window.addEventListener('userLogin', handleUserLogin);
+    return () => window.removeEventListener('userLogin', handleUserLogin);
+  }, []);
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -252,10 +264,15 @@ const Navbar = () => {
       {/* Mobile Menu */}
       <div 
         ref={menuRef}
-        className={`lg:hidden fixed left-0 right-0 bg-zinc-900 border-t border-zinc-700 transition-all duration-300 ease-in-out overflow-y-auto ${menuOpen ? 'max-h-[calc(100vh-70px)] opacity-100' : 'max-h-0 opacity-0'}`}
-        style={{ top: '70px' }}
+        className={`lg:hidden fixed left-0 right-0 bg-zinc-900 border-t border-zinc-700 transition-all duration-300 ease-in-out ${menuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}
+        style={{ 
+          top: '70px', 
+          bottom: 0,
+          overflowY: 'auto',
+          WebkitOverflowScrolling: 'touch'
+        }}
       >
-        <div className="px-4 py-4 space-y-1">
+        <div className="min-h-full px-4 py-4 pb-20">
           {/* Navigation Links */}
           {navLinks.map((link) => (
             <div key={link.path}>
@@ -283,7 +300,7 @@ const Navbar = () => {
 
           {/* User Section */}
           {user ? (
-            <div className="space-y-1">
+            <div className="space-y-1 mb-4">
               <p className="px-4 py-2 text-zinc-400 text-sm font-medium uppercase tracking-wider">
                 Account
               </p>
@@ -329,7 +346,7 @@ const Navbar = () => {
               </button>
             </div>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-2 mb-4">
               <Link
                 to="/login"
                 className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-yellow-400 hover:bg-yellow-500 text-zinc-900 text-base font-semibold rounded-lg transition-colors"

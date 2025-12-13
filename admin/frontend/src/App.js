@@ -15,6 +15,7 @@ import UserForm from './pages/UserForm';
 import UserView from './pages/UserView';
 import Analytics from './pages/Analytics';
 import Settings from './pages/Settings';
+import Coupons from './pages/Coupons';
 import LoadingSpinner from './components/UI/LoadingSpinner';
 
 function App() {
@@ -83,6 +84,7 @@ function App() {
                 <Route path="/users/:id" element={<UserView />} />
                 <Route path="/users/:id/edit" element={<UserForm />} />
                 <Route path="/analytics" element={<Analytics />} />
+                <Route path="/coupons" element={<Coupons />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>

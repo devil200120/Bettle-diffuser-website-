@@ -18,10 +18,6 @@ exports.validateRegister = [
   body('email').isEmail().normalizeEmail().withMessage('Valid email is required'),
   body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
   body('phone').notEmpty().trim().withMessage('Phone number is required'),
-  body('address').notEmpty().withMessage('Address is required'),
-  body('address.formattedAddress').notEmpty().withMessage('Formatted address is required'),
-  body('address.coordinates.lat').isNumeric().withMessage('Latitude is required'),
-  body('address.coordinates.lng').isNumeric().withMessage('Longitude is required'),
 ];
 
 // Login validation

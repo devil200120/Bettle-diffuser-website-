@@ -1,9 +1,14 @@
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
 
+// Helper to get the auth token (checks both user and admin tokens)
+const getAuthToken = () => {
+  return localStorage.getItem('token') || localStorage.getItem('adminToken');
+};
+
 // Create an axios-like API object for consistency
 const api = {
   get: async (url) => {
-    const token = localStorage.getItem('adminToken');
+    const token = getAuthToken();
     const response = await fetch(`${API_URL}${url}`, {
       method: 'GET',
       headers: {
@@ -17,7 +22,7 @@ const api = {
   },
   
   post: async (url, body) => {
-    const token = localStorage.getItem('adminToken');
+    const token = getAuthToken();
     const isFormData = body instanceof FormData;
     
     const headers = {
@@ -40,7 +45,7 @@ const api = {
   },
   
   put: async (url, body) => {
-    const token = localStorage.getItem('adminToken');
+    const token = getAuthToken();
     const response = await fetch(`${API_URL}${url}`, {
       method: 'PUT',
       headers: {
@@ -55,7 +60,7 @@ const api = {
   },
   
   patch: async (url, body) => {
-    const token = localStorage.getItem('adminToken');
+    const token = getAuthToken();
     const response = await fetch(`${API_URL}${url}`, {
       method: 'PATCH',
       headers: {
@@ -70,7 +75,7 @@ const api = {
   },
   
   delete: async (url) => {
-    const token = localStorage.getItem('adminToken');
+    const token = getAuthToken();
     const response = await fetch(`${API_URL}${url}`, {
       method: 'DELETE',
       headers: {

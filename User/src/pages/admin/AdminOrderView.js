@@ -108,6 +108,12 @@ const AdminOrderView = () => {
   const statusOptions = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'];
   const paymentOptions = ['pending', 'paid', 'failed', 'refunded'];
 
+  const formatCurrency = (amount, currency = 'INR') => {
+    const currencySymbol = currency === 'USD' ? '$' : '₹';
+    const locale = currency === 'USD' ? 'en-US' : 'en-IN';
+    return `${currencySymbol}${amount?.toLocaleString(locale) || 0}`;
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -166,21 +172,23 @@ const AdminOrderView = () => {
             <div className="space-y-4">
               {order.items?.map((item, index) => (
                 <div key={index} className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
-                  <img
-                    src={item.icon || '/images/fallback.jpg'}
-                    alt={item.name}
-                    className="w-16 h-16 rounded-xl object-cover"
-                    onError={(e) => { e.target.src = '/images/fallback.jpg'; }}
-                  />
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900">{item.name}</h3>
+                  <div className="w-16 h-16 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
+                    <img
+                      src={item.product?.images?.[0] || item.product?.icon || item.icon || '/images/fallback.jpg'}
+                      alt={item.name || item.product?.name}
+                      className="w-full h-full object-cover"
+                      onError={(e) => { e.target.src = '/images/fallback.jpg'; }}
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-gray-900">{item.name || item.product?.name}</h3>
                     {item.size && <p className="text-sm text-gray-500">Size: {item.size}</p>}
                     {item.cameraModel && <p className="text-sm text-gray-500">Camera: {item.cameraModel}</p>}
                     <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
                   </div>
-                  <div className="text-right">
-                    <p className="font-semibold text-gray-900">₹{(item.price * item.quantity).toLocaleString('en-IN')}</p>
-                    <p className="text-sm text-gray-500">₹{item.price?.toLocaleString('en-IN')} each</p>
+                  <div className="text-right flex-shrink-0">
+                    <p className="font-semibold text-gray-900">{formatCurrency(item.price * item.quantity, order.currency)}</p>
+                    <p className="text-sm text-gray-500">{formatCurrency(item.price, order.currency)} each</p>
                   </div>
                 </div>
               ))}
@@ -190,19 +198,19 @@ const AdminOrderView = () => {
             <div className="border-t border-gray-200 mt-6 pt-6 space-y-3">
               <div className="flex justify-between text-gray-600">
                 <span>Subtotal</span>
-                <span>₹{order.subtotal?.toLocaleString('en-IN')}</span>
+                <span>{formatCurrency(order.subtotal, order.currency)}</span>
               </div>
               <div className="flex justify-between text-gray-600">
                 <span>Shipping</span>
-                <span>₹{order.shipping?.toLocaleString('en-IN')}</span>
+                <span>{formatCurrency(order.shipping, order.currency)}</span>
               </div>
               <div className="flex justify-between text-gray-600">
                 <span>Tax</span>
-                <span>₹{order.tax?.toLocaleString('en-IN')}</span>
+                <span>{formatCurrency(order.tax, order.currency)}</span>
               </div>
               <div className="flex justify-between text-lg font-bold text-gray-900 pt-3 border-t border-gray-200">
                 <span>Total</span>
-                <span>₹{order.totalAmount?.toLocaleString('en-IN')}</span>
+                <span>{formatCurrency(order.totalAmount, order.currency)}</span>
               </div>
             </div>
           </div>

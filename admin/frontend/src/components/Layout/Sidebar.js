@@ -10,7 +10,8 @@ import {
   BarChart3,
   ChevronLeft,
   ChevronRight,
-  Sparkles
+  Sparkles,
+  Ticket
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -19,6 +20,7 @@ const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, badge: null },
   { name: 'Products', href: '/products', icon: Package, badge: null },
   { name: 'Orders', href: '/orders', icon: ShoppingCart, badge: '12' },
+  { name: 'Coupons', href: '/coupons', icon: Ticket, badge: null },
   { name: 'Users', href: '/users', icon: Users, badge: null },
   { name: 'Analytics', href: '/analytics', icon: BarChart3, badge: 'New' },
   { name: 'Settings', href: '/settings', icon: Settings, badge: null },
@@ -29,7 +31,7 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
   const { isDark } = useTheme();
 
   const SidebarContent = ({ isMobile = false }) => (
-    <div className={`flex h-full flex-col backdrop-blur-xl border-r ${
+    <div className={`flex h-full flex-col backdrop-blur-xl border-r overflow-hidden ${
       isDark 
         ? 'bg-dark-800/95 border-dark-700/50' 
         : 'bg-white/95 border-gray-200/50'
@@ -71,7 +73,13 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto px-3 py-6">
+      <nav 
+        className="flex-1 overflow-y-auto px-3 py-6"
+        style={{
+          scrollbarWidth: 'thin',
+          scrollbarColor: isDark ? '#374151 transparent' : '#cbd5e1 transparent'
+        }}
+      >
         {(!collapsed || isMobile) && (
           <p className={`px-3 mb-3 text-xs font-semibold uppercase tracking-wider ${
             isDark ? 'text-gray-500' : 'text-gray-400'
@@ -79,7 +87,7 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
             Main Menu
           </p>
         )}
-        <div className="space-y-1">
+        <div className="space-y-1 pb-4">
           {navigation.map((item) => {
             const isActive = location.pathname === item.href || 
                             (item.href !== '/dashboard' && location.pathname.startsWith(item.href));

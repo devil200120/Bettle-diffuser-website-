@@ -6,6 +6,8 @@ const OrderSuccess = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const order = location.state?.order;
+  const accountCreated = location.state?.accountCreated;
+  const email = location.state?.email;
   const [showConfetti, setShowConfetti] = useState(true);
 
   useEffect(() => {
@@ -124,6 +126,25 @@ const OrderSuccess = () => {
                 <span className="text-xl">🚚</span>
                 <span className="text-sm">Your order will be delivered within 5-7 business days</span>
               </div>
+              
+              {/* Account Created Message */}
+              {accountCreated && (
+                <div className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 p-4 rounded-xl">
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <span className="text-2xl">🎉</span>
+                    <h4 className="text-green-400 font-bold">Account Created!</h4>
+                  </div>
+                  <p className="text-zinc-300 text-sm mb-2">
+                    We've automatically created an account for you using your checkout information.
+                  </p>
+                  <p className="text-zinc-400 text-sm">
+                    Check your email <span className="text-yellow-400 font-medium">({email})</span> to set your password and access your account.
+                  </p>
+                  <div className="mt-3 text-xs text-zinc-500">
+                    With your account, you can track orders, view order history, and enjoy faster checkout!
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Action Buttons */}

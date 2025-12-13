@@ -137,7 +137,7 @@ export default function TermsAndConditions() {
       content:
         "If you have questions or concerns about these Terms & Conditions, please contact us:",
       items: [
-        "Email: legal@beetlediffuser.com",
+        "Email: connect@beetlediffuser.com",
         "Website: www.beetlediffuser.com",
         "Response time: We will respond to inquiries within 5 business days",
       ],
@@ -262,10 +262,10 @@ export default function TermsAndConditions() {
               <div>
                 <h3 className="font-semibold mb-2 text-white">Email</h3>
                 <a
-                  href="mailto:legal@beetlediffuser.com"
+                  href="mailto:connect@beetlediffuser.com"
                   className="text-gray-300 hover:text-red-500 transition-colors duration-200 text-sm"
                 >
-                  legal@beetlediffuser.com
+                  connect@beetlediffuser.com
                 </a>
               </div>
             </div>

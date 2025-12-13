@@ -42,7 +42,7 @@ exports.authenticateAdmin = async (req, res, next) => {
       return res.status(401).json({ message: 'Invalid or inactive user' });
     }
 
-    if (user.role !== 'admin') {
+    if (!user.isAdmin) {
       return res.status(403).json({ message: 'Admin access required' });
     }
 
@@ -69,6 +69,18 @@ exports.optionalAuth = async (req, res, next) => {
     next();
   } catch (error) {
     next();
+  }
+};
+
+// Check if user is admin
+exports.isAdmin = async (req, res, next) => {
+  try {
+    if (!req.user.isAdmin) {
+      return res.status(403).json({ message: 'Admin access required' });
+    }
+    next();
+  } catch (error) {
+    return res.status(403).json({ message: 'Access denied' });
   }
 };
 
