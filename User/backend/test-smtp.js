@@ -7,7 +7,7 @@ const transporter = nodemailer.createTransport({
   secure: false,
   auth: {
     user: 'connect@beetlediffuser.com',
-    pass: 'pcddrscrwhkesxkn'
+    pass: 'wzfj osfz oglf krwd'
   }
   
 });

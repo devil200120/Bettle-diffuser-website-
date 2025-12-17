@@ -1151,7 +1151,7 @@ const Checkout = () => {
           name="address1"
           value={formData.address1}
           onChange={handleChange}
-          placeholder="Street address"
+          placeholder="Apartment, building, house number"
           className="w-full px-4 py-3 bg-zinc-700 border border-zinc-600 rounded-lg text-white placeholder-zinc-400 focus:outline-none focus:border-yellow-400 transition-colors mb-3"
         />
         <input
@@ -1159,7 +1159,7 @@ const Checkout = () => {
           name="address2"
           value={formData.address2}
           onChange={handleChange}
-          placeholder="Apartment, suite, etc. (Optional)"
+          placeholder="Street address (Optional)"
           className="w-full px-4 py-3 bg-zinc-700 border border-zinc-600 rounded-lg text-white placeholder-zinc-400 focus:outline-none focus:border-yellow-400 transition-colors"
         />
       </div>

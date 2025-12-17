@@ -74,12 +74,14 @@ const AssemblyVideos = () => {
                     <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
                       {video.videoType === 'youtube' ? (
                         <iframe
-                          src={`https://www.youtube.com/embed/${video.youtubeId}`}
+                          src={`https://www.youtube-nocookie.com/embed/${video.youtubeId}?rel=0&modestbranding=1`}
                           className="absolute top-0 left-0 w-full h-full"
                           frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                           allowFullScreen
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          loading="lazy"
                           title={video.title}
+                          sandbox="allow-scripts allow-same-origin allow-presentation"
                         />
                       ) : (
                         <video
@@ -87,6 +89,7 @@ const AssemblyVideos = () => {
                           className="absolute top-0 left-0 w-full h-full"
                           src={`${API_URL}${video.videoPath}`}
                           style={{ objectFit: 'cover' }}
+                          preload="metadata"
                         >
                           Your browser does not support the video tag.
                         </video>

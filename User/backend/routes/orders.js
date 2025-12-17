@@ -5,7 +5,7 @@ const Cart = require('../models/Cart');
 const User = require('../models/User');
 const { authenticateToken, optionalAuth } = require('../middleware/auth');
 const { validateOrder, handleValidationErrors } = require('../middleware/validation');
-const { sendOrderConfirmationEmail, sendAccountCreatedEmail } = require('../utils/emailService');
+const { sendOrderConfirmationEmail, sendAccountCreatedEmail, sendOrderNotificationToOwner } = require('../utils/emailService');
 
 const router = express.Router();
 
@@ -132,12 +132,21 @@ router.post('/', optionalAuth, async (req, res) => {
     // Send emails
     const email = req.user ? req.user.email : guestInfo?.email;
     
-    // Send order confirmation email
+    // Send order confirmation email to customer
     if (email) {
       try {
         await sendOrderConfirmationEmail(order, email);
       } catch (emailError) {
         console.error('Order confirmation email sending failed:', emailError);
+      }
+    }
+
+    // Send order notification to owner/admin
+    if (email) {
+      try {
+        await sendOrderNotificationToOwner(order, email);
+      } catch (emailError) {
+        console.error('Owner notification email sending failed:', emailError);
       }
     }
 
